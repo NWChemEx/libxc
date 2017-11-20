@@ -122,6 +122,9 @@ while($_=<BBL>){
       $item =~ s/^\\bibitem\s*\[.*\]\{(.*?)\}//;
       $label = $1;
 
+      # protect o-slash from mangling with brace manipulations, restore later.
+      $item =~ s/\\o\{\}/\\oslash/g;
+
       $item =~ s/\\BibitemOpen//;
       $item =~ s/\\BibitemShut.*//;
 
@@ -133,6 +136,7 @@ while($_=<BBL>){
       $item =~ s/,\\ \\Eprint.*?\{.*?\}\s*\{(http:\/\/.*?)\}\s*//g; # wipe URL that is not arxiv
       $item =~ s/\\Eprint.*?\{.*?\}\s*\{(.*?)\}\s*/$1/g; # arxiv
       $item =~ s/\\v\{(.)(.*?)\}/\\v{$1}$2/g; # special rule for haceks \v{ } in names
+      $item =~ s/\\oslash/\\o\{\}/g;
 
       $item =~ s/\\textbf\s*\{(.*?)\}/$1/g;
       $item =~ s/\\emph\s*\{(.*?)\}/$1/g;
