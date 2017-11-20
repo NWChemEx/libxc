@@ -73,6 +73,8 @@ close(TEX);
 # run latex and bibtex
 system "cd $dir && latex $$.tex && bibtex $$.aux && latex $$.tex && latex $$.tex && /bin/mv -f $$.dvi libxc.dvi";
 
+# WARNING: the order in which these are applied appears to be somewhat unpredictable,
+# which may cause trouble when one name contains another.
 %journal_abbreviations =
   (
    "Mathematical Proceedings of the Cambridge Philosophical Society" => "Math. Proc. Cambridge Philos. Soc.",
@@ -87,8 +89,8 @@ system "cd $dir && latex $$.tex && bibtex $$.aux && latex $$.tex && latex $$.tex
    "International Journal of Quantum Chemistry" => "Int. J. Quantum Chem.",
    "The Journal of Physical Chemistry A" => "J. Phys. Chem. A",
    "The Journal of Physical Chemistry B" => "J. Phys. Chem. B",
+   "The Journal of Physical Chemistry C" => "J. Phys. Chem. C",
    "The Journal of Physical Chemistry Letters" => "J. Phys. Chem. Lett.",
-   "The Journal of Physical Chemistry" => "J. Phys. Chem",
    "Molecular Physics" => "Mol. Phys.",
    "Physica Scripta" => "Phys. Scr.",
    "Journal of Computational Chemistry" => "J. Comput. Chem.",
@@ -125,7 +127,7 @@ while($_=<BBL>){
 
       $item =~ s/\\bibf*namefont\s*\{(.*?)\}/$1/g;
       $item =~ s/\\bibinfo\s*\{.*?\}\s*\{(.*?)\}/$1/g;
-      $item =~ s/\\bibinfo\s*\{editor \{(.*?)\}(.*?)\}/$1$2/g; # result of nested bibinfos for book with editor
+      $item =~ s/\\bibinfo\s*\{editor\s*\{(.*?)\}(.*?)\}/$1$2/g; # result of nested bibinfos for book with editor
       $item =~ s/\\bibfield\s*\{.*?\}\s*\{(.*?)\}/$1/g;
       $item =~ s/\\href.*?\{.*?\}\s*\{(.*?)\}/$1/g;
       $item =~ s/,\\ \\Eprint.*?\{.*?\}\s*\{(http:\/\/.*?)\}\s*//g; # wipe URL that is not arxiv
@@ -142,6 +144,9 @@ while($_=<BBL>){
 
       # double up remaining backslashes so they print and don't try to escape the next character
       $item =~ s/\\/\\\\/g;
+
+      # run this after the doubling of backlashes or it doesn't work properly
+      $item =~ s/\\\\enquote\s*\{(.*?)\}/\\"$1\\"/g;
 
       # check if things seem ok
       if($item =~ /\\/) {

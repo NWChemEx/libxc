@@ -1886,7 +1886,7 @@ func_reference_type xc_ref_Brual1978_1177 = {
 
 
 func_reference_type xc_ref_McWeeny1976_3 = {
-  "R. McWeeny, in The New World of Quantum Chemistry, edited by \\bibinfo {editor {B. Pullman} and R. Parr} (Reidel, Boston, 1976) pp. 3--31",
+  "R. McWeeny, in The New World of Quantum Chemistry, edited by B. Pullman and R. Parr (Reidel, Boston, 1976) pp. 3--31",
   "",
   "@InProceedings{McWeeny1976_3,\n  author =       {R. McWeeny},\n  title =        {Present Status of the Correlation Problem},\n  booktitle = {The New World of Quantum Chemistry},\n  year =      {1976},\n  editor =    {B. Pullman and R. Parr},\n  pages =     {3--31},\n  address =   {Boston},\n  publisher = {Reidel},\n}"
 };
@@ -1900,7 +1900,7 @@ func_reference_type xc_ref_Constantin2012_194105 = {
 
 
 func_reference_type xc_ref_Verma2017_7144 = {
-  "P. Verma and D. G. Truhlar, J. Phys. Chem C 121, 7144 (2017)",
+  "P. Verma and D. G. Truhlar, J. Phys. Chem. C 121, 7144 (2017)",
   "10.1021/acs.jpcc.7b01066",
   "@article{Verma2017_7144,\nauthor = {Verma, Pragya and Truhlar, Donald G.},\ntitle = {HLE17: An Improved Local Exchange–Correlation Functional for Computing Semiconductor Band Gaps and Molecular Excitation Energies},\njournal = {The Journal of Physical Chemistry C},\nvolume = {121},\nnumber = {13},\npages = {7144-7154},\nyear = {2017},\ndoi = {10.1021/acs.jpcc.7b01066},\nURL = {http://dx.doi.org/10.1021/acs.jpcc.7b01066},\neprint = {http://dx.doi.org/10.1021/acs.jpcc.7b01066}\n}"
 };
@@ -1935,7 +1935,7 @@ func_reference_type xc_ref_Rey1998_581 = {
 
 
 func_reference_type xc_ref_Krieger1999_463 = {
-  "J. B. Krieger, J. Chen, G. J. Iafrate, and A. Savin, \\enquote {Construction of an accurate self-interaction-corrected correlation energy functional based on an electron gas with a gap,} in Electron Correlations and Materials Properties, edited by A. Gonis, N. Kioussis, and M. Ciftan (Springer US, Boston, MA, 1999) pp. 463--477",
+  "J. B. Krieger, J. Chen, G. J. Iafrate, and A. Savin, \"Construction of an accurate self-interaction-corrected correlation energy functional based on an electron gas with a gap,\" in Electron Correlations and Materials Properties, edited by A. Gonis, N. Kioussis, and M. Ciftan (Springer US, Boston, MA, 1999) pp. 463--477",
   "10.1007/978-1-4615-4715-0_28",
   "@Inbook{Krieger1999_463,\nauthor=\"Krieger, Joseph B. and Chen, Jiqiang and Iafrate, Gerald J. and Savin, Andreas\",\neditor=\"Gonis, A. and Kioussis, N. and Ciftan, M.\",\ntitle=\"Construction of An Accurate Self-interaction-corrected Correlation Energy Functional Based on An Electron Gas with A Gap\",\nbookTitle=\"Electron Correlations and Materials Properties\",\nyear=\"1999\",\npublisher=\"Springer US\",\naddress=\"Boston, MA\",\npages=\"463--477\",\nisbn=\"978-1-4615-4715-0\",\ndoi=\"10.1007/978-1-4615-4715-0_28\",\nurl=\"http://dx.doi.org/10.1007/978-1-4615-4715-0_28\"\n}"
 };
@@ -2075,9 +2075,9 @@ func_reference_type xc_ref_Groth2017 = {
 
 
 func_reference_type xc_ref_Wang2017_8487 = {
-  "Y. Wang, X. Jin, H. S. Yu, D. G. Truhlar, and X. He, Proceedings of the National Academy of Sciences 114, 8487 (2017)",
+  "Y. Wang, X. Jin, H. S. Yu, D. G. Truhlar, and X. He, Proc. Natl. Acad. Sci. U. S. A. 114, 8487 (2017)",
   "10.1073/pnas.1705670114",
-  "@article{Wang2017_8487,\n  author = {Wang, Ying and Jin, Xinsheng and Yu, Haoyu S. and Truhlar, Donald G. and He, Xiao},\n  title = {Revised M06-L functional for improved accuracy on chemical reaction barrier heights, noncovalent interactions, and solid-state physics},\n  volume = {114},\n  number = {32},\n  pages = {8487-8492},\n  year = {2017},\n  doi = {10.1073/pnas.1705670114},\n  URL = {http://www.pnas.org/content/114/32/8487.abstract},\n  eprint = {http://www.pnas.org/content/114/32/8487.full.pdf},\n  journal = {Proceedings of the National Academy of Sciences}\n}"
+  "@article{Wang2017_8487,\n  author = {Wang, Ying and Jin, Xinsheng and Yu, Haoyu S. and Truhlar, Donald G. and He, Xiao},\n  title = {Revised M06-L functional for improved accuracy on chemical reaction barrier heights, noncovalent interactions, and solid-state physics},\n  volume = {114},\n  number = {32},\n  pages = {8487-8492},\n  year = {2017},\n  doi = {10.1073/pnas.1705670114},\n  URL = {http://www.pnas.org/content/114/32/8487.abstract},\n  eprint = {http://www.pnas.org/content/114/32/8487.full.pdf},\n  journal = {Proceedings of the National Academy of Sciences of the U. S. A.}\n}"
 };
 
 
