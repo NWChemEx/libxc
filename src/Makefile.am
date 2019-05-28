@@ -7,7 +7,7 @@
 ## file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ##
 
-SUBDIRS = maple2c cuda
+SUBDIRS = maple2c
 
 bin_PROGRAMS = xc-info xc-threshold
 noinst_PROGRAMS = genwiki xc-sanity
