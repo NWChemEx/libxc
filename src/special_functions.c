@@ -15,7 +15,7 @@
   Corless, Gonnet, Hare, Jeffrey, and Knuth (1996), 
          Adv. in Comp. Math. 5(4):329-359. 
 */
-
+#pragma omp declare target
 double LambertW(double z)
 {
   double w;
@@ -164,3 +164,4 @@ double xc_dilogarithm(const double x)
 
   return dspenc;
 }
+#pragma omp end declare target
