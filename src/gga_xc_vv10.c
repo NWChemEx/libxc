@@ -11,6 +11,8 @@
 #define XC_GGA_XC_VV10         255 /* Vydrov and Van Voorhis */
 #define XC_HYB_GGA_XC_LC_VV10  469 /* Vydrov and Van Voorhis */
 
+#pragma omp declare target
+
 static void
 gga_xc_vv10_init(xc_func_type *p)
 {
@@ -63,3 +65,5 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lc_vv10 = {
   hyb_gga_xc_lc_vv10_init,
   NULL, NULL, NULL, NULL
 };
+
+#pragma omp end declare target

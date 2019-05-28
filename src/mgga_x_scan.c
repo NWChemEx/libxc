@@ -14,6 +14,8 @@
 #define XC_MGGA_X_REVSCAN       581 /* revised SCAN */
 #define XC_HYB_MGGA_X_REVSCAN0  583 /* revised SCAN hybrid exchange */
 
+#pragma omp declare target
+
 typedef struct{
   double c1, c2, d, k1;
 } mgga_x_scan_params;
@@ -120,3 +122,5 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_revscan0 = {
   hyb_mgga_x_revscan0_init, NULL,
   NULL, NULL, NULL /* this is taken care of by the generic routine */
 };
+
+#pragma omp end declare target

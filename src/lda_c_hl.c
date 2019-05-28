@@ -12,6 +12,8 @@
 #define XC_LDA_C_GL   5   /* Gunnarson & Lundqvist        */
 #define XC_LDA_C_vBH 17   /* von Barth & Hedin            */
 
+#pragma omp declare target
+
 typedef struct {
   double r[2], c[2];
 } lda_c_hl_params;
@@ -94,3 +96,4 @@ const xc_func_info_type xc_func_info_lda_c_vbh = {
   lda_c_hl_init, NULL,
   work_lda, NULL, NULL
 };
+#pragma omp end declare target

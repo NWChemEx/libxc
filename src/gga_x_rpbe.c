@@ -10,6 +10,7 @@
 
 #define XC_GGA_X_RPBE  117 /* Hammer, Hansen & Norskov (PBE-like) */
 
+#pragma omp declare target
 
 typedef struct{
   double rpbe_kappa, rpbe_mu;
@@ -55,3 +56,5 @@ const xc_func_info_type xc_func_info_gga_x_rpbe = {
   gga_x_rpbe_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

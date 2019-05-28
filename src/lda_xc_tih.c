@@ -10,6 +10,8 @@
 
 #define XC_LDA_XC_TIH   599   /* Neural network LDA from Tozer et al */
 
+#pragma omp declare target
+
 #include "maple2c/lda_vxc/lda_xc_tih.c"
 #define XC_NO_EXC
 #include "work_lda_new.c"
@@ -26,3 +28,5 @@ const xc_func_info_type xc_func_info_lda_xc_tih = {
   NULL, NULL,
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

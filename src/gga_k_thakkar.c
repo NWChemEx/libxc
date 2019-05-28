@@ -10,6 +10,8 @@
 
 #define XC_GGA_K_THAKKAR      523 /* Thakkar 1992 */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_k_thakkar.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_k_thakkar = {
   NULL, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

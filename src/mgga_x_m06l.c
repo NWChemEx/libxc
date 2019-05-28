@@ -14,6 +14,8 @@
 #define XC_HYB_MGGA_X_M06       449 /* M06 hybrid exchange functional from Minnesota     */
 #define XC_MGGA_X_REVM06_L      293 /* revised M06-L exchange functional from Minnesota  */
 
+#pragma omp declare target
+
 static const double a_m06l[12] = {
   0.3987756, 0.2548219, 0.3923994, -2.103655, -6.302147, 10.97615,
   30.97273,  -23.18489, -56.73480, 21.60364, 34.21814, -9.049762
@@ -131,3 +133,5 @@ const xc_func_info_type xc_func_info_mgga_x_revm06_l = {
   mgga_x_m06l_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

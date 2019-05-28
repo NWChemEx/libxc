@@ -13,6 +13,8 @@
 #define XC_MGGA_C_M05_2X        238 /* M05-2X correlation functional from Minnesota  */
 #define XC_MGGA_C_DLDF           37 /* Dispersionless Density Functional             */
 
+#pragma omp declare target
+
 typedef struct{
   double gamma_ss, gamma_ab;
   const double css[5], cab[5];
@@ -122,3 +124,5 @@ const xc_func_info_type xc_func_info_mgga_c_dldf = {
   mgga_c_vsxc_init, NULL,
   NULL, NULL, work_mgga
 };
+
+#pragma omp end declare target

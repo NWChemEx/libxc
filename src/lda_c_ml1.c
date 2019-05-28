@@ -12,6 +12,8 @@
 #define XC_LDA_C_ML1    22   /* Modified LSD (version 1) of Proynov and Salahub */
 #define XC_LDA_C_ML2    23   /* Modified LSD (version 2) of Proynov and Salahub */
 
+#pragma omp declare target
+
 typedef struct {
   double fc, q;
 } lda_c_ml1_params;
@@ -68,3 +70,4 @@ const xc_func_info_type xc_func_info_lda_c_ml2 = {
   lda_c_ml1_init, NULL,
   work_lda, NULL, NULL
 };
+#pragma omp end declare target

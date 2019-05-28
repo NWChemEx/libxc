@@ -14,6 +14,8 @@
 #define XC_GGA_X_EB88         271 /* Non-empirical (excogitated) B88 functional of Becke and Elliott */
 #define XC_GGA_X_B88M         570 /* Becke 88 reoptimized to be used with mgga_c_tau1 */
 
+#pragma omp declare target
+
 typedef struct{
   double beta, gamma;
 } gga_x_b88_params;
@@ -140,3 +142,5 @@ const xc_func_info_type xc_func_info_gga_x_b88m = {
   gga_x_b88_init,  NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

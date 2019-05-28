@@ -15,6 +15,8 @@
    Akinaga, Ten-no, Chem. Phys. Lett. 462 (2008) 348-351
 */
 
+#pragma omp declare target
+
 static const func_params_type ext_params[] = {
   {"_omega", 0.44, "Screening parameter"},
 };
@@ -40,4 +42,6 @@ const xc_func_info_type xc_func_info_gga_x_sfat = {
   NULL, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target
 

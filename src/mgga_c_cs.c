@@ -11,6 +11,8 @@
 
 #define XC_MGGA_C_CS          72 /* Colle and Salvetti */
 
+#pragma omp declare target
+
 /*
     [1] Eq. (15) in http://dx.doi.org/10.1103/PhysRevB.37.785
     [2] CS2 in http://www.molpro.net/info/2012.1/doc/manual/node192.html
@@ -36,3 +38,5 @@ const xc_func_info_type xc_func_info_mgga_c_cs = {
   NULL, NULL, 
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

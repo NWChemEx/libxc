@@ -14,6 +14,8 @@
 #define XC_MGGA_X_MN15_L        260 /* MN15-L exhange functional from Minnesota           */
 #define XC_HYB_MGGA_X_MN15      268 /* MN15 hybrid exchange functional from Minnesota     */
 
+#pragma omp declare target
+
 typedef struct{
   const double c[40];
 } mgga_x_mn12_params;
@@ -171,3 +173,5 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_mn15 = {
   mgga_x_mn12_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

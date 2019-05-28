@@ -11,6 +11,7 @@
 #define XC_GGA_K_APBEINT       54 /* interpolated version of APBE                   */
 #define XC_GGA_K_REVAPBEINT    53 /* interpolated version of REVAPBE                */
 
+#pragma omp declare target
 
 typedef struct{
   double kappa, alpha, muPBE, muGE;
@@ -73,3 +74,5 @@ const xc_func_info_type xc_func_info_gga_k_revapbeint = {
   gga_k_apbe_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -13,6 +13,8 @@
 #define XC_HYB_MGGA_X_BMK         279 /* Boese-Martin for kinetics     */
 #define XC_HYB_MGGA_X_TAU_HCTH    282 /* Hybrid version of tau-HCTH    */
 
+#pragma omp declare target
+
 const double tHCTH_cx_local [4] = {1.10734, -1.0534, 6.3491, -2.5531};
 const double tHCTH_cx_nlocal[4] = {0.00110, -0.3041, 6.9543, -0.7235};
 
@@ -102,3 +104,5 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_tau_hcth = {
   mgga_x_tau_hcth_init,  NULL, 
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

@@ -11,6 +11,8 @@
 
 #define XC_LDA_K_GDS08_WORKER 100001   /* Combined analytical theory with Monte Carlo sampling */
 
+#pragma omp declare target
+
 typedef struct {
   double A, B, C;
 } lda_k_gds08_params;
@@ -56,3 +58,5 @@ const xc_func_info_type xc_func_info_lda_k_gds08_worker = {
   lda_k_gds08_init, NULL,
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

@@ -11,6 +11,8 @@
 
 #define XC_MGGA_X_M11_L        226 /* M11-L exchange functional from Minnesota  */
 
+#pragma omp declare target
+
 typedef struct{
   const double a[12], b[21], c[12], d[12];
 } mgga_x_m11_l_params;
@@ -66,3 +68,5 @@ const xc_func_info_type xc_func_info_mgga_x_m11_l = {
   mgga_x_m11_l_init, NULL, 
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

@@ -11,6 +11,8 @@
 
 #define XC_GGA_C_AM05          135 /* Armiento & Mattsson 05 correlation             */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_c_am05.c"
 #include "work_gga_new.c"
 
@@ -26,3 +28,5 @@ const xc_func_info_type xc_func_info_gga_c_am05 = {
   NULL, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

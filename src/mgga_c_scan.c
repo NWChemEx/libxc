@@ -13,6 +13,8 @@
 #define XC_MGGA_C_SCAN_RVV10    292 /* SCAN correlation + rVV10 correlation */
 #define XC_MGGA_C_SCAN_VV10     584 /* SCAN correlation +  VV10 correlation */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_c_scan.c"
 #include "work_mgga_new.c"
 
@@ -79,3 +81,5 @@ const xc_func_info_type xc_func_info_mgga_c_scan_vv10 = {
   mgga_c_scan_vv10_init, NULL,
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

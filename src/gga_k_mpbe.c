@@ -11,6 +11,8 @@
 #define XC_GGA_K_PBE3         595 /* Three parameter PBE-like expansion             */
 #define XC_GGA_K_PBE4         596 /* Four  parameter PBE-like expansion             */
 
+#pragma omp declare target
+
 typedef struct{
   double a;
   double c1, c2, c3;
@@ -74,3 +76,5 @@ const xc_func_info_type xc_func_info_gga_k_pbe4 = {
   gga_k_mpbe_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

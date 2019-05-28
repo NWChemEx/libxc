@@ -12,6 +12,8 @@
 #define XC_MGGA_C_TPSS          231 /* Tao, Perdew, Staroverov & Scuseria correlation */
 #define XC_MGGA_C_TM            251 /* Tao and Mo 2016 correlation */
 
+#pragma omp declare target
+
 typedef struct{
   double beta, d;
   double C0_c[4];
@@ -95,3 +97,5 @@ const xc_func_info_type xc_func_info_mgga_c_tm = {
   mgga_c_tpss_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

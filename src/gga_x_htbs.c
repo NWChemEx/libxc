@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_HTBS         191 /* Haas, Tran, Blaha, and Schwarz  */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_x_htbs.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_x_htbs = {
   NULL, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

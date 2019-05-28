@@ -12,6 +12,8 @@
 #define XC_GGA_X_BEEFVDW          285 /* BEEF-vdW exchange */
 #define XC_GGA_XC_BEEFVDW         286 /* BEEF-vdW exchange-correlation */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_x_beefvdw.c"
 #include "work_gga_new.c"
 
@@ -51,3 +53,5 @@ const xc_func_info_type xc_func_info_gga_xc_beefvdw = {
   gga_xc_beefvdw_init, NULL, 
   NULL, NULL, NULL,
 };
+
+#pragma omp end declare target

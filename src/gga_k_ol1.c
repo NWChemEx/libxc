@@ -10,6 +10,8 @@
 
 #define XC_GGA_K_OL1          512 /* Ou-Yang and Levy v.1 */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_k_ol1.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_k_ol1 = {
   NULL, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

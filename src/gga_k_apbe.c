@@ -15,6 +15,7 @@
 #define XC_GGA_K_TW4          190 /* Tran and Wesolowski set 4 (Table II)           */
 #define XC_GGA_K_REVAPBE       55 /* revised APBE                                   */
 
+#pragma omp declare target
 
 typedef struct{
   double kappa, mu;
@@ -144,3 +145,5 @@ const xc_func_info_type xc_func_info_gga_k_tw4 = {
   gga_k_apbe_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

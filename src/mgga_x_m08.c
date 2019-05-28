@@ -12,6 +12,8 @@
 #define XC_HYB_MGGA_X_M08_HX   295 /* M08-HX exchange functional from Minnesota  */
 #define XC_HYB_MGGA_X_M08_SO   296 /* M08-SO exchange functional from Minnesota  */
 
+#pragma omp declare target
+
 typedef struct{
   const double a[12], b[12];
 } mgga_x_m08_params;
@@ -90,3 +92,5 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m08_so = {
   mgga_x_m08_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

@@ -15,6 +15,8 @@
 
 #define XC_LDA_C_VWN      7   /* Vosko, Wilk, & Nusair (5)   */
 
+#pragma omp declare target
+
 #include "maple2c/lda_exc/lda_c_vwn.c"
 #include "work_lda_new.c"
 
@@ -31,4 +33,4 @@ const xc_func_info_type xc_func_info_lda_c_vwn = {
   work_lda, NULL, NULL
 };
 
-
+#pragma omp end declare target

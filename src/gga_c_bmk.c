@@ -15,6 +15,8 @@
 #define XC_GGA_C_TAU_HCTH     281 /* correlation part of tau-hcth             */
 #define XC_GGA_C_HYB_TAU_HCTH 283 /* correlation part of hyb_tau-hcth         */
 
+#pragma omp declare target
+
 typedef struct {
   double c_ss[5], c_ab[5];
 } gga_c_bmk_params;
@@ -166,3 +168,5 @@ const xc_func_info_type xc_func_info_gga_c_hyb_tau_hcth = {
   gga_c_bmk_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

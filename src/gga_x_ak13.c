@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_AK13  56 /* Armiento & Kuemmel 2013 */
 
+#pragma omp declare target
+
 static const double ak13_B1 =  1.74959015598863046792081721182; /* 3*muGE/5 + 8 pi/15 */
 static const double ak13_B2 = -1.62613336586517367779736042170; /* muGE - B1 */
 
@@ -44,3 +46,4 @@ const xc_func_info_type xc_func_info_gga_x_ak13 = {
   NULL, work_gga, NULL
 };
 
+#pragma omp end declare target

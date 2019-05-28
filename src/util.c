@@ -12,6 +12,9 @@
 
 /* this function converts the spin-density into total density and
 	 relative magnetization */
+
+#pragma omp declare target
+
 /* inline */ void
 xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta)
 {
@@ -377,3 +380,4 @@ internal_counters_mgga_prev
     *v3tau3         -= dim->v3tau3         + offset;
   }
 }
+#pragma omp end declare target

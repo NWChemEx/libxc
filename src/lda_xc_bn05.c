@@ -10,6 +10,8 @@
 
 #define XC_LDA_XC_BN05   588   /* Baer and Neuhauser, gamma=1 */
 
+#pragma omp declare target
+
 #include "maple2c/lda_exc/lda_xc_bn05.c"
 #include "work_lda_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_lda_xc_bn05 = {
   NULL, NULL,
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

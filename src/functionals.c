@@ -16,6 +16,7 @@
 #include <strings.h>
 #endif
 
+#pragma omp declare target
 extern xc_func_info_type 
   *xc_lda_known_funct[], 
   *xc_gga_known_funct[],
@@ -337,3 +338,4 @@ void xc_nlc_coef(const xc_func_type *p, double *nlc_b, double *nlc_C)
   *nlc_b = p->nlc_b;
   *nlc_C = p->nlc_C;
 }
+#pragma omp end declare target

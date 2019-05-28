@@ -10,6 +10,8 @@
 
 #define XC_MGGA_X_TM          540 /* Tao and Mo 2016 exchange */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_x_tm.c"
 #include "work_mgga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_mgga_x_tm = {
   NULL, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

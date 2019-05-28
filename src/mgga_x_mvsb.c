@@ -12,6 +12,8 @@
 #define XC_MGGA_X_MVSB          302 /* MVSBeta exchange of Furness and Sun */
 #define XC_MGGA_X_MVSBS         303 /* MVSBeta* exchange of Furness and Sun */
 
+#pragma omp declare target
+
 typedef struct {
   double e1, c1, k0, b;
 } mgga_x_mvsb_params;
@@ -91,3 +93,5 @@ const xc_func_info_type xc_func_info_mgga_x_mvsbs = {
   mgga_x_mvsb_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

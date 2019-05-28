@@ -11,6 +11,8 @@
 
 #define XC_MGGA_XC_B97M_V        254 /* Mardirossian and Head-Gordon */
 
+#pragma omp declare target
+
 static void
 mgga_xc_b97mv_init(xc_func_type *p)
 {
@@ -34,3 +36,5 @@ const xc_func_info_type xc_func_info_mgga_xc_b97m_v = {
   mgga_xc_b97mv_init, NULL, 
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

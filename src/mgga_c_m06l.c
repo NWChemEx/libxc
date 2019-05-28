@@ -15,6 +15,8 @@
 #define XC_MGGA_C_M06_2X        236 /* M06-2X correlation functional from Minnesota         */
 #define XC_MGGA_C_REVM06_L      294 /* Revised M06-L correlation functional from Minnesota  */
 
+#pragma omp declare target
+
 typedef struct{
   double gamma_ss, gamma_ab, alpha_ss, alpha_ab;
   const double css[5], cab[5], dss[6], dab[6];
@@ -187,3 +189,5 @@ const xc_func_info_type xc_func_info_mgga_c_revm06_l = {
   mgga_c_m06l_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

@@ -10,6 +10,7 @@
 
 #define XC_LDA_C_1D_CSC          18 /* Casula, Sorella, and Senatore 1D correlation     */
 
+#pragma omp declare target
 typedef struct{
   int interaction;  /* 0: exponentially screened; 1: soft-Coulomb */
   double bb;         /* screening parameter */
@@ -115,3 +116,4 @@ const xc_func_info_type xc_func_info_lda_c_1d_csc = {
   lda_c_1d_csc_init, NULL,
   work_lda, NULL, NULL
 };
+#pragma omp end declare target

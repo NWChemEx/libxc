@@ -16,6 +16,8 @@
 #define XC_MGGA_X_RPP09        209 /* Rasanen, Pittalis, and Proetto correction to Becke & Johnson  */
 #define XC_MGGA_X_B00          284 /* Becke 2000 */
 
+#pragma omp declare target
+
 typedef struct xc_mgga_work_x_t {
   int   order; /* to which order should I return the derivatives */
   double rs, zeta, x, t, u;
@@ -380,3 +382,5 @@ const xc_func_info_type xc_func_info_mgga_x_b00 = {
   mgga_x_tb09_init, NULL,
   NULL, NULL, work_mgga_x,
 };
+
+#pragma omp end declare target

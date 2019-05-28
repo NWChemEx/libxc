@@ -18,6 +18,7 @@
 
    Based on the SLATEC routine by W. Fullerton and on the GSL.
 */
+#pragma omp declare target
 static double AE11_data[39] = {
    0.121503239716065790, -0.065088778513550150,  0.004897651357459670, -0.000649237843027216,  0.000093840434587471,
    0.000000420236380882, -0.000008113374735904,  0.000002804247688663,  0.000000056487164441, -0.000000344809174450,
@@ -105,4 +106,4 @@ double xc_expint_e1_impl(double x, const int scale){
 
   return e1;
 }
-
+#pragma omp end declare target

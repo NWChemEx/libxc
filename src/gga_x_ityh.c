@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_ITYH 529 /* short-range recipe B88 functionals - erf */
 
+#pragma omp declare target
+
 static const func_params_type ext_params[] = {
   {"_omega", 0.2, "Screening parameter"},
 };
@@ -35,3 +37,5 @@ const xc_func_info_type xc_func_info_gga_x_ityh = {
   NULL, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -11,6 +11,8 @@
 
 #define XC_LDA_C_RC04          27 /* Ragot-Cortona */
 
+#pragma omp declare target
+
 #include "maple2c/lda_exc/lda_c_rc04.c"
 #include "work_lda_new.c"
 
@@ -27,3 +29,4 @@ const xc_func_info_type xc_func_info_lda_c_rc04 = {
   work_lda, NULL, NULL
 };
 
+#pragma omp end declare target

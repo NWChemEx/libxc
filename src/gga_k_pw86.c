@@ -10,6 +10,8 @@
 
 #define XC_GGA_K_FR_PW86      515 /* Fuentealba & Reyes (PW86 version) */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_k_pw86.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_k_fr_pw86 = {
   NULL, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

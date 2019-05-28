@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_EV93  35 /* Engel and Vosko */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_x_ev93.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_x_ev93 = {
   NULL, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

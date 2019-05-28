@@ -12,6 +12,8 @@
 #define XC_GGA_C_WI0 153 /* Wilson & Ivanov initial version */
 #define XC_GGA_C_WI  148 /* Wilson & Ivanov */
 
+#pragma omp declare target
+
 typedef struct {
   double a, b, c, d, k;
 } gga_c_wi_params;
@@ -74,3 +76,5 @@ const xc_func_info_type xc_func_info_gga_c_wi = {
   gga_c_wi_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

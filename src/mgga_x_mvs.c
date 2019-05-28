@@ -11,6 +11,8 @@
 
 #define XC_MGGA_X_MVS          257 /* MVS exchange of Sun, Perdew, and Ruzsinszky */
 
+#pragma omp declare target
+
 typedef struct {
   double e1, c1, k0, b;
 } mgga_x_mvs_params;
@@ -70,3 +72,5 @@ const xc_func_info_type xc_func_info_mgga_x_mvs = {
   mgga_x_mvs_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

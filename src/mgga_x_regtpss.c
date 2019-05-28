@@ -10,6 +10,8 @@
 
 #define XC_MGGA_X_REGTPSS          603 /* Regularized TPSS */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_x_regtpss.c"
 #include "work_mgga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_mgga_x_regtpss = {
   NULL, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

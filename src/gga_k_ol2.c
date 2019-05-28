@@ -10,6 +10,8 @@
 
 #define XC_GGA_K_OL2          513 /* Ou-Yang and Levy v.2 */
 
+#pragma omp declare target
+
 typedef struct{
   double aa, bb, cc;
 } gga_k_ol2_params;
@@ -47,3 +49,5 @@ const xc_func_info_type xc_func_info_gga_k_ol2 = {
   gga_k_ol2_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

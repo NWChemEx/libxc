@@ -13,6 +13,7 @@
 
 #include "config.h"
 
+#pragma omp declare target
 #ifdef HAVE_FORTRAN
 
 #include "xc.h"
@@ -463,3 +464,4 @@ void FC_FUNC(xc_f90_mgga_kxc, XC_F90_MGGA_KXC)
           );
 }
 #endif
+#pragma omp end declare target

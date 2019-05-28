@@ -15,6 +15,8 @@
 #define XC_GGA_X_SOGGA        150 /* Second-order generalized gradient approximation */
 #define XC_GGA_XC_LB07   589   /* Livshits and Baer, empirical functional */
 
+#pragma omp declare target
+
 static void
 gga_xc_edf1_init(xc_func_type *p)
 {
@@ -176,3 +178,5 @@ const xc_func_info_type xc_func_info_gga_xc_lb07 = {
   gga_xc_lb07_init, NULL,
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

@@ -13,6 +13,8 @@
 #define XC_GGA_X_HJS_B88     527 /* HJS screened exchange B88 version */
 #define XC_GGA_X_HJS_B97X    528 /* HJS screened exchange B97x version */
 
+#pragma omp declare target
+
 typedef struct{
   double omega;
 
@@ -151,3 +153,5 @@ const xc_func_info_type xc_func_info_gga_x_hjs_b97x = {
   gga_x_hjs_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

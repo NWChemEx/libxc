@@ -15,6 +15,8 @@
 
 #define XC_LDA_K_ZLP     550   /* kinetic energy version of ZLP */
 
+#pragma omp declare target
+
 #include "maple2c/lda_exc/lda_k_zlp.c"
 #include "work_lda_new.c"
 
@@ -30,3 +32,5 @@ const xc_func_info_type xc_func_info_lda_k_zlp = {
   NULL, NULL,
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

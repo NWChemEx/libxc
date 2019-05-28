@@ -11,6 +11,8 @@
 
 #define XC_MGGA_XC_LP90          564 /* Lee & Parr, Eq. (56) */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_xc_lp90.c"
 #include "work_mgga_new.c"
 
@@ -26,3 +28,5 @@ const xc_func_info_type xc_func_info_mgga_xc_lp90 = {
   NULL, NULL, 
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

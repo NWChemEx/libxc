@@ -14,6 +14,8 @@
 
 #define XC_LDA_C_GOMBAS  24   /* Gombas parametrization       */
 
+#pragma omp declare target
+
 #include "maple2c/lda_exc/lda_c_gombas.c"
 #include "work_lda_new.c"
 
@@ -29,3 +31,4 @@ const xc_func_info_type xc_func_info_lda_c_gombas = {
   NULL, NULL,
   work_lda, NULL, NULL
 };
+#pragma omp end declare target

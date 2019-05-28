@@ -12,6 +12,8 @@
 #define XC_GGA_XC_OPWLYP_D      66  /* oPWLYP-D functional of Goerigk and Grimme */
 #define XC_GGA_XC_OPBE_D        65  /* oPBE_D functional of Goerigk and Grimme   */
 
+#pragma omp declare target
+
 static void
 gga_xc_oblyp_d_init(xc_func_type *p)
 {
@@ -95,3 +97,4 @@ const xc_func_info_type xc_func_info_gga_xc_opbe_d = {
   NULL, NULL, NULL, NULL
 };
 
+#pragma omp end declare target

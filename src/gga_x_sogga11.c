@@ -11,6 +11,8 @@
 #define XC_GGA_X_SOGGA11        151 /* Second-order generalized gradient approximation 2011 */
 #define XC_HYB_GGA_X_SOGGA11_X  426 /* Hybrid based on SOGGA11 form */
 
+#pragma omp declare target
+
 typedef struct{
   double kappa, mu, a[6], b[6];
 } gga_x_sogga11_params;
@@ -80,3 +82,5 @@ const xc_func_info_type xc_func_info_hyb_gga_x_sogga11_x = {
   gga_x_sogga11_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

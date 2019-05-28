@@ -11,6 +11,8 @@
 
 #define XC_GGA_X_LSPBE        168 /* PW91-like exchange with simple analytical form */
 
+#pragma omp declare target
+
 typedef struct{
   double kappa; /* PBE kappa parameter */
   double mu;    /* PBE mu parameter */
@@ -74,3 +76,5 @@ const xc_func_info_type xc_func_info_gga_x_lspbe = {
   gga_x_lspbe_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

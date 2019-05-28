@@ -10,6 +10,8 @@
 
 #define XC_GGA_C_CS1          565 /* A dynamical correlation functional */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_c_cs1.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_c_cs1 = {
   NULL, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -11,6 +11,8 @@
 #define XC_GGA_X_FT97_A       114 /* Filatov & Thiel 97 (version A) */
 #define XC_GGA_X_FT97_B       115 /* Filatov & Thiel 97 (version B) */
 
+#pragma omp declare target
+
 typedef struct{
   double beta0, beta1, beta2;
 } gga_x_ft97_params;
@@ -76,3 +78,5 @@ const xc_func_info_type xc_func_info_gga_x_ft97_b = {
   gga_x_ft97_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

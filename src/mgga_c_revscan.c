@@ -12,6 +12,8 @@
 #define XC_MGGA_C_REVSCAN       582 /* revised SCAN correlation */
 #define XC_MGGA_C_REVSCAN_VV10  585 /* revised SCAN correlation */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_c_revscan.c"
 #include "work_mgga_new.c"
 
@@ -52,3 +54,5 @@ const xc_func_info_type xc_func_info_mgga_c_revscan_vv10 = {
   mgga_c_revscan_vv10_init, NULL,
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

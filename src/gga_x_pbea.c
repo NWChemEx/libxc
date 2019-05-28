@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_PBEA  121 /* Madsen (PBE-like) */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_x_pbea.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_x_pbea = {
   NULL, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

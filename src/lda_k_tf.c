@@ -12,6 +12,8 @@
 #define XC_LDA_K_TF      50   /* Thomas-Fermi kinetic energy functional */
 #define XC_LDA_K_LP      51   /* Lee and Parr Gaussian ansatz           */
 
+#pragma omp declare target
+
 typedef struct {
   double ax;
 } lda_k_tf_params;
@@ -69,3 +71,4 @@ const xc_func_info_type xc_func_info_lda_k_lp = {
   work_lda, NULL, NULL
 };
 
+#pragma omp end declare target

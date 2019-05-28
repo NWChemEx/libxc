@@ -11,6 +11,8 @@
 #define XC_GGA_X_VMT_PBE          71 /* Vela, Medel, and Trickey with mu = mu_PBE */
 #define XC_GGA_X_VMT_GE           70 /* Vela, Medel, and Trickey with mu = mu_GE  */
 
+#pragma omp declare target
+
 typedef struct{
   double mu;
   double alpha;
@@ -70,3 +72,5 @@ const xc_func_info_type xc_func_info_gga_x_vmt_ge = {
   gga_x_vmt_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

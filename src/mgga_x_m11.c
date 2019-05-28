@@ -13,6 +13,8 @@
 #define XC_HYB_MGGA_X_M11       297 /* M11 hybrid exchange functional from Minnesota        */
 #define XC_HYB_MGGA_X_REVM11    304 /* revM11 hybrid exchange functional from Minnesota     */
 
+#pragma omp declare target
+
 typedef struct{
   const double a[12], b[12];
 } mgga_x_m11_params;
@@ -93,3 +95,5 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_revm11 = {
   mgga_x_m11_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

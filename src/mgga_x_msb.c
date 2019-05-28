@@ -13,6 +13,8 @@
 #define XC_MGGA_X_MS2B          300  /* MS2beta exchange by Furness and Sun */
 #define XC_MGGA_X_MS2BS         301  /* MS2beta* exchange by Furness and Sun */
 
+#pragma omp declare target
+
 typedef struct{
   double kappa, c, b;
 } mgga_x_msb_params;
@@ -71,3 +73,5 @@ const xc_func_info_type xc_func_info_mgga_x_ms2bs = {
   mgga_x_msb_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

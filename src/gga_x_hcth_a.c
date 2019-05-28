@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_HCTH_A          34 /* HCTH-A */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_x_hcth_a.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_x_hcth_a = {
   NULL, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

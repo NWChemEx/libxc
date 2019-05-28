@@ -11,6 +11,8 @@
 #define XC_GGA_X_VMT84_PBE        69 /* VMT{8,4} with constraint satisfaction with mu = mu_PBE  */
 #define XC_GGA_X_VMT84_GE         68 /* VMT{8,4} with constraint satisfaction with mu = mu_GE  */
 
+#pragma omp declare target
+
 typedef struct{
   double mu;
   double alpha;
@@ -68,3 +70,5 @@ const xc_func_info_type xc_func_info_gga_x_vmt84_ge = {
   gga_x_vmt84_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

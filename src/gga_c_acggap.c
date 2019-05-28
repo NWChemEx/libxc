@@ -11,6 +11,8 @@
 
 #define XC_GGA_C_ACGGAP           176 /* Asymptotically corrected GGA +  */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_c_acggap.c"
 #include "work_gga_new.c"
 
@@ -26,3 +28,5 @@ const xc_func_info_type xc_func_info_gga_c_acggap = {
   NULL, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

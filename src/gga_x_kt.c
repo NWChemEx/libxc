@@ -13,6 +13,8 @@
 #define XC_GGA_XC_KT2         146 /* Keal and Tozer version 2                  */
 #define XC_GGA_XC_KT3         587 /* Keal and Tozer version 3                  */
 
+#pragma omp declare target
+
 typedef struct{
   double gamma, delta;
 } gga_x_kt_params;
@@ -140,3 +142,5 @@ const xc_func_info_type xc_func_info_gga_xc_kt3 = {
   gga_xc_kt3_init, NULL, 
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

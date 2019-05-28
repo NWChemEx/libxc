@@ -12,6 +12,8 @@
 #define XC_GGA_X_SSB          91  /* Swart, Sola and Bickelhaupt  */
 #define XC_GGA_X_SSB_D        92  /* Swart, Sola and Bickelhaupt dispersion  */
 
+#pragma omp declare target
+
 typedef struct{
   double A, B, C, D, E;
 } gga_x_ssb_sw_params;
@@ -127,4 +129,4 @@ const xc_func_info_type xc_func_info_gga_x_ssb_d = {
   NULL, NULL, NULL
 };
 
-
+#pragma omp end declare target

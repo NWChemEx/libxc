@@ -12,6 +12,8 @@
 #define XC_GGA_X_FD_LB94     604 /* Functional derivative recovered from the stray LB94 potential */
 #define XC_GGA_X_FD_REVLB94  605 /* Revised FD_LB94 */
 
+#pragma omp declare target
+
 typedef struct{
   double beta;         /* screening parameter beta */
 } gga_x_fd_lb94_params;
@@ -94,3 +96,5 @@ const xc_func_info_type xc_func_info_gga_x_fd_revlb94 = {
   gga_x_fd_lb94_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

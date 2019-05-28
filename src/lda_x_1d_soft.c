@@ -11,6 +11,8 @@
 
 #define XC_LDA_X_1D_SOFT  21 /* Exchange in 1D for a soft-Coulomb interaction */
 
+#pragma omp declare target
+
 typedef struct{
   double beta;         /* screening parameter beta */
 } lda_x_1d_exponential_params;
@@ -73,3 +75,5 @@ const xc_func_info_type xc_func_info_lda_x_1d_soft = {
   lda_x_1d_exponential_init, NULL,
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_LV_RPW86 58 /* Berland and Hyldgaard */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_x_lv_rpw86.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_x_lv_rpw86 = {
   NULL, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

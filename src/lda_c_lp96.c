@@ -11,6 +11,8 @@
 #define XC_LDA_C_LP96      289   /* Liu-Parr correlation */
 #define XC_LDA_K_LP96      580   /* Liu-Parr kinetic */
 
+#pragma omp declare target
+
 typedef struct {
   double C1, C2, C3;
 } lda_c_lp96_params;
@@ -68,3 +70,4 @@ const xc_func_info_type xc_func_info_lda_k_lp96 = {
   lda_c_lp96_init, NULL,
   work_lda, NULL, NULL
 };
+#pragma omp end declare target

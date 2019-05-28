@@ -11,6 +11,8 @@
 
 #define XC_MGGA_C_VSXC          232 /* VSxc from Van Voorhis and Scuseria (correlation part) */
 
+#pragma omp declare target
+
 typedef struct{
   const double alpha_ss, alpha_ab;
   const double dss[6], dab[6];
@@ -56,3 +58,5 @@ const xc_func_info_type xc_func_info_mgga_c_vsxc = {
   mgga_c_vsxc_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

@@ -8,7 +8,7 @@
 
 #include <xc.h>
 
-
+#pragma omp declare target
 char const *xc_func_reference_get_ref(const func_reference_type *reference)
 {
     return reference->ref;
@@ -23,3 +23,4 @@ char const *xc_func_reference_get_bibtex(const func_reference_type *reference)
 {
     return reference->bibtex;
 }
+#pragma omp end declare target

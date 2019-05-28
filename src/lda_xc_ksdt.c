@@ -19,6 +19,8 @@
 #define XC_LDA_XC_KSDT    259    /* Karasiev et al. parametrization */
 #define XC_LDA_XC_GDSMFB  577    /* Groth et al. parametrization */
 
+#pragma omp declare target
+
 typedef struct{
   double T;            /* In units of k_B */
   double thetaParam;  /* This takes into account the difference between t and theta_0 */
@@ -130,3 +132,5 @@ const xc_func_info_type xc_func_info_lda_xc_gdsmfb = {
   lda_xc_ksdt_init, NULL,
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

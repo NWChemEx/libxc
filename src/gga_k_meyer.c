@@ -10,6 +10,8 @@
 
 #define XC_GGA_K_MEYER        57 /* Meyer,  Wang, and Young */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_k_meyer.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_k_meyer = {
   NULL, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

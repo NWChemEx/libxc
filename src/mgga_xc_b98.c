@@ -11,6 +11,8 @@
 
 #define XC_HYB_MGGA_XC_B98         598 /* Becke 98 */
 
+#pragma omp declare target
+
 static void
 hyb_mgga_xc_b98_init(xc_func_type *p)
 {
@@ -33,3 +35,4 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b98 = {
   NULL, NULL, work_mgga,
 };
 
+#pragma omp end declare target

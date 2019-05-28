@@ -21,6 +21,8 @@
 #define XC_GGA_X_LB  160 /* van Leeuwen & Baerends */
 #define XC_GGA_X_LBM 182 /* van Leeuwen & Baerends modified*/
 
+#pragma omp declare target
+
 typedef struct{
   int    modified; /* shall we use a modified version */
   double threshold; /* when to start using the analytic form */
@@ -198,3 +200,4 @@ const xc_func_info_type xc_func_info_gga_x_lbm = {
   NULL, gga_x_lb, NULL
 };
 
+#pragma omp end declare target

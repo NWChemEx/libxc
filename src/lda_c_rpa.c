@@ -14,6 +14,8 @@
 
 #define XC_LDA_C_RPA  3   /* Random Phase Approximation   */
 
+#pragma omp declare target
+
 #include "maple2c/lda_exc/lda_c_rpa.c"
 #include "work_lda_new.c"
 
@@ -29,3 +31,5 @@ const xc_func_info_type xc_func_info_lda_c_rpa = {
   NULL, NULL,
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

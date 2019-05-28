@@ -10,6 +10,8 @@
 
 #define XC_GGA_C_PBELOC       246 /* Semilocal dynamical correlation                    */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_c_pbeloc.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_c_pbeloc = {
   NULL, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

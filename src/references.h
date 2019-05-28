@@ -13,6 +13,8 @@
 
 #include <xc.h>
 
+#pragma omp declare target
+
 extern func_reference_type xc_ref_Dirac1930_376;
 extern func_reference_type xc_ref_Bloch1929_545;
 extern func_reference_type xc_ref_Helbig2011_032503;
@@ -339,3 +341,5 @@ extern func_reference_type xc_ref_Kurth1999_889;
 extern func_reference_type xc_ref_Ruzsinszky2012_2078;
 extern func_reference_type xc_ref_Fabiano2015_122;
 extern func_reference_type xc_ref_Gaiduk2011_012509;
+
+#pragma omp end declare target

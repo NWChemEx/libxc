@@ -11,6 +11,8 @@
 #define XC_GGA_C_ZPBEINT       61 /* spin-dependent gradient correction to PBEint       */
 #define XC_GGA_C_ZPBESOL       63 /* spin-dependent gradient correction to PBEsol       */
 
+#pragma omp declare target
+
 typedef struct{
   double beta, alpha;
 } gga_c_zpbeint_params;
@@ -67,3 +69,5 @@ const xc_func_info_type xc_func_info_gga_c_zpbesol = {
   gga_c_zpbeint_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_MPBE         122 /* Adamo & Barone modification to PBE             */
 
+#pragma omp declare target
+
 typedef struct{
   double a;
   double c1, c2, c3;
@@ -54,3 +56,5 @@ const xc_func_info_type xc_func_info_gga_x_mpbe = {
   gga_x_mpbe_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

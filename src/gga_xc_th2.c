@@ -10,6 +10,8 @@
 
 #define XC_GGA_XC_TH2          155 /* Tozer and Handy v. 2 */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_xc_th2.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_xc_th2 = {
   NULL, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -25,6 +25,8 @@ the constants of PW.
 #define XC_LDA_C_OB_PW  14   /* Ortiz & Ballone (PW)         */
 #define XC_LDA_C_PW_RPA 25   /* Perdew & Wang fit of the RPA */
 
+#pragma omp declare target
+
 typedef struct {
   double pp[3], a[3], alpha1[3];
   double beta1[3], beta2[3], beta3[3], beta4[3];
@@ -169,3 +171,4 @@ const xc_func_info_type xc_func_info_lda_c_pw_rpa = {
   NULL,
   NULL
 };
+#pragma omp end declare target

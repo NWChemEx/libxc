@@ -13,6 +13,7 @@
 #define XC_GGA_K_GHDS10R   593 /* Reparametrized GHDS10 */
 #define XC_GGA_K_TKVLN     594 /* Trickey, Karasiev, and Vela */
 
+#pragma omp declare target
 
 static void
 gga_k_gds08_init(xc_func_type *p)
@@ -113,3 +114,5 @@ const xc_func_info_type xc_func_info_gga_k_tkvln = {
   gga_k_tkvln_init, NULL,
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

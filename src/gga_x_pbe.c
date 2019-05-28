@@ -23,6 +23,8 @@
 #define XC_GGA_X_BCGP          38 /* Burke, Cancio, Gould, and Pittalis             */
 #define XC_GGA_X_PBEFE        265 /* PBE for formation energies                     */
 
+#pragma omp declare target
+
 typedef struct{
   double kappa, mu;
   double lambda;   /* parameter used in the Odashima & Capelle versions */
@@ -330,3 +332,5 @@ const xc_func_info_type xc_func_info_gga_x_pbefe = {
   gga_x_pbe_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

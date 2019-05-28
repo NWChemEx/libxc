@@ -10,6 +10,8 @@
 
 #define XC_MGGA_XC_OTPSS_D      64  /* oTPSS_D functional of Goerigk and Grimme   */
 
+#pragma omp declare target
+
 static void
 mgga_xc_otpss_d_init(xc_func_type *p)
 {
@@ -36,3 +38,5 @@ const xc_func_info_type xc_func_info_mgga_xc_otpss_d = {
   mgga_xc_otpss_d_init,
   NULL, NULL, NULL, NULL
 };
+
+#pragma omp end declare target

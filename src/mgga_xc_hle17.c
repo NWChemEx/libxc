@@ -10,6 +10,8 @@
 
 #define XC_MGGA_XC_HLE17      288  /* high local exchange 2017   */
 
+#pragma omp declare target
+
 static void
 mgga_xc_hle17_init(xc_func_type *p)
 {
@@ -31,3 +33,5 @@ const xc_func_info_type xc_func_info_mgga_xc_hle17 = {
   mgga_xc_hle17_init,
   NULL, NULL, NULL, NULL
 };
+
+#pragma omp end declare target

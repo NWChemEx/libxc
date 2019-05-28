@@ -11,6 +11,8 @@
 
 #define XC_MGGA_XC_ZLP          42 /* Zhao, Levy & Parr, Eq. (21) */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_xc_zlp.c"
 #include "work_mgga_new.c"
 
@@ -27,3 +29,4 @@ const xc_func_info_type xc_func_info_mgga_xc_zlp = {
   NULL, NULL, work_mgga,
 };
 
+#pragma omp end declare target

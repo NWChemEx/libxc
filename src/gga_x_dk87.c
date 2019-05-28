@@ -11,6 +11,8 @@
 #define XC_GGA_X_DK87_R1      111 /* dePristo & Kress 87 (version R1)               */
 #define XC_GGA_X_DK87_R2      112 /* dePristo & Kress 87 (version R2)               */
 
+#pragma omp declare target
+
 typedef struct {
   double a1, b1, alpha;
 } gga_x_dk87_params;
@@ -73,3 +75,5 @@ const xc_func_info_type xc_func_info_gga_x_dk87_r2 = {
   gga_x_dk87_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

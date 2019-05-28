@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_OL2          183 /* Exchange form based on Ou-Yang and Levy v.2 */
 
+#pragma omp declare target
+
 typedef struct{
   double aa, bb, cc;
 } gga_x_ol2_params;
@@ -47,3 +49,5 @@ const xc_func_info_type xc_func_info_gga_x_ol2 = {
   gga_x_ol2_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

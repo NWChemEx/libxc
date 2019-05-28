@@ -14,6 +14,8 @@
 
 #define XC_LDA_C_GK72  578   /* Gordon and Kim 1972 */
 
+#pragma omp declare target
+
 #include "maple2c/lda_exc/lda_c_gk72.c"
 #include "work_lda_new.c"
 
@@ -29,3 +31,4 @@ const xc_func_info_type xc_func_info_lda_c_gk72 = {
   NULL, NULL,
   work_lda, NULL, NULL
 };
+#pragma omp end declare target

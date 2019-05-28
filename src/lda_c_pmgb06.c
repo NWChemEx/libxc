@@ -10,6 +10,8 @@
 
 #define XC_LDA_C_PMGB06   590   /* Long-range LDA correlation functional */
 
+#pragma omp declare target
+
 static const func_params_type ext_params[] = {
   {"omega",  0.3, "screening parameter"},
 };
@@ -37,3 +39,4 @@ const xc_func_info_type xc_func_info_lda_c_pmgb06 = {
   NULL, NULL, 
   work_lda, NULL, NULL
 };
+#pragma omp end declare target

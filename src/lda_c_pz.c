@@ -20,6 +20,8 @@
 #define XC_LDA_C_PZ_MOD  10   /* Perdew & Zunger (Modified)   */
 #define XC_LDA_C_OB_PZ   11   /* Ortiz & Ballone (PZ)         */
 
+#pragma omp declare target
+
 typedef struct {
   double gamma[2];
   double beta1[2];
@@ -124,3 +126,4 @@ const xc_func_info_type xc_func_info_lda_c_ob_pz = {
   lda_c_pz_init, NULL,
   work_lda, NULL, NULL
 };
+#pragma omp end declare target

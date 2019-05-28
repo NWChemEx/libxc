@@ -19,6 +19,8 @@
 #define XC_MGGA_C_MN15        269 /* MN15 correlation functional from Minnesota        */
 #define XC_MGGA_C_REVM11      172 /* Revised M11 correlation functional from Minnesota */
 
+#pragma omp declare target
+
 typedef struct{
   const double m08_a[12], m08_b[12];
 } mgga_c_m08_params;
@@ -278,3 +280,5 @@ const xc_func_info_type xc_func_info_mgga_c_revm11 = {
   mgga_c_m08_init, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

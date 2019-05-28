@@ -29,6 +29,8 @@ Celebration of the Contributions of Robert G. Parr, edited by KD Sen
 #define XC_GGA_K_LUDENA        509 /* gamma-TFvW form by Ludena */
 #define XC_GGA_K_GP85          510 /* gamma-TFvW form by Ghosh and Parr */
 
+#pragma omp declare target
+
 typedef struct{
   double gamma, lambda;
 } gga_k_tflw_params;
@@ -338,3 +340,5 @@ const xc_func_info_type xc_func_info_gga_k_gp85 = {
   gga_k_tflw_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

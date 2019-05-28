@@ -12,6 +12,8 @@
 
 #define XC_MGGA_X_LTA          201 /* Local tau approximation of Ernzerhof & Scuseria */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_x_lta.c"
 #include "work_mgga_new.c"
 
@@ -27,3 +29,5 @@ const xc_func_info_type xc_func_info_mgga_x_lta = {
   NULL, NULL,
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

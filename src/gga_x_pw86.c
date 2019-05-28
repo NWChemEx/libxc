@@ -11,6 +11,8 @@
 #define XC_GGA_X_PW86         108 /* Perdew & Wang 86 */
 #define XC_GGA_X_RPW86        144 /* refitted Perdew & Wang 86 */
 
+#pragma omp declare target
+
 typedef struct{
   double aa, bb, cc;
 } gga_x_pw86_params;
@@ -75,3 +77,4 @@ const xc_func_info_type xc_func_info_gga_x_rpw86 = {
   NULL, work_gga, NULL
 };
 
+#pragma omp end declare target

@@ -16,6 +16,8 @@
 #define XC_LDA_C_OW_LYP  573   /* Wigner with corresponding LYP parameters */
 #define XC_LDA_C_OW      574   /* Optimized Wigner */
 
+#pragma omp declare target
+
 typedef struct {
   double a, b;
 } lda_c_wigner_params;
@@ -158,3 +160,4 @@ const xc_func_info_type xc_func_info_lda_c_ow = {
   work_lda, NULL, NULL
 };
 
+#pragma omp end declare target

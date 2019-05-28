@@ -17,6 +17,8 @@ Correlation functional by Pittalis, Rasanen & Marques for the 2D electron gas
 
 #define XC_LDA_C_2D_PRM  16   /* Pittalis, Rasanen & Marques correlation in 2D */
 
+#pragma omp declare target
+
 typedef struct{
   double N;
   double c;
@@ -70,3 +72,4 @@ const xc_func_info_type xc_func_info_lda_c_2d_prm = {
   lda_c_2d_prm_init, NULL,
   work_lda, NULL, NULL
 };
+#pragma omp end declare target

@@ -21,6 +21,8 @@
 #define XC_MGGA_X_REVTPSS       212 /* revised Tao, Perdew, Staroverov & Scuseria exchange */
 #define XC_MGGA_X_BLOC          244 /* functional with balanced localization */
 
+#pragma omp declare target
+
 typedef struct{
   double b, c, e, kappa, mu;
   double BLOC_a, BLOC_b;
@@ -139,3 +141,5 @@ const xc_func_info_type xc_func_info_mgga_x_bloc = {
   mgga_x_tpss_init, NULL, 
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

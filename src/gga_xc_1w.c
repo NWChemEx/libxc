@@ -13,6 +13,8 @@
 #define XC_GGA_XC_MPWLYP1W   174  /* Functionals fitted for water */
 #define XC_GGA_XC_PBELYP1W   175  /* Functionals fitted for water */
 
+#pragma omp declare target
+
 static void
 gga_xc_xlyp_init(xc_func_type *p)
 {
@@ -104,3 +106,4 @@ const xc_func_info_type xc_func_info_gga_xc_pbelyp1w = {
   NULL, NULL, NULL, NULL
 };
 
+#pragma omp end declare target

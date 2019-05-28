@@ -11,6 +11,8 @@
 
 #define XC_GGA_C_OP_G96      85 /* one-parameter progressive functional (G96 version)     */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_c_op_g96.c"
 #include "work_gga_new.c"
 
@@ -26,4 +28,6 @@ const xc_func_info_type xc_func_info_gga_c_op_g96 = {
   NULL, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target
 

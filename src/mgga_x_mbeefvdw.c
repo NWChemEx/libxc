@@ -11,6 +11,8 @@
 
 #define XC_MGGA_X_MBEEFVDW       250 /* mBEEF-vdW exchange */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_x_mbeefvdw.c"
 #include "work_mgga_new.c"
 
@@ -26,3 +28,5 @@ const xc_func_info_type xc_func_info_mgga_x_mbeefvdw = {
   NULL, NULL, 
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

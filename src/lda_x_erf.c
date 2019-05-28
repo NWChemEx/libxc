@@ -10,6 +10,8 @@
 
 #define XC_LDA_X_ERF   546   /* Attenuated exchange LDA (erf) */
 
+#pragma omp declare target
+
 static const func_params_type ext_params[] = {
   {"omega",  0.3, "screening parameter"},
 };
@@ -38,3 +40,5 @@ const xc_func_info_type xc_func_info_lda_x_erf = {
   NULL, NULL, 
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

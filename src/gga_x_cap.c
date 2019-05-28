@@ -11,6 +11,8 @@
 #define XC_GGA_X_CAP         270 /* Correct Asymptotic Potential */
 #define XC_HYB_GGA_XC_CAP0   477 /* Correct Asymptotic Potential hybrid */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_x_cap.c"
 #include "work_gga_new.c"
 
@@ -53,3 +55,5 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cap0 = {
   xc_hyb_gga_xc_cap0_init, NULL,
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

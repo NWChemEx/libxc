@@ -13,6 +13,8 @@
 #define XC_MGGA_X_MK00          230 /* Exchange for accurate virtual orbital energies */
 #define XC_MGGA_X_MK00B         243 /* Exchange for accurate virtual orbital energies (v. B) */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_x_mk00.c"
 #include "work_mgga_new.c"
 
@@ -55,3 +57,5 @@ const xc_func_info_type xc_func_info_mgga_x_mk00b = {
   mgga_x_mk00b_init, NULL,
   NULL, NULL, NULL,
 };
+
+#pragma omp end declare target

@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_AIRY  192 /* Constantin et al based on the Airy gas */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_x_airy.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_x_airy = {
   NULL, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

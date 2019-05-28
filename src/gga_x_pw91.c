@@ -11,6 +11,8 @@
 #define XC_GGA_X_PW91         109 /* Perdew & Wang 91 */
 #define XC_GGA_X_MPW91        119 /* Modified form of PW91 by Adamo & Barone */
 
+#pragma omp declare target
+
 typedef struct{
   double a, b, c, d, f, alpha, expo;
 } gga_x_pw91_params;
@@ -102,3 +104,5 @@ const xc_func_info_type xc_func_info_gga_x_mpw91 = {
   gga_x_pw91_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

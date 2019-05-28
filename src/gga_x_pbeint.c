@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_PBEINT        60 /* PBE for hybrid interfaces                      */
 
+#pragma omp declare target
+
 typedef struct{
   double kappa, alpha, muPBE, muGE;
 } gga_x_pbeint_params;
@@ -70,3 +72,5 @@ const xc_func_info_type xc_func_info_gga_x_pbeint = {
   gga_x_pbe_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

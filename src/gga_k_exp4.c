@@ -10,6 +10,8 @@
 
 #define XC_GGA_K_EXP4          597 /* Intermediate form between PBE3 and PBE4 */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_k_exp4.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_k_exp4 = {
   NULL, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -10,6 +10,7 @@
 
 #include "util.h"
 
+#pragma omp declare target
 /* initializes the mixing */
 void
 xc_mix_init(xc_func_type *p, int n_funcs, const int *funcs_id, const double *mix_coef)
@@ -318,3 +319,4 @@ xc_mix_func(const xc_func_type *func, int np,
   safe_free(v3lapltau2_);
   safe_free(v3tau3_);
 }
+#pragma omp end declare target

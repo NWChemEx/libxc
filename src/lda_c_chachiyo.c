@@ -12,6 +12,8 @@
 #define XC_LDA_C_CHACHIYO  287   /* Chachiyo simple 2 parameter correlation   */
 #define XC_LDA_C_KARASIEV  579   /* Karasiev reparameterization of Chachiyo   */
 
+#pragma omp declare target
+
 typedef struct {
   double ap, bp, af, bf;
 } lda_c_chachiyo_params;
@@ -69,3 +71,4 @@ const xc_func_info_type xc_func_info_lda_c_karasiev = {
   lda_c_chachiyo_init, NULL,
   work_lda, NULL, NULL
 };
+#pragma omp end declare target

@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_WPBEH 524 /* short-range version of the PBE */
 
+#pragma omp declare target
+
 typedef struct{
   double omega;
 } gga_x_wpbeh_params;
@@ -73,3 +75,5 @@ const xc_func_info_type xc_func_info_gga_x_wpbeh = {
   gga_x_wpbeh_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

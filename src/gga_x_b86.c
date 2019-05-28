@@ -14,6 +14,8 @@
 #define XC_GGA_X_B86_R         41 /* Revised Becke 86 Xalpha,beta,gamma (with mod. grad. correction) */
 #define XC_GGA_X_OPTB86B_VDW  171 /* Becke 86 reoptimized for use with vdW functional of Dion et al */
 
+#pragma omp declare target
+
 typedef struct{
   double beta, gamma, omega;
 } gga_x_b86_params;
@@ -134,3 +136,5 @@ const xc_func_info_type xc_func_info_gga_x_optb86b_vdw = {
   gga_x_b86_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

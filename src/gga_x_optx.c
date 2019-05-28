@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_OPTX         110 /* Handy & Cohen OPTX 01                          */
 
+#pragma omp declare target
+
 typedef struct{
   double a, b, gamma;
 } gga_x_optx_params;
@@ -56,3 +58,5 @@ const xc_func_info_type xc_func_info_gga_x_optx = {
   gga_x_optx_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

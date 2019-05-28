@@ -31,6 +31,8 @@
 #define XC_HYB_GGA_XC_B97_1p  266 /* version of B97 by Cohen and Handy        */
 #define XC_GGA_XC_HLE16       545 /* high local exchange 2016                 */
 
+#pragma omp declare target
+
 typedef struct {
   double c_x[5], c_ss[5], c_ab[5];
 } gga_xc_b97_params;
@@ -551,3 +553,5 @@ const xc_func_info_type xc_func_info_gga_xc_hle16 = {
   gga_xc_b97_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

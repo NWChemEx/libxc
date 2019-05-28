@@ -11,6 +11,8 @@
 
 #define XC_GGA_X_LSRPBE  169 /* PW91-like modification of RPBE */
 
+#pragma omp declare target
+
 typedef struct{
   double kappa;
   double mu;
@@ -63,3 +65,5 @@ const xc_func_info_type xc_func_info_gga_x_lsrpbe = {
   gga_x_lsrpbe_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

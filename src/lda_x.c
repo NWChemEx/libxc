@@ -28,6 +28,8 @@
     J. Toulouse, A. Savin, H.-J. Flad, Int. J. of Quant. Chem. 100, 1047-1056 (2004).
 */
 
+#pragma omp declare target
+
 typedef struct{
   double alpha;       /* parameter for Xalpha functional */
 } lda_x_params;
@@ -121,3 +123,5 @@ const xc_func_info_type xc_func_info_lda_x_rae = {
   lda_x_init, NULL,
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

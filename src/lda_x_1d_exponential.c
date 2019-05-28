@@ -11,6 +11,8 @@
 
 #define XC_LDA_X_1D_EXPONENTIAL  600 /* Exchange in 1D for an exponentially screened interaction */
 
+#pragma omp declare target
+
 typedef struct{
   double beta;         /* screening parameter beta */
 } lda_x_1d_exponential_params;
@@ -74,3 +76,5 @@ const xc_func_info_type xc_func_info_lda_x_1d_exponential = {
   lda_x_1d_exponential_init, NULL,
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

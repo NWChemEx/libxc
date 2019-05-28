@@ -14,6 +14,8 @@
 #define XC_MGGA_X_MS2          223 /* MS2 exchange of Sun, et al */
 #define XC_HYB_MGGA_X_MS2H     224 /* MS2 hybrid exchange of Sun, et al */
 
+#pragma omp declare target
+
 typedef struct{
   double kappa, c, b;
 } mgga_x_ms_params;
@@ -132,3 +134,5 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_ms2h = {
   hyb_mgga_x_ms2h_init, NULL,
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

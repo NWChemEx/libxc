@@ -13,6 +13,8 @@
 #define XC_HYB_GGA_X_N12_SX   81 /* N12-SX functional from Minnesota */
 #define XC_GGA_X_GAM          32 /* GAM functional from Minnesota */
 
+#pragma omp declare target
+
 static const double CC_N12[4][4] = {
   { 1.00000e+00,  5.07880e-01,  1.68233e-01,  1.28887e-01},
   { 8.60211e-02, -1.71008e+01,  6.50814e+01, -7.01726e+01},
@@ -113,3 +115,5 @@ const xc_func_info_type xc_func_info_gga_x_gam = {
   gga_x_n12_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

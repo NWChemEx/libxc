@@ -10,6 +10,8 @@
 
 #define XC_GGA_X_AM05         120 /* Armiento & Mattsson 05 exchange                */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_x_am05.c"
 #include "work_gga_new.c"
 
@@ -25,3 +27,5 @@ const xc_func_info_type xc_func_info_gga_x_am05 = {
   NULL, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

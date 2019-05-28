@@ -12,6 +12,8 @@
 
 #define XC_MGGA_X_RTPSS          299 /* Revised TPSS exchange by Garza, Bell and Head-Gordon */
 
+#pragma omp declare target
+
 typedef struct {
   double b, c, e, kappa, mu;
 } mgga_x_rtpss_params;
@@ -73,3 +75,5 @@ const xc_func_info_type xc_func_info_mgga_x_rtpss = {
   mgga_x_rtpss_init, NULL, 
   NULL, NULL, work_mgga,
 };
+
+#pragma omp end declare target

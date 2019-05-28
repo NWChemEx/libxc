@@ -11,6 +11,8 @@
 #define XC_GGA_X_GG99   535 /* Gilbert and Gill 1999 */
 #define XC_GGA_X_KGG99  544 /* Gilbert and Gill 1999 (mixed) */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_x_gg99.c"
 #include "work_gga_new.c"
 
@@ -52,3 +54,4 @@ const xc_func_info_type xc_func_info_gga_x_kgg99 = {
   NULL, NULL, NULL
 };
 
+#pragma omp end declare target

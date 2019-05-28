@@ -14,6 +14,8 @@
 #define XC_GGA_K_VJKS        519 /* Vitos, Johansson, Kollar, and Skriver */
 #define XC_GGA_K_ERNZERHOF   520 /* Ernzerhof */
 
+#pragma omp declare target
+
 typedef struct{
   double aa[5], bb[5];
 } gga_k_dk_params;
@@ -173,3 +175,5 @@ const xc_func_info_type xc_func_info_gga_k_ernzerhof = {
   gga_k_dk_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

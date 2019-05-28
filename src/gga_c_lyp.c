@@ -12,6 +12,8 @@
 #define XC_GGA_C_LYP    131  /* Lee, Yang & Parr */
 #define XC_GGA_C_TM_LYP 559  /* Takkar and McCarthy reparametrization */
 
+#pragma omp declare target
+
 typedef struct{
   double A, B, c, d;
 } gga_c_lyp_params;
@@ -90,3 +92,5 @@ const xc_func_info_type xc_func_info_gga_c_tm_lyp = {
   xc_gga_c_lyp_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

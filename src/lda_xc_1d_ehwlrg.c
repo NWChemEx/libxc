@@ -14,6 +14,8 @@
 #define XC_LDA_XC_1D_EHWLRG_2     537 /* LDA constructed from slab-like systems of 2 electrons */
 #define XC_LDA_XC_1D_EHWLRG_3     538 /* LDA constructed from slab-like systems of 3 electrons */
 
+#pragma omp declare target
+
 typedef struct {
   double alpha;
   double a1, a2, a3;
@@ -92,3 +94,5 @@ const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_3 = {
   lda_xc_1d_ehwlrg_init, NULL,
   work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

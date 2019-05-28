@@ -11,6 +11,8 @@
 #define XC_GGA_XC_TH3          156 /* Tozer and Handy v. 3 */
 #define XC_GGA_XC_TH4          157 /* Tozer and Handy v. 4 */
 
+#pragma omp declare target
+
 typedef struct{
   double *omega;
 } gga_xc_th3_params;
@@ -83,3 +85,5 @@ const xc_func_info_type xc_func_info_gga_xc_th4 = {
   gga_xc_th3_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -11,6 +11,8 @@
 #define XC_MGGA_C_KCIS         562 /* Krieger, Chen, Iafrate, and Savin */
 #define XC_HYB_MGGA_XC_B0KCIS  563 /* Hybrid based on KCIS */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_c_kcis.c"
 #include "work_mgga_new.c"
 
@@ -50,3 +52,5 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b0kcis = {
   xc_hyb_mgga_xc_b0kcis_init, NULL, 
   NULL, NULL, work_mgga
 };
+
+#pragma omp end declare target

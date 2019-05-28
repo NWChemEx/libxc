@@ -11,6 +11,8 @@
 
 #define XC_MGGA_C_BC95          240 /* Becke correlation 95 */
 
+#pragma omp declare target
+
 typedef struct{
   double css, copp;
 } mgga_c_bc95_params;
@@ -56,3 +58,4 @@ const xc_func_info_type xc_func_info_mgga_c_bc95 = {
   NULL, NULL, work_mgga,
 };
 
+#pragma omp end declare target

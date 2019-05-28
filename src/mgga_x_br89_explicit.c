@@ -12,6 +12,8 @@
 #define XC_MGGA_X_BR89_EXPLICIT    586 /* Becke-Roussel 89 with an explicit inversion of x(y), gamma = 0.8 */
 #define XC_MGGA_X_BR89_EXPLICIT_1  602 /* Becke-Roussel 89 with an explicit inversion of x(y), gamma = 1.0 */
 
+#pragma omp declare target
+
 typedef struct{
   double gamma;
 } mgga_x_br89_params;
@@ -83,3 +85,5 @@ const xc_func_info_type xc_func_info_mgga_x_br89_explicit_1 = {
   mgga_x_br89_init, NULL,
   NULL, NULL, work_mgga
 };
+
+#pragma omp end declare target

@@ -27,6 +27,8 @@
 #define XC_GGA_C_PBE_MOL      272 /* Del Campo, Gazquez, Trickey and Vela (PBE-like)    */
 #define XC_GGA_C_TM_PBE       560  /* Thakkar and McCarthy reparametrization */
 
+#pragma omp declare target
+
 typedef struct{
   double beta, gamma, BB;
 } gga_c_pbe_params;
@@ -252,3 +254,5 @@ const xc_func_info_type xc_func_info_gga_c_tm_pbe = {
   gga_c_pbe_init, NULL, 
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

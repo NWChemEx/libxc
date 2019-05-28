@@ -12,6 +12,8 @@
 #define XC_HYB_GGA_XC_APBE0     607 /* Hybrid based on APBE */
 #define XC_HYB_GGA_XC_HAPBE     608 /* Hybrid based in APBE and zvPBEloc */
 
+#pragma omp declare target
+
 #include "maple2c/gga_exc/gga_c_zvpbeloc.c"
 #include "work_gga_new.c"
 
@@ -75,3 +77,5 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hapbe = {
   xc_hyb_gga_xc_hapbe_init, NULL, 
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

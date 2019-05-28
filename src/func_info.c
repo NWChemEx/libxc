@@ -9,6 +9,7 @@
 
 #include "util.h"
 
+#pragma omp declare target
 int xc_func_info_get_number(const xc_func_info_type *info)
 {
   return info->number;
@@ -65,3 +66,4 @@ double xc_func_info_get_ext_params_default_value(xc_func_info_type *info, int nu
 
   return info->ext_params[number].value;
 }
+#pragma omp end declare target

@@ -22,6 +22,7 @@
 /**
  * @param[in,out] func_type: pointer to functional structure
  */
+#pragma omp declare target
 static void 
 work_gga(const XC(func_type) *p, int np,
          const double *rho, const double *sigma,
@@ -69,3 +70,4 @@ work_gga(const XC(func_type) *p, int np,
        &v2rho2, &v2rhosigma, &v2sigma2, &v3rho3, &v3rho2sigma, &v3rhosigma2, &v3sigma3);
   }   /* for(ip) */
 }
+#pragma omp end declare target

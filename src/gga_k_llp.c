@@ -11,6 +11,8 @@
 #define XC_GGA_K_LLP          522 /* Lee, Lee & Parr */
 #define XC_GGA_K_FR_B88       514 /* Fuentealba & Reyes (B88 version) */
 
+#pragma omp declare target
+
 typedef struct{
   double beta, gamma;
 } gga_k_llp_params;
@@ -69,3 +71,5 @@ const xc_func_info_type xc_func_info_gga_k_fr_b88 = {
   gga_k_llp_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target

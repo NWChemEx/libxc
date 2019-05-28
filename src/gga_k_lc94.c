@@ -10,6 +10,8 @@
 
 #define XC_GGA_K_LC94         521 /* Lembarki & Chermette */
 
+#pragma omp declare target
+
 typedef struct{
   double a, b, c, d, f, alpha, expo;
 } gga_k_lc94_params;
@@ -51,3 +53,5 @@ const xc_func_info_type xc_func_info_gga_k_lc94 = {
   gga_k_lc94_init, NULL,
   NULL, work_gga, NULL
 };
+
+#pragma omp end declare target
