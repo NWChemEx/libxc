@@ -186,6 +186,8 @@ $str = "/*
 
 #include <xc.h>
 
+#pragma omp declare target
+
 ";
 
 print OUT_C $str;
@@ -204,6 +206,10 @@ foreach $r (@reference){
 
   print OUT_H "extern func_reference_type xc_ref_$r2;\n";
 }
+
+$str = "#pragma omp end declare target
+";
+print OUT_C $str;
 
 close(OUT_C);
 close(OUT_H);
