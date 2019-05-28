@@ -55,6 +55,7 @@ typedef struct {
 } xc_values_type;
 
 /*----------------------------------------------------------*/
+#pragma omp declare target
 void init_values(xc_values_type *xc_values)
 {
   int i;
@@ -283,6 +284,7 @@ void print_values(xc_values_type *values, xc_func_type *func){
 
   printf("\n");
 }
+#pragma omp end declare target
 
 /*----------------------------------------------------------*/
 int main(int argc, char *argv[])
