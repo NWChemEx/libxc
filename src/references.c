@@ -13,6 +13,8 @@
 
 #include <xc.h>
 
+#pragma omp declare target
+
 func_reference_type xc_ref_Dirac1930_376 = {
   "P. A. M. Dirac, Math. Proc. Cambridge Philos. Soc. 26, 376 (1930)",
   "10.1017/S0305004100016108",
@@ -2292,3 +2294,4 @@ func_reference_type xc_ref_Gaiduk2011_012509 = {
   "10.1103/PhysRevA.83.012509",
   "@article{Gaiduk2011_012509,\n  title = {Construction of integrable model Kohn-Sham potentials by analysis of the structure of functional derivatives},\n  author = {Gaiduk, Alex P. and Staroverov, Viktor N.},\n  journal = {Phys. Rev. A},\n  volume = {83},\n  issue = {1},\n  pages = {012509},\n  numpages = {7},\n  year = {2011},\n  month = {Jan},\n  publisher = {American Physical Society},\n  doi = {10.1103/PhysRevA.83.012509},\n  url = {https://link.aps.org/doi/10.1103/PhysRevA.83.012509}\n}"
 };
+#pragma omp end declare target
