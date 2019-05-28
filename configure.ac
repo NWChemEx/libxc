@@ -139,6 +139,9 @@ if test x"${ac_cv_build_kxc}" == x"no"; then
   AC_DEFINE(XC_DONT_COMPILE_KXC, 1, [defined if third derivatives are disabled])
 fi
 
+AC_OPENMP
+AC_SUBST(AM_CFLAGS,"$OPENMP_CFLAGS")
+
 # build/install fortran bits unless --disable-fortran is used
 AC_ARG_ENABLE([fortran],
 	      AS_HELP_STRING([--disable-fortran], [don't build/install fortran components]),
@@ -186,6 +189,7 @@ if test $ac_cv_build_fortran = yes; then
   ACX_FC_ISO_C_BINDING([ac_cv_build_fortran03=yes], [ac_cv_build_fortran03=no,
     						    AC_MSG_WARN([Could not find Fortran 2003 iso_c_binding. Fortran 2003 interface will not be compiled.])])
 
+  AC_SUBST(AM_FFLAGS,"$OPENMP_FFLAGS $OPENMP_FCFLAGS")
   AC_LANG_POP([Fortran])
 else
   HAVE_FORTRAN=0
@@ -204,6 +208,12 @@ AC_CONFIG_FILES([Makefile
   src/maple2c/lda_vxc/Makefile
   src/maple2c/gga_exc/Makefile
   src/maple2c/mgga_exc/Makefile
+  src/cuda/Makefile
+  src/cuda/maple2c/Makefile
+  src/cuda/maple2c/lda_exc/Makefile
+  src/cuda/maple2c/lda_vxc/Makefile
+  src/cuda/maple2c/gga_exc/Makefile
+  src/cuda/maple2c/mgga_exc/Makefile
   testsuite/Makefile
   testsuite/pytest/Makefile
   build/Makefile
