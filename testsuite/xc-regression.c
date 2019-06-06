@@ -312,47 +312,49 @@ int main(int argc, char *argv[])
   /* Read in data */
   d = read_data(argv[4], nspin, order);
 
-  /* Initialize functional */
-  if(xc_func_init(&func, func_id, nspin)) {
-    fprintf(stderr, "Functional '%d' (%s) not found.\nPlease report a bug against functional_get_number.\n", func_id, argv[1]);
-    exit(1);
-  }
-  /* Get flags */
-  flags  = func.info->flags;
-  family = func.info->family;
+  #pragma omp target
+  {
+    /* Initialize functional */
+    if(xc_func_init(&func, func_id, nspin)) {
+      fprintf(stderr, "Functional '%d' (%s) not found.\nPlease report a bug against functional_get_number.\n", func_id, argv[1]);
+      exit(1);
+    }
+    /* Get flags */
+    flags  = func.info->flags;
+    family = func.info->family;
 
-  /* Set helpers */
-  zk     = (flags & XC_FLAGS_HAVE_EXC) ? d.zk     : NULL;
-  vrho   = (flags & XC_FLAGS_HAVE_VXC) ? d.vrho   : NULL;
-  v2rho2 = (flags & XC_FLAGS_HAVE_FXC) ? d.v2rho2 : NULL;
-  v3rho3 = (flags & XC_FLAGS_HAVE_KXC) ? d.v3rho3 : NULL;
+    /* Set helpers */
+    zk     = (flags & XC_FLAGS_HAVE_EXC) ? d.zk     : NULL;
+    vrho   = (flags & XC_FLAGS_HAVE_VXC) ? d.vrho   : NULL;
+    v2rho2 = (flags & XC_FLAGS_HAVE_FXC) ? d.v2rho2 : NULL;
+    v3rho3 = (flags & XC_FLAGS_HAVE_KXC) ? d.v3rho3 : NULL;
 
-  /* Evaluate xc functional */
-  switch(family) {
-  case XC_FAMILY_LDA:
-    xc_lda(&func, d.n, d.rho, zk, vrho, v2rho2, v3rho3);
-    break;
-  case XC_FAMILY_GGA:
-  case XC_FAMILY_HYB_GGA:
-    xc_gga(&func, d.n, d.rho, d.sigma, zk, vrho, d.vsigma,
-           v2rho2, d.v2rhosigma, d.v2sigma2, NULL, NULL, NULL, NULL);
-    break;
-  case XC_FAMILY_MGGA:
-  case XC_FAMILY_HYB_MGGA:
-    xc_mgga(&func, d.n, d.rho, d.sigma, d.lapl, d.tau, zk, vrho, d.vsigma, d.vlapl, d.vtau,
-            v2rho2, d.v2rhosigma, d.v2rholapl, d.v2rhotau, 
-            d.v2sigma2, d.v2sigmalapl, d.v2sigmatau,
-            d.v2lapl2, d.v2lapltau,
-            d.v2tau2,
-            NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-            NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-            
-    break;
-
-  default:
-    fprintf(stderr,"Support for family %i not implemented.\n",family);
-    free_memory(d);
-    exit(1);
+    /* Evaluate xc functional */
+    switch(family) {
+    case XC_FAMILY_LDA:
+      xc_lda(&func, d.n, d.rho, zk, vrho, v2rho2, v3rho3);
+      break;
+    case XC_FAMILY_GGA:
+    case XC_FAMILY_HYB_GGA:
+      xc_gga(&func, d.n, d.rho, d.sigma, zk, vrho, d.vsigma,
+             v2rho2, d.v2rhosigma, d.v2sigma2, NULL, NULL, NULL, NULL);
+      break;
+    case XC_FAMILY_MGGA:
+    case XC_FAMILY_HYB_MGGA:
+      xc_mgga(&func, d.n, d.rho, d.sigma, d.lapl, d.tau, zk, vrho, d.vsigma, d.vlapl, d.vtau,
+              v2rho2, d.v2rhosigma, d.v2rholapl, d.v2rhotau, 
+              d.v2sigma2, d.v2sigmalapl, d.v2sigmatau,
+              d.v2lapl2, d.v2lapltau,
+              d.v2tau2,
+              NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+              NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+      break;
+    default:
+      fprintf(stderr,"Support for family %i not implemented.\n",family);
+      free_memory(d);
+      exit(1);
+    }
+    xc_func_end(&func);
   }
 
   /* Open output file */
@@ -509,7 +511,6 @@ int main(int argc, char *argv[])
     fprintf(out,"\n");
   }
 
-  xc_func_end(&func);
   free_memory(d);
   fclose(out);
 
