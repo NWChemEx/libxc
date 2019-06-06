@@ -1,0 +1,192 @@
+/ccs/home/hjjvd/summit/NWChemEx-Project/libxc/testsuite/jobscripts
+BrOH_LDA_X.out
+ORNL_Summit_LibXC_LDA_X_BrOH.sh
+e
+libxc.oe411285
+libxc.oe411296
+libxc.oe411303
+libxc.oe411319
+libxc.oe411334
+BASH_ENV=/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/lmod/lmod/init/bash
+BASH_FUNC_ml()=() {  eval $($LMOD_DIR/ml_cmd "$@")
+BASH_FUNC_module()=() {  eval $($LMOD_CMD bash "$@") && eval $(${LMOD_SETTARG_CMD:-:} -s sh)
+BINARY_TYPE_HPC=
+BSUB_BLOCK_EXEC_HOST=
+CMAKE_PREFIX_PATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta:/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij
+CPATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/include
+CPP_GITHUB_TOKEN=1ebb0e0e0905cc43be5b761740f3055d093e9a9f
+CSM_ALLOCATION_ID=332891
+CVS_RSH=ssh
+DISPLAY=login5:15.0
+GA_RELEASE_NO=5.6.5
+HISTCONTROL=ignoredups
+HISTSIZE=1000
+HOME=/ccs/home/hjjvd
+HOSTNAME=batch5
+HOSTTYPE=LINUXPPC64LE
+JOB_TERMINATE_INTERVAL=10
+JSM_JSRUN_NO_WARN_TOPOLOGY=1
+LD_LIBRARY_PATH=/opt/ibm/spectrumcomputing/lsf/10.1/linux3.10-glibc2.17-ppc64le-csm/lib:/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta/lib:/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/lib:/sw/summit/xl/16.1.1-3/xlsmp/5.1.1/lib:/sw/summit/xl/16.1.1-3/xlmass/9.1.1/lib:/sw/summit/xl/16.1.1-3/xlC/16.1.1/lib:/sw/summit/xl/16.1.1-3/xlf/16.1.1/lib:/sw/summit/xl/16.1.1-3/lib
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+LIBRARY_PATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta/lib:/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/lib
+LMOD_CMD=/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/lmod/lmod/libexec/lmod
+LMOD_DIR=/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/lmod/lmod/libexec
+LMOD_FAMILY_COMPILER=xl
+LMOD_FAMILY_COMPILER_VERSION=16.1.1-3
+LMOD_FAMILY_MPI=spectrum-mpi
+LMOD_FAMILY_MPI_VERSION=10.3.0.0-20190419
+LMOD_MPI_NAME=spectrum-mpi
+LMOD_MPI_VERSION=10.3.0.0-20190419-q75ow22
+LMOD_PKG=/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/lmod/lmod
+LMOD_SETTARG_FULL_SUPPORT=no
+LMOD_SYSTEM_DEFAULT_MODULES=DefApps
+LMOD_SYSTEM_NAME=summit
+LMOD_VERSION=7.7.10
+LMOD_sys=Linux
+LOADEDMODULES=xl/16.1.1-3:spectrum-mpi/10.3.0.0-20190419:hsi/5.0.2.p5:xalt/1.1.3:lsf-tools/2.0:darshan-runtime/3.1.7:DefApps
+LOGNAME=hjjvd
+LSB_ACCT_FILE=/tmp/411334.tmpdir/.1559850229.411334.acct
+LSB_AFFINITY_HOSTFILE=/ccs/home/hjjvd/.lsbatch/1559850229.411334.hostAffinityFile
+LSB_APPLICATION_NAME=small
+LSB_BATCH_JID=411334
+LSB_CHKFILENAME=/ccs/home/hjjvd/.lsbatch/1559850229.411334
+LSB_DJOB_HOSTFILE=/ccs/home/hjjvd/.lsbatch/1559850229.411334.hostfile
+LSB_DJOB_NUMPROC=43
+LSB_DJOB_RANKFILE=/ccs/home/hjjvd/.lsbatch/1559850229.411334.hostfile
+LSB_ECHKPNT_RSH_CMD=ssh -o 'PasswordAuthentication no' -o 'StrictHostKeyChecking no'
+LSB_EEXEC_REAL_GID=
+LSB_EEXEC_REAL_UID=
+LSB_EFFECTIVE_RSRCREQ=1*{select[((LN) && (type == any))] order[r15s:pg] span[hosts=1] cu[type=rack:pref=config]}+42*{select[((CN) && (type == any))] order[r15s:pg] span[ptile=42] cu[type=rack:pref=config]}
+LSB_EXEC_CLUSTER=summit
+LSB_EXEC_HOSTTYPE=LINUXPPC64LE
+LSB_EXIT_PRE_ABORT=99
+LSB_HOSTS=batch5 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09 g36n09
+LSB_JOBEXIT_STAT=0
+LSB_JOBFILENAME=/ccs/home/hjjvd/.lsbatch/1559850229.411334
+LSB_JOBID=411334
+LSB_JOBINDEX=0
+LSB_JOBNAME=libxc_lda
+LSB_JOBRES_CALLBACK=41373@batch5
+LSB_JOBRES_PID=46660
+LSB_JOB_EXECUSER=hjjvd
+LSB_MAX_NUM_PROCESSORS=43
+LSB_MCPU_HOSTS=batch5 1 g36n09 42 
+LSB_OUTDIR=/ccs/home/hjjvd/summit/NWChemEx-Project/libxc/testsuite/jobscripts
+LSB_OUTPUTFILE=libxc.oe411334
+LSB_PROJECT_NAME=CHM136
+LSB_QUEUE=batch
+LSB_RES_GET_FANOUT_INFO=Y
+LSB_SUB_HOST=login5
+LSB_SUB_RES_REQ=1*{select[LN]span[hosts=1]} + 42*{select[CN]span[ptile=42]}
+LSB_SUB_USER=hjjvd
+LSB_TRAPSIGS=trap # 15 10 12 2 1
+LSB_UNIXGROUP_INT=hjjvd
+LSB_XFER_OP=
+LSFUSER=hjjvd
+LSF_BINDIR=/opt/ibm/spectrumcomputing/lsf/10.1/linux3.10-glibc2.17-ppc64le-csm/bin
+LSF_CGROUP_TOPDIR_KEY=summit
+LSF_ENVDIR=/opt/ibm/spectrumcomputing/lsf/conf
+LSF_INVOKE_CMD=bsub
+LSF_JOB_TIMESTAMP_VALUE=1559850236
+LSF_LIBDIR=/opt/ibm/spectrumcomputing/lsf/10.1/linux3.10-glibc2.17-ppc64le-csm/lib
+LSF_LIM_API_NTRIES=1
+LSF_LOGDIR=/var/log/lsf
+LSF_SERVERDIR=/opt/ibm/spectrumcomputing/lsf/10.1/linux3.10-glibc2.17-ppc64le-csm/etc
+LSF_VERSION=34
+LS_COLORS=rs=0:di=38;5;27:ln=38;5;51:mh=44;38;5;15:pi=40;38;5;11:so=38;5;13:do=38;5;5:bd=48;5;232;38;5;11:cd=48;5;232;38;5;3:or=48;5;232;38;5;9:mi=05;48;5;232;38;5;15:su=48;5;196;38;5;15:sg=48;5;11;38;5;16:ca=48;5;196;38;5;226:tw=48;5;10;38;5;16:ow=48;5;10;38;5;21:st=48;5;21;38;5;15:ex=38;5;34:*.tar=38;5;9:*.tgz=38;5;9:*.arc=38;5;9:*.arj=38;5;9:*.taz=38;5;9:*.lha=38;5;9:*.lz4=38;5;9:*.lzh=38;5;9:*.lzma=38;5;9:*.tlz=38;5;9:*.txz=38;5;9:*.tzo=38;5;9:*.t7z=38;5;9:*.zip=38;5;9:*.z=38;5;9:*.Z=38;5;9:*.dz=38;5;9:*.gz=38;5;9:*.lrz=38;5;9:*.lz=38;5;9:*.lzo=38;5;9:*.xz=38;5;9:*.bz2=38;5;9:*.bz=38;5;9:*.tbz=38;5;9:*.tbz2=38;5;9:*.tz=38;5;9:*.deb=38;5;9:*.rpm=38;5;9:*.jar=38;5;9:*.war=38;5;9:*.ear=38;5;9:*.sar=38;5;9:*.rar=38;5;9:*.alz=38;5;9:*.ace=38;5;9:*.zoo=38;5;9:*.cpio=38;5;9:*.7z=38;5;9:*.rz=38;5;9:*.cab=38;5;9:*.jpg=38;5;13:*.jpeg=38;5;13:*.gif=38;5;13:*.bmp=38;5;13:*.pbm=38;5;13:*.pgm=38;5;13:*.ppm=38;5;13:*.tga=38;5;13:*.xbm=38;5;13:*.xpm=38;5;13:*.tif=38;5;13:*.tiff=38;5;13:*.png=38;5;13:*.svg=38;5;13:*.svgz=38;5;13:*.mng=38;5;13:*.pcx=38;5;13:*.mov=38;5;13:*.mpg=38;5;13:*.mpeg=38;5;13:*.m2v=38;5;13:*.mkv=38;5;13:*.webm=38;5;13:*.ogm=38;5;13:*.mp4=38;5;13:*.m4v=38;5;13:*.mp4v=38;5;13:*.vob=38;5;13:*.qt=38;5;13:*.nuv=38;5;13:*.wmv=38;5;13:*.asf=38;5;13:*.rm=38;5;13:*.rmvb=38;5;13:*.flc=38;5;13:*.avi=38;5;13:*.fli=38;5;13:*.flv=38;5;13:*.gl=38;5;13:*.dl=38;5;13:*.xcf=38;5;13:*.xwd=38;5;13:*.yuv=38;5;13:*.cgm=38;5;13:*.emf=38;5;13:*.axv=38;5;13:*.anx=38;5;13:*.ogv=38;5;13:*.ogx=38;5;13:*.aac=38;5;45:*.au=38;5;45:*.flac=38;5;45:*.mid=38;5;45:*.midi=38;5;45:*.mka=38;5;45:*.mp3=38;5;45:*.mpc=38;5;45:*.ogg=38;5;45:*.ra=38;5;45:*.wav=38;5;45:*.axa=38;5;45:*.oga=38;5;45:*.spx=38;5;45:*.xspf=38;5;45:
+LS_EXECCWD=/ccs/home/hjjvd/summit/NWChemEx-Project/libxc/testsuite/jobscripts
+LS_EXEC_T=START
+LS_JOBPID=46660
+LS_SUBCWD=/ccs/home/hjjvd/summit/NWChemEx-Project/libxc/testsuite/jobscripts
+MAIL=/var/spool/mail/hjjvd
+MANPATH=/sw/sources/hpss/man:/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/share/man:/sw/summit/xl/16.1.1-3/xlC/16.1.1/man/en_US:/sw/summit/xl/16.1.1-3/xlf/16.1.1/man/en_US:/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/lmod/lmod/share/man:/opt/ibm/spectrumcomputing/lsf/10.1/man::
+MEMBERWORK=/gpfs/alpine/scratch/hjjvd
+MODULEPATH=/autofs/nccs-svm1_sw/summit/modulefiles/site/linux-rhel7-ppc64le/spectrum-mpi/10.3.0.0-20190419-q75ow22/xl/16.1.1-3:/sw/summit/modulefiles/site/linux-rhel7-ppc64le/xl/16.1.1-3:/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core:/sw/summit/modulefiles/core:/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/modulefiles/Linux:/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/modulefiles/Core:/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/lmod/lmod/modulefiles/Core
+MODULEPATH_ROOT=/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/modulefiles
+MODULESHOME=/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/lmod/lmod
+MPI_ROOT=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij
+NLSPATH=/sw/summit/xl/16.1.1-3/msg/en_US/%N:/sw/summit/xl/16.1.1-3/xlC/16.1.1/msg/en_US/%N:/sw/summit/xl/16.1.1-3/xlf/16.1.1/msg/en_US/%N
+OLCF_DARSHAN_RUNTIME_ROOT=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta
+OLCF_HSI_ROOT=/sw/sources/hpss
+OLCF_LMOD_ROOT=/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5
+OLCF_MODULEPATH_ROOT=/sw/summit/modulefiles
+OLCF_SPECTRUM_MPI_ROOT=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij
+OLCF_XLC_ROOT=/sw/summit/xl/16.1.1-3/xlC/16.1.1
+OLCF_XLF_ROOT=/sw/summit/xl/16.1.1-3/xlf/16.1.1
+OLCF_XLMASS_ROOT=/sw/summit/xl/16.1.1-3/xlmass/9.1.1
+OLCF_XLSMP_ROOT=/sw/summit/xl/16.1.1-3/xlsmp/5.1.1
+OLCF_XL_ROOT=/sw/summit/xl/16.1.1-3
+OMPI_CC=/sw/summit/xl/16.1.1-3/xlC/16.1.1/bin/xlc_r
+OMPI_CXX=/sw/summit/xl/16.1.1-3/xlC/16.1.1/bin/xlc++_r
+OMPI_DIR=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij
+OMPI_FC=/sw/summit/xl/16.1.1-3/xlf/16.1.1/bin/xlf2008_r
+OMPI_LD_PRELOAD_PREPEND=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta/lib/libdarshan.so
+OMPI_MCA_io=romio321
+OPAL_LIBDIR=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/lib
+OPAL_PREFIX=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij
+PAMI_ENABLE_STRIPING=0
+PAMI_IBV_ADAPTER_AFFINITY=1
+PAMI_IBV_ENABLE_DCT=1
+PAMI_IBV_ENABLE_OOO_AR=1
+PAMI_IBV_QP_SERVICE_LEVEL=8
+PATH=/opt/ibm/spectrumcomputing/lsf/10.1/linux3.10-glibc2.17-ppc64le-csm/bin:/ccs/home/hjjvd/Summit/bin:/usr/bin:/usr/sbin:/sw/sources/lsf-tools/2.0/summit/bin:/sw/sources/lsf-tools/2.0/summit/bin:/sw/summit/xalt/1.1.3/bin:/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta/bin:/sw/sources/hpss/bin:/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/bin:/sw/summit/xl/16.1.1-3/xlC/16.1.1/bin:/sw/summit/xl/16.1.1-3/xlf/16.1.1/bin:/opt/ibm/spectrumcomputing/lsf/10.1/linux3.10-glibc2.17-ppc64le-csm/etc:/opt/ibm/csm/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/ibm/flightlog/bin:/opt/ibutils/bin:/opt/ibm/spectrum_mpi/jsm_pmix/bin:/opt/puppetlabs/bin:/usr/lpp/mmfs/bin:/ccs/home/hjjvd/bin
+PKG_CONFIG_PATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta/lib/pkgconfig
+PROJWORK=/gpfs/alpine/proj-shared
+PWD=/ccs/home/hjjvd/summit/NWChemEx-Project/libxc/testsuite/jobscripts
+PYTHONPATH=/sw/summit/xalt/1.1.3/site:/sw/summit/xalt/1.1.3/libexec
+SBD_KRB5CCNAME_VAL=
+SHELL=/bin/bash
+SHLVL=4
+SHOST=login5
+SSH_CLIENT=130.199.251.4 51850 22
+SSH_CONNECTION=130.199.251.4 51850 128.219.134.75 22
+SSH_TTY=/dev/pts/60
+USER=hjjvd
+WORLDWORK=/gpfs/alpine/world-shared
+XALT_ETC_DIR=/sw/summit/xalt/1.1.3/etc
+XALT_OLCF=1
+XDG_RUNTIME_DIR=/run/user/63374
+XDG_SESSION_ID=4229
+XLSF_UIDDIR=/opt/ibm/spectrumcomputing/lsf/10.1/linux3.10-glibc2.17-ppc64le-csm/lib/uid
+XL_LINKER=/sw/summit/xalt/1.1.3/bin/ld
+_=/usr/bin/env
+_LMFILES_=/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/xl/16.1.1-3.lua:/sw/summit/modulefiles/site/linux-rhel7-ppc64le/xl/16.1.1-3/spectrum-mpi/10.3.0.0-20190419.lua:/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/hsi/5.0.2.p5.lua:/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/xalt/1.1.3.lua:/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/lsf-tools/2.0.lua:/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/darshan-runtime/3.1.7.lua:/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/DefApps.lua
+_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09InhsIixbIm1waSJdPSJzcGVjdHJ1bS1tcGkiLH0sbVQ9e0RlZkFwcHM9e1siZm4iXT0iL3N3L3N1bW1pdC9tb2R1bGVmaWxlcy9zaXRlL2xpbnV4LXJoZWw3LXBwYzY0bGUvQ29yZS9EZWZBcHBzLmx1YSIsWyJmdWxsTmFtZSJdPSJEZWZBcHBzIixbImxvYWRPcmRlciJdPTcscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iRGVmQXBwcyIsfSxbImRhcnNoYW4tcnVudGltZSJdPXtbImZuIl09Ii9zdy9zdW1taXQvbW9kdWxlZmls
+_ModuleTable002_=ZXMvc2l0ZS9saW51eC1yaGVsNy1wcGM2NGxlL0NvcmUvZGFyc2hhbi1ydW50aW1lLzMuMS43Lmx1YSIsWyJmdWxsTmFtZSJdPSJkYXJzaGFuLXJ1bnRpbWUvMy4xLjciLFsibG9hZE9yZGVyIl09Nixwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJkYXJzaGFuLXJ1bnRpbWUiLH0saHNpPXtbImZuIl09Ii9zdy9zdW1taXQvbW9kdWxlZmlsZXMvc2l0ZS9saW51eC1yaGVsNy1wcGM2NGxlL0NvcmUvaHNpLzUuMC4yLnA1Lmx1YSIsWyJmdWxsTmFtZSJdPSJoc2kvNS4wLjIucDUiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJoc2ki
+_ModuleTable003_=LH0sWyJsc2YtdG9vbHMiXT17WyJmbiJdPSIvc3cvc3VtbWl0L21vZHVsZWZpbGVzL3NpdGUvbGludXgtcmhlbDctcHBjNjRsZS9Db3JlL2xzZi10b29scy8yLjAubHVhIixbImZ1bGxOYW1lIl09ImxzZi10b29scy8yLjAiLFsibG9hZE9yZGVyIl09NSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJsc2YtdG9vbHMiLH0sWyJzcGVjdHJ1bS1tcGkiXT17WyJmbiJdPSIvc3cvc3VtbWl0L21vZHVsZWZpbGVzL3NpdGUvbGludXgtcmhlbDctcHBjNjRsZS94bC8xNi4xLjEtMy9zcGVjdHJ1bS1tcGkvMTAuMy4wLjAtMjAxOTA0MTkubHVhIixbImZ1bGxOYW1lIl09InNwZWN0cnVtLW1waS8xMC4zLjAuMC0yMDE5MDQxOSIs
+_ModuleTable004_=WyJsb2FkT3JkZXIiXT0yLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InNwZWN0cnVtLW1waSIsfSx4YWx0PXtbImZuIl09Ii9zdy9zdW1taXQvbW9kdWxlZmlsZXMvc2l0ZS9saW51eC1yaGVsNy1wcGM2NGxlL0NvcmUveGFsdC8xLjEuMy5sdWEiLFsiZnVsbE5hbWUiXT0ieGFsdC8xLjEuMyIsWyJsb2FkT3JkZXIiXT00LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InhhbHQiLH0seGw9e1siZm4iXT0iL3N3L3N1bW1pdC9tb2R1bGVmaWxlcy9zaXRlL2xpbnV4LXJoZWw3LXBwYzY0bGUvQ29yZS94bC8xNi4xLjEtMy5sdWEiLFsiZnVsbE5hbWUiXT0ieGwv
+_ModuleTable005_=MTYuMS4xLTMiLFsibG9hZE9yZGVyIl09MSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJ4bCIsfSx9LG1wYXRoQT17Ii9hdXRvZnMvbmNjcy1zdm0xX3N3L3N1bW1pdC9tb2R1bGVmaWxlcy9zaXRlL2xpbnV4LXJoZWw3LXBwYzY0bGUvc3BlY3RydW0tbXBpLzEwLjMuMC4wLTIwMTkwNDE5LXE3NW93MjIveGwvMTYuMS4xLTMiLCIvc3cvc3VtbWl0L21vZHVsZWZpbGVzL3NpdGUvbGludXgtcmhlbDctcHBjNjRsZS94bC8xNi4xLjEtMyIsIi9zdy9zdW1taXQvbW9kdWxlZmlsZXMvc2l0ZS9saW51eC1yaGVsNy1wcGM2NGxlL0NvcmUiLCIvc3cvc3VtbWl0L21vZHVsZWZpbGVzL2NvcmUiLCIvc3cvc3VtbWl0L2xtb2Qv
+_ModuleTable006_=Ny43LjEwL3JoZWw3LjNfZ251NC44LjUvbW9kdWxlZmlsZXMvTGludXgiLCIvc3cvc3VtbWl0L2xtb2QvNy43LjEwL3JoZWw3LjNfZ251NC44LjUvbW9kdWxlZmlsZXMvQ29yZSIsIi9zdy9zdW1taXQvbG1vZC83LjcuMTAvcmhlbDcuM19nbnU0LjguNS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvc3cvc3VtbWl0L2xtb2QvNy43LjEwL3JoZWw3LjNfZ251NC44LjUvbW9kdWxlZmlsZXMvTGludXg6L3N3L3N1bW1pdC9sbW9kLzcuNy4xMC9yaGVsNy4zX2dudTQuOC41L21vZHVsZWZpbGVzL0NvcmU6L3N3L3N1bW1pdC9sbW9kLzcuNy4xMC9yaGVsNy4zX2dudTQuOC41L2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlIix9
+_ModuleTable_Sz_=6
+__Init_Default_Modules=1
+__LMOD_Priority_PATH=/sw/sources/lsf-tools/2.0/summit/bin:-9999;/sw/summit/xalt/1.1.3/bin:-9999
+__LMOD_REF_COUNT_CMAKE_PREFIX_PATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta:1;/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij:1
+__LMOD_REF_COUNT_CPATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/include:1
+__LMOD_REF_COUNT_LD_LIBRARY_PATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta/lib:1;/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/lib:1;/sw/summit/xl/16.1.1-3/xlsmp/5.1.1/lib:1;/sw/summit/xl/16.1.1-3/xlmass/9.1.1/lib:1;/sw/summit/xl/16.1.1-3/xlC/16.1.1/lib:1;/sw/summit/xl/16.1.1-3/xlf/16.1.1/lib:1;/sw/summit/xl/16.1.1-3/lib:1;/opt/ibm/spectrumcomputing/lsf/10.1/linux3.10-glibc2.17-ppc64le-csm/lib:1
+__LMOD_REF_COUNT_LIBRARY_PATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta/lib:1;/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/lib:1
+__LMOD_REF_COUNT_LOADEDMODULES=xl/16.1.1-3:1;spectrum-mpi/10.3.0.0-20190419:1;hsi/5.0.2.p5:1;xalt/1.1.3:1;lsf-tools/2.0:1;darshan-runtime/3.1.7:1;DefApps:1
+__LMOD_REF_COUNT_MANPATH=/sw/sources/hpss/man:1;/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/share/man:1;/sw/summit/xl/16.1.1-3/xlC/16.1.1/man/en_US:1;/sw/summit/xl/16.1.1-3/xlf/16.1.1/man/en_US:1;/sw/summit/lmod/7.7.10/rhel7.3_gnu4.8.5/lmod/lmod/share/man:1;/opt/ibm/spectrumcomputing/lsf/10.1/man:1
+__LMOD_REF_COUNT_NLSPATH=/sw/summit/xl/16.1.1-3/msg/en_US/%N:2;/sw/summit/xl/16.1.1-3/xlC/16.1.1/msg/en_US/%N:1;/sw/summit/xl/16.1.1-3/xlf/16.1.1/msg/en_US/%N:1
+__LMOD_REF_COUNT_PATH=/sw/sources/lsf-tools/2.0/summit/bin:1;/sw/summit/xalt/1.1.3/bin:1;/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta/bin:1;/sw/sources/hpss/bin:1;/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.0-20190419-q75ow22tialepxlgxcs7esrptqwoheij/bin:1;/sw/summit/xl/16.1.1-3/xlC/16.1.1/bin:1;/sw/summit/xl/16.1.1-3/xlf/16.1.1/bin:1;/opt/ibm/spectrumcomputing/lsf/10.1/linux3.10-glibc2.17-ppc64le-csm/etc:1;/opt/ibm/spectrumcomputing/lsf/10.1/linux3.10-glibc2.17-ppc64le-csm/bin:1;/opt/ibm/csm/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1;/opt/ibm/flightlog/bin:1;/opt/ibutils/bin:1;/opt/ibm/spectrum_mpi/jsm_pmix/bin:1
+__LMOD_REF_COUNT_PKG_CONFIG_PATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/darshan-runtime-3.1.7-7dyimdja5qu655bu5dzn7ijf2vqdoeta/lib/pkgconfig:1
+__LMOD_REF_COUNT_PYTHONPATH=/sw/summit/xalt/1.1.3/site:1;/sw/summit/xalt/1.1.3/libexec:1
+__LMOD_REF_COUNT__LMFILES_=/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/xl/16.1.1-3.lua:1;/sw/summit/modulefiles/site/linux-rhel7-ppc64le/xl/16.1.1-3/spectrum-mpi/10.3.0.0-20190419.lua:1;/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/hsi/5.0.2.p5.lua:1;/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/xalt/1.1.3.lua:1;/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/lsf-tools/2.0.lua:1;/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/darshan-runtime/3.1.7.lua:1;/sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core/DefApps.lua:1
+__LSF_JOB_TMPDIR__=/tmp/411334.tmpdir
+}
+}
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@batch5>
+Subject: Job 411334: <libxc_lda> in cluster <summit> Done
+
+Job <libxc_lda> was submitted from host <login5> by user <hjjvd> in cluster <summit> at Thu Jun  6 15:43:49 2019
+Job was executed on host(s) <1*batch5>, in queue <batch>, as user <hjjvd> in cluster <summit> at Thu Jun  6 15:43:56 2019
+                            <42*g36n09>
+</ccs/home/hjjvd> was used as the home directory.
+</ccs/home/hjjvd/summit/NWChemEx-Project/libxc/testsuite/jobscripts> was used as the working directory.
+Started at Thu Jun  6 15:43:56 2019
+Terminated at Thu Jun  6 15:44:02 2019
+Results reported at Thu Jun  6 15:44:02 2019
+
+The output (if any) is above this job summary.
+
