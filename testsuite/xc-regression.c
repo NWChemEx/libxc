@@ -267,9 +267,22 @@ values_t read_data(const char *file, int nspin, int order) {
 /*----------------------------------------------------------*/
 int main(int argc, char *argv[])
 {
-  int func_id, nspin, order, i;
+  int func_id, nspin, order, i, ii;
+  /* The number of different components dependent on spin polarization */
+  int nrho,    nsigma,      nlapl, ntau;
+  int nvrho,   nv2rho2,     nv3rho3;
+  int          nv2rhosigma;
+  int nvsigma, nv2sigma2;
+  int          nv2rholapl;
+  int          nv2sigmalapl;
+  int nvlapl,  nv2lapl2;
+  int          nv2rhotau;
+  int          nv2sigmatau;
+  int          nv2lapltau;
+  int nvtau,   nv2tau2;
   /* Helpers for properties that may not have been implemented */
-  double *zk, *vrho, *v2rho2, *v3rho3;
+  double *zk,  *vrho,  *v2rho2,  *v3rho3;
+  double *zzk, *vvrho, *vv2rho2, *vv3rho3;
 
   static const char efmt[] =" % .16e";
   static const char efmt2[]=" % .16e % .16e";
@@ -319,6 +332,49 @@ int main(int argc, char *argv[])
       fprintf(stderr, "Functional '%d' (%s) not found.\nPlease report a bug against functional_get_number.\n", func_id, argv[1]);
       exit(1);
     }
+    /* Figure out how many components there are of each input type */
+    if (nspin == 1) {  /* spin unpolarized */
+        nrho         = 1;
+        nsigma       = 1;
+        nlapl        = 1;
+        ntau         = 1;
+        nvrho        = 1;
+        nvsigma      = 1;
+        nvlapl       = 1;
+        nvtau        = 1;
+        nv2rho2      = 1;
+        nv2rhosigma  = 1;
+        nv2rholapl   = 1;
+        nv2rhotau    = 1;
+        nv2sigma2    = 1;
+        nv2sigmalapl = 1;
+        nv2sigmatau  = 1;
+        nv2lapl2     = 1;
+        nv2lapltau   = 1;
+        nv2tau2      = 1;
+        nv3rho3      = 1;
+    }
+    else { /* nspin == 2; spin polarized  */
+        nrho         = 2;
+        nsigma       = 3;
+        nlapl        = 2;
+        ntau         = 2;
+        nvrho        = 2;
+        nvsigma      = 3;
+        nvlapl       = 2;
+        nvtau        = 2;
+        nv2rho2      = 3;
+        nv2rhosigma  = 6;
+        nv2rholapl   = 3;
+        nv2rhotau    = 3;
+        nv2sigma2    = 6;
+        nv2sigmalapl = 3;
+        nv2sigmatau  = 3;
+        nv2lapl2     = 3;
+        nv2lapltau   = 3;
+        nv2tau2      = 3;
+        nv3rho3      = 4;
+    }
     /* Get flags */
     flags  = func.info->flags;
     family = func.info->family;
@@ -330,29 +386,52 @@ int main(int argc, char *argv[])
     v3rho3 = (flags & XC_FLAGS_HAVE_KXC) ? d.v3rho3 : NULL;
 
     /* Evaluate xc functional */
-    switch(family) {
-    case XC_FAMILY_LDA:
-      xc_lda(&func, d.n, d.rho, zk, vrho, v2rho2, v3rho3);
-      break;
-    case XC_FAMILY_GGA:
-    case XC_FAMILY_HYB_GGA:
-      xc_gga(&func, d.n, d.rho, d.sigma, zk, vrho, d.vsigma,
-             v2rho2, d.v2rhosigma, d.v2sigma2, NULL, NULL, NULL, NULL);
-      break;
-    case XC_FAMILY_MGGA:
-    case XC_FAMILY_HYB_MGGA:
-      xc_mgga(&func, d.n, d.rho, d.sigma, d.lapl, d.tau, zk, vrho, d.vsigma, d.vlapl, d.vtau,
-              v2rho2, d.v2rhosigma, d.v2rholapl, d.v2rhotau, 
-              d.v2sigma2, d.v2sigmalapl, d.v2sigmatau,
-              d.v2lapl2, d.v2lapltau,
-              d.v2tau2,
-              NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-              NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-      break;
-    default:
-      fprintf(stderr,"Support for family %i not implemented.\n",family);
-      free_memory(d);
-      exit(1);
+    #pragma omp target teams distribute parallel for
+    for (ii=0; ii<d.n; ii++)
+    {
+        if (zk == NULL)
+            zzk = NULL;
+        else 
+            zzk = &(zk[ii]);
+        if (vrho == NULL)
+            vvrho = NULL;
+        else
+            vvrho = &(vrho[nvrho*ii]);
+        if (v2rho2 == NULL)
+            vv2rho2 = NULL;
+        else
+            vv2rho2 = &(v2rho2[nv2rho2*ii]);
+        if (v3rho3 == NULL)
+            vv3rho3 = NULL;
+        else
+            vv3rho3 = &(v3rho3[nv3rho3*ii]);
+        switch(family) {
+        case XC_FAMILY_LDA:
+          xc_lda(&func, 1, &d.rho[nrho*ii], zzk, vvrho, vv2rho2, vv3rho3);
+          break;
+        case XC_FAMILY_GGA:
+        case XC_FAMILY_HYB_GGA:
+          xc_gga(&func, 1, &d.rho[nrho*ii], &d.sigma[nsigma*ii], zzk, 
+                 vvrho, &d.vsigma[nvsigma*ii],
+                 vv2rho2, &d.v2rhosigma[nv2rhosigma*ii], &d.v2sigma2[nv2sigma2*ii],
+                 NULL, NULL, NULL, NULL);
+          break;
+        case XC_FAMILY_MGGA:
+        case XC_FAMILY_HYB_MGGA:
+          xc_mgga(&func, 1, &d.rho[nrho*ii], &d.sigma[nsigma*ii], &d.lapl[nlapl*ii], &d.tau[ntau*ii],
+                  zzk, vvrho, &d.vsigma[nvsigma*ii], &d.vlapl[nvlapl*ii], &d.vtau[nvtau*ii],
+                  vv2rho2, &d.v2rhosigma[nv2rhosigma*ii], &d.v2rholapl[nv2rholapl*ii],
+                  &d.v2rhotau[nv2rhotau*ii], &d.v2sigma2[nv2sigma2*ii], &d.v2sigmalapl[nv2sigmalapl*ii],
+                  &d.v2sigmatau[nv2sigmatau*ii], &d.v2lapl2[nv2lapl2*ii], &d.v2lapltau[nv2lapltau*ii],
+                  &d.v2tau2[nv2tau2*ii],
+                  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+          break;
+        default:
+          fprintf(stderr,"Support for family %i not implemented.\n",family);
+          free_memory(d);
+          exit(1);
+        }
     }
     xc_func_end(&func);
   }
