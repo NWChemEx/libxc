@@ -24,12 +24,12 @@ Reference data for the test cases can be found in
 	libxc/testsuite/regression/<functional-family>
 ```
 The data is stored in a bzip2-ed format.
-The job scripts for running the regression tests on Summit are store in
+The job scripts for running the regression tests on Summit are stored in
 ```
 	libxc/testsuite/jobscripts/<functional-family>
 ```
 
 Note that the regression testsuite has been developed as a tool for the LibXC
 developer. It is not expected that the results match to full precision.
-See for [this explanation](https://tddft.org/pipermail/libxc/2013-November/000166.html)
+See [this explanation](https://tddft.org/pipermail/libxc/2013-November/000166.html)
 for more information.

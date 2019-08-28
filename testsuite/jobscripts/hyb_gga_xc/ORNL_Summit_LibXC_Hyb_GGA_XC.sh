@@ -1,7 +1,7 @@
 #!/bin/bash
 #BSUB -P      chm136                    # Project ID
 #BSUB -o      libxc.oe%J                # Job output name
-#BSUB -J      libxc_gga_c               # Job name
+#BSUB -J      libxc_hyb_gga_xc          # Job name
 #BSUB -W      00:10                     # Walltime
 #BSUB -nnodes 1                         # Number of nodes
 #pwd
@@ -27,60 +27,85 @@ cd $SCRATCH_DIR
 #    - output    : output file name
 #
 functionals=(
-  gga_c_acgga
-  gga_c_acggap
-  gga_c_am05
-  gga_c_apbe
-  gga_c_bmk
-  gga_c_cs1
-  gga_c_ft97
-  gga_c_gam
-  gga_c_gapc
-  gga_c_gaploc
-  gga_c_hcth_a
-  gga_c_hyb_tau_hcth
-  gga_c_lm
-  gga_c_lyp
-  gga_c_n12
-  gga_c_n12_sx
-  gga_c_op_b88
-  gga_c_op_g96
-  gga_c_op_pbe
-  gga_c_op_pw91
-  gga_c_op_xalpha
-  gga_c_optc
-  gga_c_p86
-  gga_c_pbe
-  gga_c_pbe_jrgx
-  gga_c_pbe_mol
-  gga_c_pbe_sol
-  gga_c_pbefe
-  gga_c_pbeint
-  gga_c_pbeloc
-  gga_c_pw91
-  gga_c_q2d
-  gga_c_regtpss
-  gga_c_revtca
-  gga_c_rge2
-  gga_c_scan_e0
-  gga_c_sg4
-  gga_c_sogga11
-  gga_c_sogga11_x
-  gga_c_spbe
-  gga_c_tau_hcth
-  gga_c_tca
-  gga_c_tm_lyp
-  gga_c_tm_pbe
-  gga_c_w94
-  gga_c_wi
-  gga_c_wi0
-  gga_c_wl
-  gga_c_xpbe
-  gga_c_zpbeint
-  gga_c_zpbesol
-  gga_c_zvpbeint
-  gga_c_zvpbeloc
-  gga_c_zvpbesol
+  hyb_gga_xc_cam_qtp_01
+  hyb_gga_xc_cam_qtp_02
+  hyb_gga_xc_lc_qtp
+  hyb_gga_xc_apbe0
+  hyb_gga_xc_apf
+  hyb_gga_xc_b1lyp
+  hyb_gga_xc_b1pw91
+  hyb_gga_xc_b1wc
+  hyb_gga_xc_b3lyp
+  hyb_gga_xc_b3lyp5
+  hyb_gga_xc_b3lyps
+  hyb_gga_xc_b3p86
+  hyb_gga_xc_b3pw91
+  hyb_gga_xc_b5050lyp
+  hyb_gga_xc_b97
+  hyb_gga_xc_b97_1
+  hyb_gga_xc_b97_1p
+  hyb_gga_xc_b97_2
+  hyb_gga_xc_b97_3
+  hyb_gga_xc_b97_k
+  hyb_gga_xc_bhandh
+  hyb_gga_xc_bhandhlyp
+  hyb_gga_xc_cam_b3lyp
+  hyb_gga_xc_cam_qtp_00
+  hyb_gga_xc_camy_b3lyp
+  hyb_gga_xc_camy_blyp
+  hyb_gga_xc_cap0
+  hyb_gga_xc_edf2
+  hyb_gga_xc_hapbe
+  hyb_gga_xc_hjs_b88
+  hyb_gga_xc_hjs_b97x
+  hyb_gga_xc_hjs_pbe
+  hyb_gga_xc_hjs_pbe_sol
+  hyb_gga_xc_hpbeint
+  hyb_gga_xc_hse03
+  hyb_gga_xc_hse06
+  hyb_gga_xc_hse12
+  hyb_gga_xc_hse12s
+  hyb_gga_xc_hse_sol
+  hyb_gga_xc_kmlyp
+  hyb_gga_xc_lc_vv10
+  hyb_gga_xc_lc_wpbe
+  hyb_gga_xc_lc_wpbe08_whs
+  hyb_gga_xc_lc_wpbe_whs
+  hyb_gga_xc_lc_wpbeh_whs
+  hyb_gga_xc_lc_wpbesol_whs
+  hyb_gga_xc_lcy_blyp
+  hyb_gga_xc_lcy_pbe
+  hyb_gga_xc_lrc_wpbe
+  hyb_gga_xc_lrc_wpbeh
+  hyb_gga_xc_mb3lyp_rc04
+  hyb_gga_xc_mpw1k
+  hyb_gga_xc_mpw1lyp
+  hyb_gga_xc_mpw1pbe
+  hyb_gga_xc_mpw1pw
+  hyb_gga_xc_mpw3lyp
+  hyb_gga_xc_mpw3pw
+  hyb_gga_xc_mpwlyp1m
+  hyb_gga_xc_o3lyp
+  hyb_gga_xc_pbe0_13
+  hyb_gga_xc_pbe50
+  hyb_gga_xc_pbe_mol0
+  hyb_gga_xc_pbe_molb0
+  hyb_gga_xc_pbe_sol0
+  hyb_gga_xc_pbeb0
+  hyb_gga_xc_pbeh
+  hyb_gga_xc_revb3lyp
+  hyb_gga_xc_sb98_1a
+  hyb_gga_xc_sb98_1b
+  hyb_gga_xc_sb98_1c
+  hyb_gga_xc_sb98_2a
+  hyb_gga_xc_sb98_2b
+  hyb_gga_xc_sb98_2c
+  hyb_gga_xc_tuned_cam_b3lyp
+  hyb_gga_xc_wb97
+  hyb_gga_xc_wb97x
+  hyb_gga_xc_wb97x_d
+  hyb_gga_xc_wb97x_v
+  hyb_gga_xc_x3lyp
 )
 #
 for func in "${functionals[@]}"; do
