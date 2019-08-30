@@ -39,12 +39,19 @@ include(custom_static_library)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-# Check for OpenMP to support GPU offloading
-find_package(OpenMP)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+# Check for CUDA support
+find_package(CUDA)
+if (CUDA_FOUND)
+    #list (APPEND CUDA_NVCC_FLAGS "-D__STRICT_ANSI__")
+    enable_language(CUDA)
+else()
+    # Check for OpenMP to support GPU offloading
+    find_package(OpenMP)
+    if (OPENMP_FOUND)
+        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+        set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+    endif()
 endif()
 
 set(PN ${PROJECT_NAME})
@@ -100,7 +107,244 @@ set(${PROJECT_NAME}_SOVERSION ${XC_CURRENT}:${XC_REVISION}:${XC_AGE})
 math(EXPR ${PROJECT_NAME}_SOMAJOR "${XC_CURRENT} - ${XC_AGE}")
 message(STATUS "Libxc SO Full ${${PROJECT_NAME}_SOVERSION} Major ${${PROJECT_NAME}_SOMAJOR}")
 
+# Always include the CUDA sources. If the language CUDA is not enabled (see enable_language
+# above) then CMake will simply check the CUDA files exist and subsequently ignore them.
 set(raw_sources_list
+cuda/bessel.cu
+cuda/expint_e1.cu
+cuda/func_info.cu
+cuda/functionals.cu
+cuda/gga.cu
+cuda/gga_c_acgga.cu
+cuda/gga_c_acggap.cu
+cuda/gga_c_am05.cu
+cuda/gga_c_bmk.cu
+cuda/gga_c_cs1.cu
+cuda/gga_c_ft97.cu
+cuda/gga_c_gapc.cu
+cuda/gga_c_gaploc.cu
+cuda/gga_c_hcth_a.cu
+cuda/gga_c_lm.cu
+cuda/gga_c_lyp.cu
+cuda/gga_c_op_b88.cu
+cuda/gga_c_op_g96.cu
+cuda/gga_c_op_pbe.cu
+cuda/gga_c_op_pw91.cu
+cuda/gga_c_op_xalpha.cu
+cuda/gga_c_optc.cu
+cuda/gga_c_p86.cu
+cuda/gga_c_pbe.cu
+cuda/gga_c_pbeloc.cu
+cuda/gga_c_pw91.cu
+cuda/gga_c_q2d.cu
+cuda/gga_c_regtpss.cu
+cuda/gga_c_revtca.cu
+cuda/gga_c_scan_e0.cu
+cuda/gga_c_sg4.cu
+cuda/gga_c_sogga11.cu
+cuda/gga_c_tca.cu
+cuda/gga_c_w94.cu
+cuda/gga_c_wi.cu
+cuda/gga_c_wl.cu
+cuda/gga_c_zpbeint.cu
+cuda/gga_c_zvpbeint.cu
+cuda/gga_c_zvpbeloc.cu
+cuda/gga_k_dk.cu
+cuda/gga_k_meyer.cu
+cuda/gga_k_ol1.cu
+cuda/gga_k_ol2.cu
+cuda/gga_x_ol2.cu
+cuda/gga_k_pearson.cu
+cuda/gga_k_tflw.cu
+cuda/gga_k_thakkar.cu
+cuda/gga_k_gds08.cu
+cuda/gga_k_exp4.cu
+cuda/gga_x_2d_b86.cu
+cuda/gga_x_2d_b86_mgc.cu
+cuda/gga_x_2d_b88.cu
+cuda/gga_x_2d_pbe.cu
+cuda/gga_x_airy.cu
+cuda/gga_x_ak13.cu
+cuda/gga_x_am05.cu
+cuda/gga_x_b86.cu
+cuda/gga_x_b88.cu
+cuda/gga_k_llp.cu
+cuda/gga_k_pw86.cu
+cuda/gga_k_mpbe.cu
+cuda/gga_k_apbe.cu
+cuda/gga_k_apbeint.cu
+cuda/gga_k_lc94.cu
+cuda/gga_x_bayesian.cu
+cuda/gga_x_beefvdw.cu
+cuda/gga_x_bpccac.cu
+cuda/gga_x_c09x.cu
+cuda/gga_x_cap.cu
+cuda/gga_x_chachiyo.cu
+cuda/gga_x_dk87.cu
+cuda/gga_x_ev93.cu
+cuda/gga_x_ft97.cu
+cuda/gga_x_g96.cu
+cuda/gga_x_gg99.cu
+cuda/gga_x_hcth_a.cu
+cuda/gga_x_herman.cu
+cuda/gga_x_hjs.cu
+cuda/gga_x_hjs_b88_v2.cu
+cuda/gga_x_htbs.cu
+cuda/gga_x_ityh.cu
+cuda/gga_x_kt.cu
+cuda/gga_x_lag.cu
+cuda/gga_x_lb.cu
+cuda/gga_x_lg93.cu
+cuda/gga_x_lspbe.cu
+cuda/gga_x_lsrpbe.cu
+cuda/gga_x_lv_rpw86.cu
+cuda/gga_x_mpbe.cu
+cuda/gga_x_n12.cu
+cuda/gga_x_optx.cu
+cuda/gga_x_pbe.cu
+cuda/gga_x_pbea.cu
+cuda/gga_x_pbeint.cu
+cuda/gga_x_pbepow.cu
+cuda/gga_x_pbetrans.cu
+cuda/gga_x_pw86.cu
+cuda/gga_x_pw91.cu
+cuda/gga_x_q2d.cu
+cuda/gga_x_rge2.cu
+cuda/gga_x_rpbe.cu
+cuda/gga_x_sfat.cu
+cuda/gga_x_sfat_pbe.cu
+cuda/gga_x_sg4.cu
+cuda/gga_x_sogga11.cu
+cuda/gga_x_ssb_sw.cu
+cuda/gga_x_vmt.cu
+cuda/gga_x_vmt84.cu
+cuda/gga_x_wc.cu
+cuda/gga_x_wpbeh.cu
+cuda/gga_x_fd_lb94.cu
+cuda/gga_xc_1w.cu
+cuda/gga_xc_b97.cu
+cuda/gga_xc_edf1.cu
+cuda/gga_xc_oblyp_d.cu
+cuda/gga_xc_th1.cu
+cuda/gga_xc_th2.cu
+cuda/gga_xc_th3.cu
+cuda/gga_xc_vv10.cu
+cuda/hyb_gga_xc_b1wc.cu
+cuda/hyb_gga_xc_b3lyp.cu
+cuda/hyb_gga_xc_cam_b3lyp.cu
+cuda/hyb_gga_xc_cam_qtp.cu
+cuda/hyb_gga_xc_camy_b3lyp.cu
+cuda/hyb_gga_xc_camy_blyp.cu
+cuda/hyb_gga_xc_edf2.cu
+cuda/hyb_gga_xc_hse.cu
+cuda/hyb_gga_xc_lcy_blyp.cu
+cuda/hyb_gga_xc_lcy_pbe.cu
+cuda/hyb_gga_xc_o3lyp.cu
+cuda/hyb_gga_xc_pbeh.cu
+cuda/hyb_gga_xc_wb97.cu
+cuda/hyb_mgga_x_dldf.cu
+cuda/hyb_mgga_x_m05.cu
+cuda/hyb_mgga_x_mvsh.cu
+cuda/hyb_mgga_xc_b88b95.cu
+cuda/hyb_mgga_xc_kcis.cu
+cuda/hyb_mgga_xc_tpssh.cu
+cuda/hyb_mgga_xc_wb97mv.cu
+cuda/integrate.cu
+cuda/lda.cu
+cuda/lda_c_1d_csc.cu
+cuda/lda_c_1d_loos.cu
+cuda/lda_c_2d_amgb.cu
+cuda/lda_c_2d_prm.cu
+cuda/lda_c_chachiyo.cu
+cuda/lda_c_gombas.cu
+cuda/lda_c_hl.cu
+cuda/lda_c_lp96.cu
+cuda/lda_c_ml1.cu
+cuda/lda_c_pk09.cu
+cuda/lda_c_pw.cu
+cuda/lda_c_pz.cu
+cuda/lda_c_rc04.cu
+cuda/lda_c_rpa.cu
+cuda/lda_c_vwn.cu
+cuda/lda_c_vwn_1.cu
+cuda/lda_c_vwn_2.cu
+cuda/lda_c_vwn_3.cu
+cuda/lda_c_vwn_4.cu
+cuda/lda_c_vwn_rpa.cu
+cuda/lda_c_wigner.cu
+cuda/lda_c_gk72.cu
+cuda/lda_k_tf.cu
+cuda/lda_k_zlp.cu
+cuda/lda_k_gds08_worker.cu
+cuda/lda_x.cu
+cuda/lda_x_1d_soft.cu
+cuda/lda_x_1d_exponential.cu
+cuda/lda_x_2d.cu
+cuda/lda_x_erf.cu
+cuda/lda_x_rel.cu
+cuda/lda_xc_1d_ehwlrg.cu
+cuda/lda_xc_ksdt.cu
+cuda/lda_xc_teter93.cu
+cuda/lda_xc_zlp.cu
+cuda/lda_xc_bn05.cu
+cuda/lda_c_pmgb06.cu
+cuda/lda_xc_tih.cu
+cuda/mgga.cu
+cuda/mgga_c_b88.cu
+cuda/mgga_c_bc95.cu
+cuda/mgga_c_cs.cu
+cuda/mgga_c_kcis.cu
+cuda/mgga_xc_lp90.cu
+cuda/mgga_c_m05.cu
+cuda/mgga_c_m06l.cu
+cuda/mgga_c_m08.cu
+cuda/mgga_c_pkzb.cu
+cuda/mgga_c_revscan.cu
+cuda/mgga_c_revtpss.cu
+cuda/mgga_c_scan.cu
+cuda/mgga_c_tpss.cu
+cuda/mgga_c_tpssloc.cu
+cuda/mgga_c_vsxc.cu
+cuda/mgga_k_pc07.cu
+cuda/mgga_x_2d_prhg07.cu
+cuda/mgga_x_br89.cu
+cuda/mgga_x_br89_explicit.cu
+cuda/mgga_x_gvt4.cu
+cuda/mgga_x_gx.cu
+cuda/mgga_x_lta.cu
+cuda/mgga_x_m06l.cu
+cuda/mgga_x_m08.cu
+cuda/mgga_x_m11.cu
+cuda/mgga_x_m11_l.cu
+cuda/mgga_x_mbeef.cu
+cuda/mgga_x_mbeefvdw.cu
+cuda/mgga_x_mk00.cu
+cuda/mgga_x_mn12.cu
+cuda/mgga_x_ms.cu
+cuda/mgga_x_msb.cu
+cuda/mgga_x_mvs.cu
+cuda/mgga_x_mvsb.cu
+cuda/mgga_x_pbe_gx.cu
+cuda/mgga_x_pkzb.cu
+cuda/mgga_x_sa_tpss.cu
+cuda/mgga_x_scan.cu
+cuda/mgga_x_tau_hcth.cu
+cuda/mgga_x_tm.cu
+cuda/mgga_x_tpss.cu
+cuda/mgga_x_regtpss.cu
+cuda/mgga_x_vt84.cu
+cuda/mgga_x_rtpss.cu
+cuda/mgga_xc_b97mv.cu
+cuda/mgga_xc_cc06.cu
+cuda/mgga_xc_hle17.cu
+cuda/mgga_xc_otpss_d.cu
+cuda/mgga_xc_zlp.cu
+cuda/mgga_xc_b98.cu
+cuda/mix_func.cu
+cuda/references.cu
+cuda/special_functions.cu
+cuda/util.cu
+cuda/version.cu
 bessel.c
 expint_e1.c
 func_info.c
@@ -357,6 +601,10 @@ string(REPLACE "<xc_version.h>" "\"xc_version.h\"" _quoted_src "${_src_contents}
 file(WRITE ${PROJECT_BINARY_DIR}/${src_prefix}xc.h "${_quoted_src}")
 
 # STATIC/SHARED on below governed by BUILD_SHARED_LIBS
+#DEBUG
+message(STATUS "HVD: List of source files")
+message(STATUS "${sources_list}")
+#DEBUG
 add_library(xc ${sources_list})
 target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY})
 set_target_properties(xc PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
@@ -436,6 +684,7 @@ endif()
 
 # by default, headers NOT namespace protected
 install(FILES ${PROJECT_BINARY_DIR}/${src_prefix}/xc.h
+              ${PROJECT_BINARY_DIR}/${src_prefix}/cuda.h
               ${gen_dir}/xc_funcs.h
               ${gen_dir}/xc_funcs_worker.h
               ${PROJECT_BINARY_DIR}/xc_version.h
