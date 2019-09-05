@@ -849,6 +849,7 @@ version.c
 endif()
 
 set(src_prefix "src/")
+set(src_prefix_cuda "src/cuda")
 string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list "${raw_sources_list}")
 
 set(raw_sources_list_f90
@@ -927,7 +928,7 @@ execute_process(
     TIMEOUT 60
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 execute_process(
-    COMMAND ${PERL_EXECUTABLE} scripts/cuda/get_funcs.pl ${src_prefix} ${gen_dir_cuda}
+    COMMAND ${PERL_EXECUTABLE} scripts/cuda/get_funcs.pl ${src_prefix_cuda} ${gen_dir_cuda}
     TIMEOUT 60
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/cuda)
 
