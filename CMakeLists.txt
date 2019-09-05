@@ -912,9 +912,14 @@ endif()
 
 # run get_funcs.pl to generate headers for xc inclusion
 find_package(Perl REQUIRED)
-set(gen_dir "${PROJECT_BINARY_DIR}/gen_funcidx")
+set(gen_dir      "${PROJECT_BINARY_DIR}/gen_funcidx")
+set(gen_dir_cuda "${PROJECT_BINARY_DIR}/gen_funcidx/cuda")
 execute_process(
     COMMAND ${CMAKE_COMMAND} -E make_directory ${gen_dir}
+    TIMEOUT 5
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+execute_process(
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${gen_dir_cuda}
     TIMEOUT 5
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 execute_process(
@@ -922,7 +927,7 @@ execute_process(
     TIMEOUT 60
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 execute_process(
-    COMMAND ${PERL_EXECUTABLE} scripts/cuda/get_funcs.pl ${src_prefix} ${gen_dir}
+    COMMAND ${PERL_EXECUTABLE} scripts/cuda/get_funcs.pl ${src_prefix} ${gen_dir_cuda}
     TIMEOUT 60
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/cuda)
 
@@ -937,10 +942,12 @@ target_link_libraries(xc-info xc)
 target_link_libraries(xc-threshold xc)
 
 
-include_directories(${PROJECT_SOURCE_DIR}/${src_prefix}  # for util.h
-                    ${PROJECT_BINARY_DIR}/${src_prefix}  # for xc.h
-                    ${PROJECT_BINARY_DIR}  # for xc_version.h, config.h
-                    ${gen_dir})  # for xc_funcs.h
+include_directories(${PROJECT_SOURCE_DIR}/${src_prefix}       # for util.h
+                    ${PROJECT_SOURCE_DIR}/${src_prefix}/cuda  # for dvc_util.h
+                    ${PROJECT_BINARY_DIR}/${src_prefix}       # for xc.h
+                    ${PROJECT_BINARY_DIR}                     # for xc_version.h, config.h
+                    ${gen_dir}                                # for xc_funcs.h, funcs_key.c
+                    ${gen_dir}/cuda)                          # for xc_funcs.h, funcs_key.cu
 
 if(BUILD_TESTING)
     find_program(BZip2_EXECUTABLE
