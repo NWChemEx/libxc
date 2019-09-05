@@ -173,7 +173,7 @@ sub read_file() {
 
   opendir(DIR, "$dir/") || die "cannot opendir '$dir': $!";
   while($_ = readdir(DIR)){
-    next if(!/^${type}_.*\.c$/ && !/^hyb_${type}_.*\.c$/ );
+    next if(!/^${type}_.*\.cu$/ && !/^hyb_${type}_.*\.cu$/ );
 
     $file=$_;
     open(IN, "<$dir/$_") or die("Could not open '$dir/$_'.\n");

@@ -921,7 +921,7 @@ execute_process(
 execute_process(
     COMMAND ${CMAKE_COMMAND} -E make_directory ${gen_dir_cuda}
     TIMEOUT 5
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/cuda)
 execute_process(
     COMMAND ${PERL_EXECUTABLE} scripts/get_funcs.pl ${src_prefix} ${gen_dir}
     TIMEOUT 60
