@@ -9,6 +9,8 @@
 #ifndef _XC_H
 #define _XC_H
 
+#include "cuda.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -72,7 +74,7 @@ const char *xc_version_string();
 struct xc_func_type;
 
 typedef struct{
-  char *ref, *doi, *bibtex;
+  const char *ref, *doi, *bibtex;
 } func_reference_type;
 
 char const *xc_func_reference_get_ref(const func_reference_type *reference);
@@ -80,17 +82,17 @@ char const *xc_func_reference_get_doi(const func_reference_type *reference);
 char const *xc_func_reference_get_bibtex(const func_reference_type *reference);
 
 typedef struct{
-  char *name; /* ATTENTION: if name starts with a _ it is an *internal* parameter, 
-                 changing the value effectively changes the functional! */
+  const char *name; /* ATTENTION: if name starts with a _ it is an *internal* parameter, 
+                    changing the value effectively changes the functional! */
   double value;
-  char *description;
+  const char *description;
 } func_params_type;
 
 typedef struct{
   int   number;   /* identifier number */
   int   kind;     /* XC_EXCHANGE, XC_CORRELATION, XC_EXCHANGE_CORRELATION, XC_KINETIC */
 
-  char *name;     /* name of the functional, e.g. "PBE" */
+  const char *name;     /* name of the functional, e.g. "PBE" */
   int   family;   /* type of the functional, e.g. XC_FAMILY_GGA */
   func_reference_type *refs[XC_MAX_REFERENCES];  /* index of the references */
 
@@ -305,7 +307,114 @@ void xc_mgga_kxc    (const xc_func_type *p, int np,
 		      double *v3lapl3, double *v3lapl2tau,
 		      double *v3lapltau2,
 		      double *v3tau3);
-  
+
+// DEVICE code
+#ifdef __CUDACC__
+DEVICE int dvc_xc_func_info_get_number(const xc_func_info_type *info);
+DEVICE int dvc_xc_func_info_get_kind(const xc_func_info_type *info);
+DEVICE char const *dvc_xc_func_info_get_name(const xc_func_info_type *info);
+DEVICE int dvc_xc_func_info_get_family(const xc_func_info_type *info);
+DEVICE int dvc_xc_func_info_get_flags(const xc_func_info_type *info);
+DEVICE const func_reference_type *dvc_xc_func_info_get_references(const xc_func_info_type *info, int number);
+DEVICE int dvc_xc_func_info_get_n_ext_params(xc_func_info_type *info);
+DEVICE char const *dvc_xc_func_info_get_ext_params_description(xc_func_info_type *info, int number);
+DEVICE double dvc_xc_func_info_get_ext_params_default_value(xc_func_info_type *info, int number);
+/* functionals */
+DEVICE int   dvc_xc_functional_get_number(const char *name);
+DEVICE char *dvc_xc_functional_get_name(int number);
+DEVICE int   dvc_xc_family_from_id(int id, int *family, int *number);
+DEVICE int   dvc_xc_number_of_functionals();
+DEVICE int   dvc_xc_maximum_name_length();
+DEVICE void  dvc_xc_available_functional_numbers(int *list);
+DEVICE void  dvc_xc_available_functional_names(char **list);
+
+DEVICE xc_func_type *dvc_xc_func_alloc();
+DEVICE int   dvc_xc_func_init(xc_func_type *p, int functional, int nspin);
+DEVICE void  dvc_xc_func_end(xc_func_type *p);
+DEVICE void  dvc_xc_func_free(xc_func_type *p);
+DEVICE const xc_func_info_type *dvc_xc_func_get_info(const xc_func_type *p);
+DEVICE void  dvc_xc_func_set_dens_threshold(xc_func_type *p, double dens_threshold);
+DEVICE void  dvc_xc_func_set_ext_params(xc_func_type *p, double *ext_params);
+
+DEVICE void dvc_xc_lda        (const xc_func_type *p, int np, const double *rho, double *zk, double *vrho, double *v2rho2, double *v3rho3);
+DEVICE void dvc_xc_lda_exc    (const xc_func_type *p, int np, const double *rho, double *zk);
+DEVICE void dvc_xc_lda_exc_vxc(const xc_func_type *p, int np, const double *rho, double *zk, double *vrho);
+DEVICE void dvc_xc_lda_vxc    (const xc_func_type *p, int np, const double *rho, double *vrho);
+DEVICE void dvc_xc_lda_fxc    (const xc_func_type *p, int np, const double *rho, double *v2rho2);
+DEVICE void dvc_xc_lda_kxc    (const xc_func_type *p, int np, const double *rho, double *v3rho3);
+
+DEVICE void dvc_xc_gga     (const xc_func_type *p, int np, const double *rho, const double *sigma,
+		 double *zk, double *vrho, double *vsigma,
+		 double *v2rho2, double *v2rhosigma, double *v2sigma2,
+		 double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3);
+DEVICE void dvc_xc_gga_exc(const xc_func_type *p, int np, const double *rho, const double *sigma,
+		 double *zk);
+DEVICE void dvc_xc_gga_exc_vxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
+		 double *zk, double *vrho, double *vsigma);
+DEVICE void dvc_xc_gga_vxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
+		 double *vrho, double *vsigma);
+DEVICE void dvc_xc_gga_fxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
+		 double *v2rho2, double *v2rhosigma, double *v2sigma2);
+DEVICE void dvc_xc_gga_kxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
+		 double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3);
+
+DEVICE void dvc_xc_gga_lb_modified  (const xc_func_type *p, int np, const double *rho, const double *sigma,
+     double r, double *vrho);
+
+DEVICE double dvc_xc_gga_ak13_get_asymptotic (double homo);
+
+DEVICE double dvc_xc_hyb_exx_coef(const xc_func_type *p);
+DEVICE void  dvc_xc_hyb_cam_coef(const xc_func_type *p, double *omega, double *alpha, double *beta);
+DEVICE void  dvc_xc_nlc_coef(const xc_func_type *p, double *nlc_b, double *nlc_C);
+
+/* the meta-GGAs */
+DEVICE void dvc_xc_mgga        (const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl_rho, const double *tau,
+		      double *zk,
+		      double *vrho, double *vsigma, double *vlapl, double *vtau,
+		      double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, 
+		      double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
+		      double *v2lapl2, double *v2lapltau,
+		      double *v2tau2,
+					double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau,
+		      double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
+		      double *v3rholapl2, double *v3rholapltau,
+		      double *v3rhotau2,
+		      double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
+		      double *v3sigmalapl2, double *v3sigmalapltau,
+		      double *v3sigmatau2,
+		      double *v3lapl3, double *v3lapl2tau,
+		      double *v3lapltau2,
+		      double *v3tau3);
+DEVICE void dvc_xc_mgga_exc    (const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+		      double *zk);
+DEVICE void dvc_xc_mgga_exc_vxc(const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+		      double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau);
+DEVICE void dvc_xc_mgga_vxc    (const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+		      double *vrho, double *vsigma, double *vlapl, double *vtau);
+DEVICE void dvc_xc_mgga_fxc    (const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+   	      double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, 
+ 		      double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
+		      double *v2lapl2, double *v2lapltau,
+		      double *v2tau2);
+DEVICE void dvc_xc_mgga_kxc    (const xc_func_type *p, int np,
+          const double *rho, const double *sigma, const double *lapl, const double *tau,
+          double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, 
+		      double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
+		      double *v3rholapl2, double *v3rholapltau,
+		      double *v3rhotau2,
+		      double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
+		      double *v3sigmalapl2, double *v3sigmalapltau,
+		      double *v3sigmatau2,
+		      double *v3lapl3, double *v3lapl2tau,
+		      double *v3lapltau2,
+		      double *v3tau3);
+#endif // __CUDACC__
+
 #ifdef __cplusplus
 }
 #endif
