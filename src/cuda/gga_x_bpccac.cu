@@ -7,22 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_BPCCAC  98 /* BPCCAC (GRAC for the energy) */
 
-#include "maple2c/gga_exc/gga_x_bpccac.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_x_bpccac = {
+#include "maple2c/gga_exc/gga_x_bpccac.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_bpccac = {
   XC_GGA_X_BPCCAC,
   XC_EXCHANGE,
   "BPCCAC (GRAC for the energy)",
   XC_FAMILY_GGA,
-  {&xc_ref_Bremond2012_1184, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Bremond2012_1184, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
 
+#pragma omp end declare target

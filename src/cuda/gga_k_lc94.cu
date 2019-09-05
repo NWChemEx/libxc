@@ -7,18 +7,23 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_LC94         521 /* Lembarki & Chermette */
+
+#pragma omp declare target
 
 typedef struct{
   double a, b, c, d, f, alpha, expo;
 } gga_k_lc94_params;
 
-static gga_k_lc94_params par_k_lc94 =
+DEVICE
+static gga_k_lc94_params dvc_par_k_lc94 =
   {0.093907, 76.320, 0.26608, -0.0809615, 0.000057767, 100.0, 4.0};
 
+DEVICE
 static void 
-gga_k_lc94_init(xc_func_type *p)
+dvc_gga_k_lc94_init(xc_func_type *p)
 {
   gga_k_lc94_params *params;
 
@@ -28,26 +33,32 @@ gga_k_lc94_init(xc_func_type *p)
 
   switch(p->info->number){
   case XC_GGA_K_LC94:
-    memcpy(params, &par_k_lc94, sizeof(gga_k_lc94_params));
+    memcpy(params, &dvc_par_k_lc94, sizeof(gga_k_lc94_params));
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_k_lc94\n");
     exit(1);
+    #endif
+    break;
   } 
 }
 
 #include "maple2c/gga_exc/gga_k_lc94.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_lc94 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_k_lc94 = {
   XC_GGA_K_LC94,
   XC_KINETIC,
   "Lembarki & Chermette",
   XC_FAMILY_GGA,
-  {&xc_ref_Lembarki1994_5328, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Lembarki1994_5328, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-21,
   0, NULL, NULL,
-  gga_k_lc94_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_k_lc94_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

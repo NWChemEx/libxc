@@ -7,34 +7,39 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_X_ERF   546   /* Attenuated exchange LDA (erf) */
 
-static const func_params_type ext_params[] = {
+#pragma omp declare target
+
+DEVICE static const func_params_type dvc_ext_params[] = {
   {"omega",  0.3, "screening parameter"},
 };
 
-static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+DEVICE static void 
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   assert(p != NULL);
 
-  p->cam_omega = get_ext_param(p->info->ext_params, ext_params, 0);
+  p->cam_omega = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
 }
 
 
 #include "maple2c/lda_exc/lda_x_erf.c"
-#include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_x_erf = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_erf = {
   XC_LDA_X_ERF,
   XC_EXCHANGE,
   "Attenuated exchange LDA (erf)",
   XC_FAMILY_LDA,
-  {&xc_ref_Gill1996_1005, &xc_ref_Toulouse2004_1047, &xc_ref_Tawada2004_8425, NULL, NULL},
+  {&dvc_xc_ref_Gill1996_1005, &dvc_xc_ref_Toulouse2004_1047, &dvc_xc_ref_Tawada2004_8425, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-13,
-  1, ext_params, set_ext_params,
+  1, dvc_ext_params, dvc_set_ext_params,
   NULL, NULL, 
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

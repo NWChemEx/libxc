@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 /* for a review on the values of lambda and gamma, please see EV
 Ludena and VV Karasiev, in "Reviews of Modern Quantum Chemistry: a
@@ -29,14 +30,17 @@ Celebration of the Contributions of Robert G. Parr, edited by KD Sen
 #define XC_GGA_K_LUDENA        509 /* gamma-TFvW form by Ludena */
 #define XC_GGA_K_GP85          510 /* gamma-TFvW form by Ghosh and Parr */
 
+#pragma omp declare target
+
 typedef struct{
   double gamma, lambda;
 } gga_k_tflw_params;
 
 
 /* for automatically assigning lambda and gamma set them to -1 */
+DEVICE
 static void 
-gga_k_tflw_set_params(xc_func_type *p, double gamma, double lambda, double N)
+dvc_gga_k_tflw_set_params(xc_func_type *p, double gamma, double lambda, double N)
 {
   gga_k_tflw_params *params;
   double C0 = CBRT(M_PI/3.0);
@@ -112,8 +116,9 @@ gga_k_tflw_set_params(xc_func_type *p, double gamma, double lambda, double N)
 }
 
 
+DEVICE
 static void 
-gga_k_tflw_init(xc_func_type *p)
+dvc_gga_k_tflw_init(xc_func_type *p)
 {
 
   assert(p->params == NULL);
@@ -121,220 +126,226 @@ gga_k_tflw_init(xc_func_type *p)
 
   /* This automatically sets gamma and lambda depending on the functional chosen.
      We put by default N = 1.0 */
-  gga_k_tflw_set_params(p, -1.0, -1.0, 1.0);
+  dvc_gga_k_tflw_set_params(p, -1.0, -1.0, 1.0);
 }
 
 #include "maple2c/gga_exc/gga_k_tflw.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-static const func_params_type tfvw_ext_params[] = {
+DEVICE
+static const func_params_type dvc_tfvw_ext_params[] = {
   {"Lambda", 1.0, "Lambda"},
   {"Gamma", 1.0, "Gamma"},
 };
 
+DEVICE
 static void 
-tfvw_set_ext_params(xc_func_type *p, const double *ext_params)
+dvc_tfvw_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   double lambda, gamma;
 
   lambda = get_ext_param(p->info->ext_params, ext_params, 0);
   gamma  = get_ext_param(p->info->ext_params, ext_params, 1);
 
-  gga_k_tflw_set_params(p, gamma, lambda, 1.0);
+  dvc_gga_k_tflw_set_params(p, gamma, lambda, 1.0);
 }
 
-const xc_func_info_type xc_func_info_gga_k_tfvw = {
+const xc_func_info_type dvc_xc_func_info_gga_k_tfvw = {
   XC_GGA_K_TFVW,
   XC_KINETIC,
   "Thomas-Fermi plus von Weiszaecker correction",
   XC_FAMILY_GGA,
-  {&xc_ref_Weizsacker1935_431, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Weizsacker1935_431, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
-  2, tfvw_ext_params, tfvw_set_ext_params,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  2, dvc_tfvw_ext_params, dvc_tfvw_set_ext_params,
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_vw = {
+const xc_func_info_type dvc_xc_func_info_gga_k_vw = {
   XC_GGA_K_VW,
   XC_KINETIC,
   "von Weiszaecker correction to Thomas-Fermi",
   XC_FAMILY_GGA,
-  {&xc_ref_Weizsacker1935_431, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Weizsacker1935_431, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_ge2 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_ge2 = {
   XC_GGA_K_GE2,
   XC_KINETIC,
   "Second-order gradient expansion of the kinetic energy density",
   XC_FAMILY_GGA,
-  {&xc_ref_Kompaneets1956_427, &xc_ref_Kirznits1957_115, NULL, NULL, NULL},
+  {&dvc_xc_ref_Kompaneets1956_427, &dvc_xc_ref_Kirznits1957_115, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_golden = {
+const xc_func_info_type dvc_xc_func_info_gga_k_golden = {
   XC_GGA_K_GOLDEN,
   XC_KINETIC,
   "TF-lambda-vW form by Golden (l = 13/45)",
   XC_FAMILY_GGA,
-  {&xc_ref_Golden1957_604, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Golden1957_604, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_yt65 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_yt65 = {
   XC_GGA_K_YT65,
   XC_KINETIC,
   "TF-lambda-vW form by Yonei and Tomishima (l = 1/5)",
   XC_FAMILY_GGA,
-  {&xc_ref_Yonei1965_1051, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Yonei1965_1051, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_baltin = {
+const xc_func_info_type dvc_xc_func_info_gga_k_baltin = {
   XC_GGA_K_BALTIN,
   XC_KINETIC,
   "TF-lambda-vW form by Baltin (l = 5/9)",
   XC_FAMILY_GGA,
-  {&xc_ref_Baltin1972_1176, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Baltin1972_1176, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_lieb = {
+const xc_func_info_type dvc_xc_func_info_gga_k_lieb = {
   XC_GGA_K_LIEB,
   XC_KINETIC,
   "TF-lambda-vW form by Lieb (l = 0.185909191)",
   XC_FAMILY_GGA,
-  {&xc_ref_Lieb1981_603, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Lieb1981_603, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-static const func_params_type N_ext_params[] = {
+DEVICE
+static const func_params_type dvc_N_ext_params[] = {
   {"N", 1.0, "Number of electrons"},
 };
 
+DEVICE
 static void 
-N_set_ext_params(xc_func_type *p, const double *ext_params)
+dvc_N_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   double N;
 
-  N = get_ext_param(p->info->ext_params, ext_params, 0);
-  gga_k_tflw_set_params(p, -1.0, -1.0, N);
+  N = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
+  dvc_gga_k_tflw_set_params(p, -1.0, -1.0, N);
 }
 
 
-const xc_func_info_type xc_func_info_gga_k_absp1 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_absp1 = {
   XC_GGA_K_ABSP1,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = 1 - 1.412/N^(1/3)]",
   XC_FAMILY_GGA,
-  {&xc_ref_Acharya1980_6978, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Acharya1980_6978, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
-  1, N_ext_params, N_set_ext_params,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  1, dvc_N_ext_params, dvc_N_set_ext_params,
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_absp2 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_absp2 = {
   XC_GGA_K_ABSP2,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = 1 - 1.332/N^(1/3)]",
   XC_FAMILY_GGA,
-  {&xc_ref_Acharya1980_6978, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Acharya1980_6978, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
-  1, N_ext_params, N_set_ext_params,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  1, dvc_N_ext_params, dvc_N_set_ext_params,
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_absp3 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_absp3 = {
   XC_GGA_K_ABSP3,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = 1 - 1.513/N^0.35]",
   XC_FAMILY_GGA,
-  {&xc_ref_Acharya1980_6978, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Acharya1980_6978, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
-  1, N_ext_params, N_set_ext_params,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  1, dvc_N_ext_params, dvc_N_set_ext_params,
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_absp4 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_absp4 = {
   XC_GGA_K_ABSP4,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = l = 1/(1 + 1.332/N^(1/3))]",
   XC_FAMILY_GGA,
-  {&xc_ref_Acharya1980_6978, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Acharya1980_6978, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
-  1, N_ext_params, N_set_ext_params,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  1, dvc_N_ext_params, dvc_N_set_ext_params,
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_gr = {
+const xc_func_info_type dvc_xc_func_info_gga_k_gr = {
   XC_GGA_K_GR,
   XC_KINETIC,
   "gamma-TFvW form by Gazquez and Robles",
   XC_FAMILY_GGA,
-  {&xc_ref_Gazquez1982_1467, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Gazquez1982_1467, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
-  1, N_ext_params, N_set_ext_params,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  1, dvc_N_ext_params, dvc_N_set_ext_params,
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_ludena = {
+const xc_func_info_type dvc_xc_func_info_gga_k_ludena = {
   XC_GGA_K_LUDENA,
   XC_KINETIC,
   "gamma-TFvW form by Ludena",
   XC_FAMILY_GGA,
-  {&xc_ref_Ludena1986, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Ludena1986, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  1, N_ext_params, N_set_ext_params,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  1, dvc_N_ext_params, dvc_N_set_ext_params,
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_gp85 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_gp85 = {
   XC_GGA_K_GP85,
   XC_KINETIC,
   "gamma-TFvW form by Ghosh and Parr",
   XC_FAMILY_GGA,
-  {&xc_ref_Ghosh1985_3307, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Ghosh1985_3307, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  1, N_ext_params, N_set_ext_params,
-  gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  1, dvc_N_ext_params, dvc_N_set_ext_params,
+  dvc_gga_k_tflw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

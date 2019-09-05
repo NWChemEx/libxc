@@ -8,22 +8,26 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_X_2D  19 /* Exchange in 2D */
 
-#include "maple2c/lda_exc/lda_x_2d.c"
-#include "work_lda_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_lda_x_2d = {
+#include "maple2c/lda_exc/lda_x_2d.c"
+#include "work_lda_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_2d = {
   XC_LDA_X_2D,
   XC_EXCHANGE,
   "Slater exchange",
   XC_FAMILY_LDA,
-  {&xc_ref_Dirac1930_376, &xc_ref_Bloch1929_545, NULL, NULL, NULL},
+  {&dvc_xc_ref_Dirac1930_376, &dvc_xc_ref_Bloch1929_545, NULL, NULL, NULL},
   XC_FLAGS_2D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL,  NULL
+  dvc_work_lda, NULL,  NULL
 };
 
+#pragma omp end declare target

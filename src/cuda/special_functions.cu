@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 /*
   Lambert W function. 
@@ -15,16 +16,18 @@
   Corless, Gonnet, Hare, Jeffrey, and Knuth (1996), 
          Adv. in Comp. Math. 5(4):329-359. 
 */
-
-double LambertW(double z)
+#pragma omp declare target
+DEVICE double dvc_LambertW(double z)
 {
   double w;
   int i;
 
   /* Sanity check - function is only defined for z >= -1/e */
   if(z + 1.0/M_E < -10*DBL_EPSILON) {
+    #ifndef __CUDACC__
     fprintf(stderr,"Error - Lambert function called with argument z = %e.\n",z);
     exit(1);
+    #endif
   } else if(z < -1.0/M_E)
     /* Value of W(x) at x=-1/e is -1 */
     return -1.0;
@@ -70,9 +73,11 @@ double LambertW(double z)
   }
 
   /* This should never happen! */
+  #ifndef __CUDACC__
   fprintf(stderr, "%s\n%s\n", "lambert_w: iteration limit reached",
 	  "Should never happen: execution aborted");
   exit(1);
+  #endif
 }
 
 /*
@@ -82,8 +87,8 @@ double LambertW(double z)
 */
 
 
-static double pi26 = 1.644934066848226436472415166646025189219;
-static double spencs[38] = 
+DEVICE static double dvc_pi26 = 1.644934066848226436472415166646025189219;
+DEVICE static double dvc_spencs[38] = 
   {
     +.1527365598892405872946684910028e+0,
     +.8169658058051014403501838185271e-1,
@@ -126,41 +131,42 @@ static double spencs[38] =
   };
 
 
-double xc_dilogarithm(const double x)
+DEVICE double dvc_xc_dilogarithm(const double x)
 {
   const int nspenc = 38;
   double aux, dspenc;
 
   if (x > 2.0){
     aux = log(x);
-    dspenc = 2.0*pi26 - 0.5*aux*aux;
+    dspenc = 2.0*dvc_pi26 - 0.5*aux*aux;
     if(x < FLT_RADIX/DBL_EPSILON) 
-      dspenc -= (1.0 + xc_cheb_eval(4.0/x - 1.0, spencs, nspenc))/x;
+      dspenc -= (1.0 + dvc_xc_cheb_eval(4.0/x - 1.0, dvc_spencs, nspenc))/x;
 
   }else if (x > 1.0){
     aux = x - 1.0;
-    dspenc = pi26 - 0.5*log(x)*log(aux*aux/x)
-      + aux*(1.0 + xc_cheb_eval(4.0*aux/x-1.0, spencs, nspenc))/x;
+    dspenc = dvc_pi26 - 0.5*log(x)*log(aux*aux/x)
+      + aux*(1.0 + dvc_xc_cheb_eval(4.0*aux/x-1.0, dvc_spencs, nspenc))/x;
 
   }else if (x > 0.5){
      if (x != 1.0)
-       dspenc = pi26 - log(x)*log(1.0 - x)
-	 - (1.0 - x)*(1.0 + xc_cheb_eval(4.0*(1.0 - x)-1.0, spencs, nspenc));
+       dspenc = dvc_pi26 - log(x)*log(1.0 - x)
+	 - (1.0 - x)*(1.0 + dvc_xc_cheb_eval(4.0*(1.0 - x)-1.0, dvc_spencs, nspenc));
 
   }else if (x >= 0.0){
-    dspenc = x*(1.0 + xc_cheb_eval(4.0*x - 1.0, spencs, nspenc));
+    dspenc = x*(1.0 + dvc_xc_cheb_eval(4.0*x - 1.0, dvc_spencs, nspenc));
 
   }else if (x > -1.0){
     aux = log(1.0 - x);
-    dspenc = -0.5*aux*aux - x*(1.0+ xc_cheb_eval(4.0*x/(x-1.0)-1.0, spencs, nspenc))/(x-1.0);
+    dspenc = -0.5*aux*aux - x*(1.0+ dvc_xc_cheb_eval(4.0*x/(x-1.0)-1.0, dvc_spencs, nspenc))/(x-1.0);
 
   }else{
     aux = log(1.0 - x);
-    dspenc = -pi26 - 0.50*aux*(2.00*log(-x) - aux);
+    dspenc = -dvc_pi26 - 0.50*aux*(2.00*log(-x) - aux);
 
     if (x > -FLT_RADIX/DBL_EPSILON)
-      dspenc += (1.0 + xc_cheb_eval(4.0/(1.0-x)-1.0, spencs, nspenc))/(1.0 - x);
+      dspenc += (1.0 + dvc_xc_cheb_eval(4.0/(1.0-x)-1.0, dvc_spencs, nspenc))/(1.0 - x);
   }
 
   return dspenc;
 }
+#pragma omp end declare target

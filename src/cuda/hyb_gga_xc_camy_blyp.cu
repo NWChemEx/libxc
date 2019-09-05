@@ -7,11 +7,12 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define  XC_HYB_GGA_XC_CAMY_BLYP 455  /* BLYP with yukawa screening */
 
-void
-xc_hyb_gga_xc_camy_blyp_init(xc_func_type *p)
+DEVICE void
+dvc_xc_hyb_gga_xc_camy_blyp_init(xc_func_type *p)
 {
   static int   funcs_id  [3] = {XC_GGA_X_B88, XC_GGA_X_SFAT, XC_GGA_C_LYP};
   double funcs_coef[3];
@@ -32,25 +33,26 @@ xc_hyb_gga_xc_camy_blyp_init(xc_func_type *p)
   funcs_coef[1] =-beta;
   funcs_coef[2] = 1.0;
 
-  xc_mix_init(p, 3, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, 3, funcs_id, funcs_coef);
 
-  xc_func_set_ext_params(p->func_aux[1], &omega);
+  dvc_xc_func_set_ext_params(p->func_aux[1], &omega);
 
   p->cam_omega = omega;
   p->cam_alpha = alpha;
   p->cam_beta  = beta;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_camy_blyp = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_camy_blyp = {
   XC_HYB_GGA_XC_CAMY_BLYP,
   XC_EXCHANGE_CORRELATION,
   "CAMY version of BLYP",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Akinaga2008_348, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Akinaga2008_348, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAMY | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1e-32,
   0, NULL, NULL,
-  xc_hyb_gga_xc_camy_blyp_init, NULL,
+  dvc_xc_hyb_gga_xc_camy_blyp_init, NULL,
   NULL, NULL, NULL
 };
 

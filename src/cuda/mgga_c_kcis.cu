@@ -7,46 +7,51 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_C_KCIS         562 /* Krieger, Chen, Iafrate, and Savin */
 #define XC_HYB_MGGA_XC_B0KCIS  563 /* Hybrid based on KCIS */
 
-#include "maple2c/mgga_exc/mgga_c_kcis.c"
-#include "work_mgga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_mgga_c_kcis = {
+#include "maple2c/mgga_exc/mgga_c_kcis.c"
+#include "work_mgga_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_kcis = {
   XC_MGGA_C_KCIS,
   XC_CORRELATION,
   "Krieger, Chen, Iafrate, and Savin",
   XC_FAMILY_MGGA,
-  {&xc_ref_Rey1998_581, &xc_ref_Krieger1999_463, &xc_ref_Krieger2001_48, &xc_ref_Kurth1999_889, &xc_ref_Toulouse2002_10465},
+  {&dvc_xc_ref_Rey1998_581, &dvc_xc_ref_Krieger1999_463, &dvc_xc_ref_Krieger2001_48, &dvc_xc_ref_Kurth1999_889, &dvc_xc_ref_Toulouse2002_10465},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, NULL, work_mgga
+  NULL, NULL, dvc_work_mgga
 };
 
 /*************************************************************/
-void
-xc_hyb_mgga_xc_b0kcis_init(xc_func_type *p)
+DEVICE void
+dvc_xc_hyb_mgga_xc_b0kcis_init(xc_func_type *p)
 {
   static int   funcs_id  [2] = {XC_GGA_X_B88, XC_MGGA_C_KCIS};
   static double funcs_coef[2] = {1.0 - 0.25, 1.0};
 
-  xc_mix_init(p, 2, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, 2, funcs_id, funcs_coef);
   p->cam_alpha = 0.25;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_b0kcis = {
+DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_b0kcis = {
   XC_HYB_MGGA_XC_B0KCIS,
   XC_EXCHANGE_CORRELATION,
   "Hybrid based on KCIS",
   XC_FAMILY_HYB_MGGA,
-  {&xc_ref_Toulouse2002_10465, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Toulouse2002_10465, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  xc_hyb_mgga_xc_b0kcis_init, NULL, 
-  NULL, NULL, work_mgga
+  dvc_xc_hyb_mgga_xc_b0kcis_init, NULL, 
+  NULL, NULL, dvc_work_mgga
 };
+
+#pragma omp end declare target

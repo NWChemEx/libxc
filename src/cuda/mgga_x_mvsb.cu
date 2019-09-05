@@ -8,16 +8,19 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_X_MVSB          302 /* MVSBeta exchange of Furness and Sun */
 #define XC_MGGA_X_MVSBS         303 /* MVSBeta* exchange of Furness and Sun */
+
+#pragma omp declare target
 
 typedef struct {
   double e1, c1, k0, b;
 } mgga_x_mvsb_params;
 
-static void
-mgga_x_mvsb_init(xc_func_type *p)
+DEVICE static void
+dvc_mgga_x_mvsb_init(xc_func_type *p)
 {
   mgga_x_mvsb_params *params;
 
@@ -36,58 +39,63 @@ mgga_x_mvsb_init(xc_func_type *p)
     params->b  =  0.0233;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in mgga_x_mvs\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
-static const func_params_type ext_params[] = {
+DEVICE static const func_params_type dvc_ext_params[] = {
   {"_e1", -1.6665, "e1 parameter"},
   {"_c1", 7.8393, "c1 parameter"},
   {"_k0", 0.174, "k0 parameter"},
   {"_b", 0.0233, "b parameter"}
 };
 
-static void
-set_ext_params(xc_func_type *p, const double *ext_params)
+DEVICE static void
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_x_mvsb_params *params;
 
   assert(p != NULL && p->params != NULL);
   params = (mgga_x_mvsb_params *) (p->params);
 
-  params->e1 = get_ext_param(p->info->ext_params, ext_params, 0);
-  params->c1 = get_ext_param(p->info->ext_params, ext_params, 1);
-  params->k0 = get_ext_param(p->info->ext_params, ext_params, 2);
-  params->b  = get_ext_param(p->info->ext_params, ext_params, 3);
+  params->e1 = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
+  params->c1 = dvc_get_ext_param(p->info->ext_params, ext_params, 1);
+  params->k0 = dvc_get_ext_param(p->info->ext_params, ext_params, 2);
+  params->b  = dvc_get_ext_param(p->info->ext_params, ext_params, 3);
 }
 
 
 #include "maple2c/mgga_exc/mgga_x_mvsb.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_mvsb = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mvsb = {
   XC_MGGA_X_MVSB,
   XC_EXCHANGE,
   "MVSbeta exchange by Furness and Sun",
   XC_FAMILY_MGGA,
-  {&xc_ref_Furness2018, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Furness2018, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
-  4, ext_params, set_ext_params,
-  mgga_x_mvsb_init, NULL,
-  NULL, NULL, work_mgga,
+  4, dvc_ext_params, dvc_set_ext_params,
+  dvc_mgga_x_mvsb_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };
 
-const xc_func_info_type xc_func_info_mgga_x_mvsbs = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mvsbs = {
   XC_MGGA_X_MVSBS,
   XC_EXCHANGE,
   "MVSbeta* exchange by Furness and Sun",
   XC_FAMILY_MGGA,
-  {&xc_ref_Furness2018, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Furness2018, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
   0, NULL, NULL,
-  mgga_x_mvsb_init, NULL,
-  NULL, NULL, work_mgga,
+  dvc_mgga_x_mvsb_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };
+
+#pragma omp end declare target

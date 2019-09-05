@@ -7,48 +7,55 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_GG99   535 /* Gilbert and Gill 1999 */
 #define XC_GGA_X_KGG99  544 /* Gilbert and Gill 1999 (mixed) */
 
-#include "maple2c/gga_exc/gga_x_gg99.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_x_gg99 = {
+#include "maple2c/gga_exc/gga_x_gg99.cu"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_gg99 = {
   XC_GGA_X_GG99,
   XC_EXCHANGE,
   "Gilbert and Gill 1999",
   XC_FAMILY_GGA,
-  {&xc_ref_Gilbert1999_511, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Gilbert1999_511, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   5e-7,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
 
 
 /*************************************************************/
+DEVICE
 static void
-gga_x_kgg_init(xc_func_type *p)
+dvc_gga_x_kgg_init(xc_func_type *p)
 {
   /* defined in Eq. (25) of the paper */
   static int   funcs_id  [2] = {XC_LDA_X, XC_GGA_X_GG99};
   static double funcs_coef[2] = {-0.047/X_FACTOR_C, 1.0};
 
-  xc_mix_init(p, 2, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, 2, funcs_id, funcs_coef);
 }
 
-const xc_func_info_type xc_func_info_gga_x_kgg99 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_kgg99 = {
   XC_GGA_X_KGG99,
   XC_EXCHANGE,
   "Gilbert and Gill 1999 (mixed)",
   XC_FAMILY_GGA,
-  {&xc_ref_Gilbert1999_511, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Gilbert1999_511, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   5e-7,
   0, NULL, NULL,
-  gga_x_kgg_init, NULL, 
+  dvc_gga_x_kgg_init, NULL, 
   NULL, NULL, NULL
 };
 
+#pragma omp end declare target

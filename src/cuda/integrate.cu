@@ -16,13 +16,14 @@
 */
 
 #include <float.h>
-#include <util.h>
+#include "util.h"
+#include "dvc_util.h"
 
 
 #define FALSE 0
 #define TRUE 1
 
-double xc_integrate(integr_fn func, void *ex, double a, double b)
+DEVICE double dvc_xc_integrate(integr_fn func, void *ex, double a, double b)
 {
   double epsabs, epsrel, result, abserr, *alist, *blist, *rlist, *elist;
   int limit, neval, ierr, *iord, last;
@@ -37,7 +38,7 @@ double xc_integrate(integr_fn func, void *ex, double a, double b)
   elist = (double *)malloc(limit*sizeof(double));
   iord  = (int   *)malloc(limit*sizeof(int));
 
-  xc_rdqagse(func, ex, &a, &b, &epsabs, &epsrel, &limit, &result, &abserr, &neval, &ierr,
+  dvc_xc_rdqagse(func, ex, &a, &b, &epsabs, &epsrel, &limit, &result, &abserr, &neval, &ierr,
 	    alist, blist, rlist, elist, iord, &last);
 
   free(alist);
@@ -51,14 +52,14 @@ double xc_integrate(integr_fn func, void *ex, double a, double b)
 
 /* f2c-ed translations + modifications of QUADPACK functions from here down */
 
-static void rdqk21(integr_fn f, void *ex,
+DEVICE static void dvc_rdqk21(integr_fn f, void *ex,
 		   double *, double *, double *, double *, double *, double *);
 
-static void rdqpsrt(int *, int *, int *, double *, double *, int *, int *);
+DEVICE static void dvc_rdqpsrt(int *, int *, int *, double *, double *, int *, int *);
 
-static void rdqelg(int *, double *, double *, double *, double *, int *);
+DEVICE static void dvc_rdqelg(int *, double *, double *, double *, double *, int *);
 
-void xc_rdqagse(integr_fn f, void *ex, double *a, double *b, 
+DEVICE void dvc_xc_rdqagse(integr_fn f, void *ex, double *a, double *b, 
 	     double *epsabs, double *epsrel, int *limit, double *result,
 	     double *abserr, int *neval, int *ier, double *alist__,
 	     double *blist, double *rlist, double *elist, int *iord, int *last)
@@ -315,7 +316,7 @@ void xc_rdqagse(integr_fn f, void *ex, double *a, double *b,
   uflow = DBL_MIN;
   oflow = DBL_MAX;
   ierro = 0;
-  rdqk21(f, ex, a, b, result, abserr, &defabs, &resabs);
+  dvc_rdqk21(f, ex, a, b, result, abserr, &defabs, &resabs);
   
   /*           test on accuracy. */
   
@@ -367,8 +368,8 @@ void xc_rdqagse(integr_fn f, void *ex, double *a, double *b,
     a2 = b1;
     b2 = blist[maxerr];
     erlast = errmax;
-    rdqk21(f, ex, &a1, &b1, &area1, &error1, &resabs, &defab1);
-    rdqk21(f, ex, &a2, &b2, &area2, &error2, &resabs, &defab2);
+    dvc_rdqk21(f, ex, &a1, &b1, &area1, &error1, &resabs, &defab1);
+    dvc_rdqk21(f, ex, &a2, &b2, &area2, &error2, &resabs, &defab2);
     
     /*           improve previous approximations to integral
 		 and error and test for accuracy. */
@@ -441,7 +442,7 @@ void xc_rdqagse(integr_fn f, void *ex, double *a, double *b,
 		 with nrmax-th largest error estimate (to be bisected next). */
     
     /*L30:*/
-    rdqpsrt(limit, last, &maxerr, &errmax, &elist[1], &iord[1], &nrmax);
+    dvc_rdqpsrt(limit, last, &maxerr, &errmax, &elist[1], &iord[1], &nrmax);
     
     if (errsum <= errbnd)   goto L115;/* ***jump out of do-loop */
     if (*ier != 0)	    goto L100;/* ***jump out of do-loop */
@@ -494,7 +495,7 @@ void xc_rdqagse(integr_fn f, void *ex, double *a, double *b,
   L60:
     ++numrl2;
     rlist2[numrl2 - 1] = area;
-    rdqelg(&numrl2, rlist2, &reseps, &abseps, res3la, &nres);
+    dvc_rdqelg(&numrl2, rlist2, &reseps, &abseps, res3la, &nres);
     ++ktmin;
     if (ktmin > 5 && *abserr < errsum * .001) {
       *ier = 5;
@@ -578,7 +579,7 @@ void xc_rdqagse(integr_fn f, void *ex, double *a, double *b,
 } /* rdqagse_ */
 
 
-static void rdqelg(int *n, double *epstab, double *
+DEVICE static void dvc_rdqelg(int *n, double *epstab, double *
 		   result, double *abserr, double *res3la, int *nres)
 {
   /* Local variables */
@@ -779,7 +780,7 @@ static void rdqelg(int *n, double *epstab, double *
   return;
 } /* rdqelg_ */
 
-static void  rdqk21(integr_fn f, void *ex, double *a, double *b, double *result,
+DEVICE static void  dvc_rdqk21(integr_fn f, void *ex, double *a, double *b, double *result,
 		    double *abserr, double *resabs, double *resasc)
 {
   /* Initialized data */
@@ -989,7 +990,7 @@ bell labs, nov. 1981.
 } /* rdqk21_ */
 
 
-static void rdqpsrt(int *limit, int *last, int *maxerr,
+DEVICE static void dvc_rdqpsrt(int *limit, int *last, int *maxerr,
 		    double *ermax, double *elist, int *iord, int *nrmax)
 {
   /* Local variables */

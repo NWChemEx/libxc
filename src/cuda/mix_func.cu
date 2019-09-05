@@ -9,10 +9,12 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
+#pragma omp declare target
 /* initializes the mixing */
-void
-xc_mix_init(xc_func_type *p, int n_funcs, const int *funcs_id, const double *mix_coef)
+DEVICE void
+dvc_xc_mix_init(xc_func_type *p, int n_funcs, const int *funcs_id, const double *mix_coef)
 {
   int ii;
 
@@ -27,7 +29,7 @@ xc_mix_init(xc_func_type *p, int n_funcs, const int *funcs_id, const double *mix
   for(ii=0; ii<n_funcs; ii++){
     p->mix_coef[ii] = mix_coef[ii];
     p->func_aux[ii] = (xc_func_type *) malloc(sizeof(xc_func_type));
-    xc_func_init (p->func_aux[ii], funcs_id[ii], p->nspin);
+    dvc_xc_func_init (p->func_aux[ii], funcs_id[ii], p->nspin);
   }
 
   /* initialize variables */
@@ -43,8 +45,8 @@ xc_mix_init(xc_func_type *p, int n_funcs, const int *funcs_id, const double *mix
 #define is_lda(id)    ((id) == XC_FAMILY_LDA  || is_gga(is))
 #define safe_free(pt) if(pt != NULL) free(pt)
 
-void
-xc_mix_func(const xc_func_type *func, int np,
+DEVICE void
+dvc_xc_mix_func(const xc_func_type *func, int np,
             const double *rho, const double *sigma, const double *lapl, const double *tau,
             double *zk, MGGA_OUT_PARAMS_NO_EXC(double *))
 {
@@ -156,15 +158,15 @@ xc_mix_func(const xc_func_type *func, int np,
     aux = func->func_aux[ii];
     switch(aux->info->family){
     case XC_FAMILY_LDA:
-      xc_lda(aux, np, rho, zk_, vrho_, v2rho2_, NULL);
+      dvc_xc_lda(aux, np, rho, zk_, vrho_, v2rho2_, NULL);
       break;
     case XC_FAMILY_GGA:
-      xc_gga(aux, np, rho, sigma, zk_, vrho_, vsigma_,
+      dvc_xc_gga(aux, np, rho, sigma, zk_, vrho_, vsigma_,
              v2rho2_, v2rhosigma_, v2sigma2_,
              v3rho3_, v3rho2sigma_, v3rhosigma2_, v3sigma3_);
       break;
     case XC_FAMILY_MGGA:
-      xc_mgga(aux, np, rho, sigma, lapl, tau,
+      dvc_xc_mgga(aux, np, rho, sigma, lapl, tau,
               zk_,
               vrho_, vsigma_, vlapl_, vtau_,
               v2rho2_, v2rhosigma_, v2rholapl_, v2rhotau_,
@@ -318,3 +320,4 @@ xc_mix_func(const xc_func_type *func, int np,
   safe_free(v3lapltau2_);
   safe_free(v3tau3_);
 }
+#pragma omp end declare target

@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 /***********************************************************************
   Exchange and correlation free energy density and potential as 
@@ -19,6 +20,8 @@
 #define XC_LDA_XC_KSDT    259    /* Karasiev et al. parametrization */
 #define XC_LDA_XC_GDSMFB  577    /* Groth et al. parametrization */
 
+#pragma omp declare target
+
 typedef struct{
   double T;            /* In units of k_B */
   double thetaParam;  /* This takes into account the difference between t and theta_0 */
@@ -26,7 +29,7 @@ typedef struct{
   double b[2][5], c[2][3], d[2][5],  e[2][5];
 } lda_xc_ksdt_params;
 
-static const lda_xc_ksdt_params par_ksdt = {
+DEVICE static const lda_xc_ksdt_params dvc_par_ksdt = {
   0.0,  /* T */
   0.0,  /* thetaParam */
   {     /* b5 = Sqrt[3/2]/(lambda)*b3 */
@@ -45,7 +48,7 @@ static const lda_xc_ksdt_params par_ksdt = {
 };
 
 /* see https://github.com/agbonitz/xc_functional */
-static const lda_xc_ksdt_params par_gdsmfb = {
+DEVICE static const lda_xc_ksdt_params dvc_par_gdsmfb = {
   0.0 , /* T */
   0.0,  /* thetaParam */
   {     /* b5 = Sqrt[3/2]/(lambda)*b3 */
@@ -63,8 +66,8 @@ static const lda_xc_ksdt_params par_gdsmfb = {
   }
 }; 
 
-static void 
-lda_xc_ksdt_init(xc_func_type *p)
+DEVICE static void 
+dvc_lda_xc_ksdt_init(xc_func_type *p)
 {  
   lda_xc_ksdt_params *params;
 
@@ -74,26 +77,29 @@ lda_xc_ksdt_init(xc_func_type *p)
 
   switch(p->info->number){
   case XC_LDA_XC_KSDT:
-    memcpy(params, &par_ksdt, sizeof(lda_xc_ksdt_params));
+    memcpy(params, &dvc_par_ksdt, sizeof(lda_xc_ksdt_params));
     break;
   case XC_LDA_XC_GDSMFB:
-    memcpy(params, &par_gdsmfb, sizeof(lda_xc_ksdt_params));
+    memcpy(params, &dvc_par_gdsmfb, sizeof(lda_xc_ksdt_params));
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in lda_xc_ksdt\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/lda_exc/lda_xc_ksdt.c"
-#include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-static const func_params_type ext_params[] = {
+DEVICE static const func_params_type dvc_ext_params[] = {
   {"T", 0.0, "Temperature"},
 };
 
-static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+DEVICE static void 
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_xc_ksdt_params *params;
 
@@ -101,32 +107,34 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   params = (lda_xc_ksdt_params *) (p->params);
 
   /* the temperature is in units of k_B */
-  params->T = get_ext_param(p->info->ext_params, ext_params, 0);
+  params->T = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
   if(params->T < 1e-8) params->T = 1e-8;
 }
 
-const xc_func_info_type xc_func_info_lda_xc_ksdt = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_ksdt = {
   XC_LDA_XC_KSDT,
   XC_EXCHANGE_CORRELATION,
   "Karasiev, Sjostrom, Dufty & Trickey",
   XC_FAMILY_LDA,
-  {&xc_ref_Karasiev2014_076403, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Karasiev2014_076403, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
-  1, ext_params, set_ext_params,
-  lda_xc_ksdt_init, NULL,
-  work_lda, NULL, NULL
+  1, dvc_ext_params, dvc_set_ext_params,
+  dvc_lda_xc_ksdt_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_xc_gdsmfb = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_gdsmfb = {
   XC_LDA_XC_GDSMFB,
   XC_EXCHANGE_CORRELATION,
   "Groth, Dornheim, Sjostrom, Malone, Foulkes, Bonitz",
   XC_FAMILY_LDA,
-  {&xc_ref_Groth2017_135001, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Groth2017_135001, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
-  1, ext_params, set_ext_params,
-  lda_xc_ksdt_init, NULL,
-  work_lda, NULL, NULL
+  1, dvc_ext_params, dvc_set_ext_params,
+  dvc_lda_xc_ksdt_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

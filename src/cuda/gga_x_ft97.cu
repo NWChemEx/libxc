@@ -7,27 +7,33 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_FT97_A       114 /* Filatov & Thiel 97 (version A) */
 #define XC_GGA_X_FT97_B       115 /* Filatov & Thiel 97 (version B) */
+
+#pragma omp declare target
 
 typedef struct{
   double beta0, beta1, beta2;
 } gga_x_ft97_params;
 
-static const gga_x_ft97_params par_ft97_a = {
+DEVICE
+static const gga_x_ft97_params dvc_par_ft97_a = {
   0.00293, 0.0, 0.0
 };
 
-static const gga_x_ft97_params par_ft97_b = {
+DEVICE
+static const gga_x_ft97_params dvc_par_ft97_b = {
   /* These parameters are what Filatov and Thiel actually used, not
      the ones they published in the paper... the differences being that
      beta1 has one more digit, and beta2 is squared: 2501.149^2 */
   0.002913644, 0.0009474169, 6255746.320201
 };
 
+DEVICE
 static void 
-gga_x_ft97_init(xc_func_type *p)
+dvc_gga_x_ft97_init(xc_func_type *p)
 {
   gga_x_ft97_params *params;
 
@@ -37,42 +43,49 @@ gga_x_ft97_init(xc_func_type *p)
 
   switch(p->info->number){
   case XC_GGA_X_FT97_A: 
-    memcpy(params, &par_ft97_a, sizeof(gga_x_ft97_params));
+    memcpy(params, &dvc_par_ft97_a, sizeof(gga_x_ft97_params));
     break;
   case XC_GGA_X_FT97_B:
-    memcpy(params, &par_ft97_b, sizeof(gga_x_ft97_params));
+    memcpy(params, &dvc_par_ft97_b, sizeof(gga_x_ft97_params));
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_x_ft97\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/gga_exc/gga_x_ft97.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_ft97_a = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_ft97_a = {
   XC_GGA_X_FT97_A,
   XC_EXCHANGE,
   "Filatov & Thiel 97 (version A)",
   XC_FAMILY_GGA,
-  {&xc_ref_Filatov1997_847, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Filatov1997_847, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-22,
   0, NULL, NULL,
-  gga_x_ft97_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_ft97_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_ft97_b = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_ft97_b = {
   XC_GGA_X_FT97_B,
   XC_EXCHANGE,
   "Filatov & Thiel 97 (version B)",
   XC_FAMILY_GGA,
-  {&xc_ref_Filatov1997_847, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Filatov1997_847, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-22,
   0, NULL, NULL,
-  gga_x_ft97_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_x_ft97_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

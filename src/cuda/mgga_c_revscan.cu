@@ -8,47 +8,52 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_C_REVSCAN       582 /* revised SCAN correlation */
 #define XC_MGGA_C_REVSCAN_VV10  585 /* revised SCAN correlation */
 
-#include "maple2c/mgga_exc/mgga_c_revscan.c"
-#include "work_mgga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_mgga_c_revscan = {
+#include "maple2c/mgga_exc/mgga_c_revscan.c"
+#include "work_mgga_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revscan = {
   XC_MGGA_C_REVSCAN,
   XC_CORRELATION,
   "revised SCAN",
   XC_FAMILY_MGGA,
-  {&xc_ref_Mezei2018_2469, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Mezei2018_2469, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-26,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, NULL, work_mgga,
+  NULL, NULL, dvc_work_mgga,
 };
 
-static void
-mgga_c_revscan_vv10_init(xc_func_type *p)
+DEVICE static void
+dvc_mgga_c_revscan_vv10_init(xc_func_type *p)
 {
   static int   funcs_id  [1] = {XC_MGGA_C_REVSCAN};
   static double funcs_coef[1] = {1.0};
 
-  xc_mix_init(p, 1, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, 1, funcs_id, funcs_coef);
 
   p->nlc_b = 9.8;
   p->nlc_C = 0.0093;
 }
 
-const xc_func_info_type xc_func_info_mgga_c_revscan_vv10 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revscan_vv10 = {
   XC_MGGA_C_REVSCAN_VV10,
   XC_CORRELATION,
   "REVSCAN + VV10 correlation",
   XC_FAMILY_MGGA,
-  {&xc_ref_Mezei2018_2469, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Mezei2018_2469, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_VV10 | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  mgga_c_revscan_vv10_init, NULL,
+  dvc_mgga_c_revscan_vv10_init, NULL,
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

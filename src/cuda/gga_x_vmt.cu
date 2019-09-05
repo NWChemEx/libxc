@@ -7,9 +7,12 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_VMT_PBE          71 /* Vela, Medel, and Trickey with mu = mu_PBE */
 #define XC_GGA_X_VMT_GE           70 /* Vela, Medel, and Trickey with mu = mu_GE  */
+
+#pragma omp declare target
 
 typedef struct{
   double mu;
@@ -17,8 +20,9 @@ typedef struct{
 } gga_x_vmt_params;
 
 
+DEVICE
 static void 
-gga_x_vmt_init(xc_func_type *p)
+dvc_gga_x_vmt_init(xc_func_type *p)
 {
   gga_x_vmt_params *params;
 
@@ -36,37 +40,44 @@ gga_x_vmt_init(xc_func_type *p)
     params->alpha = 0.001553;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_x_vmt\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/gga_exc/gga_x_vmt.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
 
-const xc_func_info_type xc_func_info_gga_x_vmt_pbe = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_vmt_pbe = {
   XC_GGA_X_VMT_PBE,
   XC_EXCHANGE,
   "Vela, Medel, and Trickey with mu = mu_PBE",
   XC_FAMILY_GGA,
-  {&xc_ref_Vela2009_244103, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Vela2009_244103, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_x_vmt_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_vmt_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_vmt_ge = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_vmt_ge = {
   XC_GGA_X_VMT_GE,
   XC_EXCHANGE,
   "Vela, Medel, and Trickey with mu = mu_GE",
   XC_FAMILY_GGA,
-  {&xc_ref_Vela2009_244103, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Vela2009_244103, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_x_vmt_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_vmt_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

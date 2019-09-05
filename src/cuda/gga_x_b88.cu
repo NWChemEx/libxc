@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_B88          106 /* Becke 88 */
 #define XC_GGA_X_OPTB88_VDW   139 /* Becke 88 reoptimized to be used with vdW functional of Dion et al */
@@ -14,13 +15,16 @@
 #define XC_GGA_X_EB88         271 /* Non-empirical (excogitated) B88 functional of Becke and Elliott */
 #define XC_GGA_X_B88M         570 /* Becke 88 reoptimized to be used with mgga_c_tau1 */
 
+#pragma omp declare target
+
 typedef struct{
   double beta, gamma;
 } gga_x_b88_params;
 
 
+DEVICE
 static void 
-gga_x_b88_init(xc_func_type *p)
+dvc_gga_x_b88_init(xc_func_type *p)
 {
   gga_x_b88_params *params;
 
@@ -55,13 +59,15 @@ gga_x_b88_init(xc_func_type *p)
   }
 }
 
-static func_params_type ext_params[] = {
+DEVICE
+static func_params_type dvc_ext_params[] = {
   {"_beta", 0.0042, "beta/X_FACTOR_C is the coefficient of the gradient expansion"},
   {"_gamma", 6.0, "gamma should be 6 to get the right asymptotics of Ex"},
 };
 
+DEVICE
 static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_b88_params *params;
 
@@ -74,69 +80,71 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 
 #include "maple2c/gga_exc/gga_x_b88.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_b88 = {
+const xc_func_info_type dvc_xc_func_info_gga_x_b88 = {
   XC_GGA_X_B88,
   XC_EXCHANGE,
   "Becke 88",
   XC_FAMILY_GGA,
-  {&xc_ref_Becke1988_3098, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Becke1988_3098, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
-  2, ext_params, set_ext_params,
-  gga_x_b88_init, NULL, 
-  NULL, work_gga, NULL
+  2, dvc_ext_params, dvc_set_ext_params,
+  dvc_gga_x_b88_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_optb88_vdw = {
+const xc_func_info_type dvc_xc_func_info_gga_x_optb88_vdw = {
   XC_GGA_X_OPTB88_VDW,
   XC_EXCHANGE,
   "opt-Becke 88 for vdW",
   XC_FAMILY_GGA,
-  {&xc_ref_Klimes2010_022201, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Klimes2010_022201, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_x_b88_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_b88_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_mb88 = {
+const xc_func_info_type dvc_xc_func_info_gga_x_mb88 = {
   XC_GGA_X_MB88,
   XC_EXCHANGE,
   "Modified Becke 88 for proton transfer",
   XC_FAMILY_GGA,
-  {&xc_ref_Tognetti2009_14415, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Tognetti2009_14415, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_x_b88_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_b88_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_eb88 = {
+const xc_func_info_type dvc_xc_func_info_gga_x_eb88 = {
   XC_GGA_X_EB88,
   XC_EXCHANGE,
   "Non-empirical (excogitated) B88 functional of Becke and Elliott",
   XC_FAMILY_GGA,
-  {&xc_ref_Elliott2009_1485, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Elliott2009_1485, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_x_b88_init,  NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_b88_init,  NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_b88m = {
+const xc_func_info_type dvc_xc_func_info_gga_x_b88m = {
   XC_GGA_X_B88M,
   XC_EXCHANGE,
   "Becke 88 reoptimized to be used with tau1",
   XC_FAMILY_GGA,
-  {&xc_ref_Proynov2000_10013, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Proynov2000_10013, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_x_b88_init,  NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_b88_init,  NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

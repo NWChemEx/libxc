@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 /************************************************************************
  Implements Perdew, Burke & Ernzerhof Generalized Gradient Approximation
@@ -27,12 +28,15 @@
 #define XC_GGA_C_PBE_MOL      272 /* Del Campo, Gazquez, Trickey and Vela (PBE-like)    */
 #define XC_GGA_C_TM_PBE       560  /* Thakkar and McCarthy reparametrization */
 
+#pragma omp declare target
+
 typedef struct{
   double beta, gamma, BB;
 } gga_c_pbe_params;
 
 
-static void gga_c_pbe_init(xc_func_type *p)
+DEVICE
+static void dvc_gga_c_pbe_init(xc_func_type *p)
 {
   gga_c_pbe_params *params;
 
@@ -83,172 +87,190 @@ static void gga_c_pbe_init(xc_func_type *p)
     params->beta  = 3.38*params->gamma;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_c_pbe\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
-static const func_params_type ext_params[] = {
+DEVICE
+static const func_params_type dvc_ext_params[] = {
   {"_beta",  0.06672455060314922,     "beta constant"},
   {"_gamma", 0.031090690869654895034, "(1 - ln(2))/Pi^2 in the PBE"},
   {"_B",     1.0, "Multiplies the A t^2 term. Used in the SPBE functional"},
 };
 
+DEVICE
 static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_c_pbe_params *params;
 
   assert(p != NULL && p->params != NULL);
   params = (gga_c_pbe_params *) (p->params);
 
-  params->beta  = get_ext_param(p->info->ext_params, ext_params, 0);
-  params->gamma = get_ext_param(p->info->ext_params, ext_params, 1);
-  params->BB    = get_ext_param(p->info->ext_params, ext_params, 2);
+  params->beta  = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
+  params->gamma = dvc_get_ext_param(p->info->ext_params, ext_params, 1);
+  params->BB    = dvc_get_ext_param(p->info->ext_params, ext_params, 2);
 }
 
 #include "maple2c/gga_exc/gga_c_pbe.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_pbe = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_pbe = {
   XC_GGA_C_PBE,
   XC_CORRELATION,
   "Perdew, Burke & Ernzerhof",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew1996_3865, &xc_ref_Perdew1996_3865_err, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perdew1996_3865, &dvc_xc_ref_Perdew1996_3865_err, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
-  3, ext_params, set_ext_params,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  3, dvc_ext_params, dvc_set_ext_params,
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_pbe_sol = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_pbe_sol = {
   XC_GGA_C_PBE_SOL,
   XC_CORRELATION,
   "Perdew, Burke & Ernzerhof SOL",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew2008_136406, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perdew2008_136406, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_xpbe = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_xpbe = {
   XC_GGA_C_XPBE,
   XC_CORRELATION,
   "Extended PBE by Xu & Goddard III",
   XC_FAMILY_GGA,
-  {&xc_ref_Xu2004_4068, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Xu2004_4068, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_pbe_jrgx = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_pbe_jrgx = {
   XC_GGA_C_PBE_JRGX,
   XC_CORRELATION,
   "Reparametrized PBE by Pedroza, Silva & Capelle",
   XC_FAMILY_GGA,
-  {&xc_ref_Pedroza2009_201106, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Pedroza2009_201106, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_rge2 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_rge2 = {
   XC_GGA_C_RGE2,
   XC_CORRELATION,
   "Regularized PBE",
   XC_FAMILY_GGA,
-  {&xc_ref_Ruzsinszky2009_763, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Ruzsinszky2009_763, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_apbe = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_apbe = {
   XC_GGA_C_APBE,
   XC_CORRELATION,
   "mu fixed from the semiclassical neutral atom",
   XC_FAMILY_GGA,
-  {&xc_ref_Constantin2011_186406, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Constantin2011_186406, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_spbe = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_spbe = {
   XC_GGA_C_SPBE,
   XC_CORRELATION,
   "PBE correlation to be used with the SSB exchange",
   XC_FAMILY_GGA,
-  {&xc_ref_Swart2009_094103, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Swart2009_094103, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_pbeint = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_pbeint = {
   XC_GGA_C_PBEINT,
   XC_CORRELATION,
   "PBE for hybrid interfaces",
   XC_FAMILY_GGA,
-  {&xc_ref_Fabiano2010_113104, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Fabiano2010_113104, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_pbefe = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_pbefe = {
   XC_GGA_C_PBEFE,
   XC_CORRELATION,
   "PBE for formation energies",
   XC_FAMILY_GGA,
-  {&xc_ref_Perez2015_3844, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perez2015_3844, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_pbe_mol = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_pbe_mol = {
   XC_GGA_C_PBE_MOL,
   XC_CORRELATION,
   "Reparametrized PBE by del Campo, Gazquez, Trickey & Vela",
   XC_FAMILY_GGA,
-  {&xc_ref_delCampo2012_104108, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_delCampo2012_104108, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_tm_pbe = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_tm_pbe = {
   XC_GGA_C_TM_PBE,
   XC_CORRELATION,
   "Thakkar and McCarthy reparametrization",
   XC_FAMILY_GGA,
-  {&xc_ref_Thakkar2009_134109, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Thakkar2009_134109, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
-  gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_pbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

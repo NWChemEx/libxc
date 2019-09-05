@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_P86          132 /* Perdew 86 */
 
-#include "maple2c/gga_exc/gga_c_p86.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_p86 = {
+#include "maple2c/gga_exc/gga_c_p86.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_p86 = {
   XC_GGA_C_P86,
   XC_CORRELATION,
   "Perdew 86",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew1986_8822, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perdew1986_8822, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

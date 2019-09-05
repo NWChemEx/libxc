@@ -7,11 +7,12 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_HYB_GGA_XC_CAMY_B3LYP        470 /* B3LYP with Yukawa screening */
 
-void
-xc_hyb_gga_xc_camy_b3lyp_init(xc_func_type *p)
+DEVICE void
+dvc_xc_hyb_gga_xc_camy_b3lyp_init(xc_func_type *p)
 {
   static double ac = 0.81;
   static int   funcs_id  [4] = {XC_GGA_X_B88, XC_GGA_X_SFAT, XC_LDA_C_VWN, XC_GGA_C_LYP};
@@ -33,25 +34,26 @@ xc_hyb_gga_xc_camy_b3lyp_init(xc_func_type *p)
   funcs_coef[2] = 1.0 - ac;
   funcs_coef[3] = ac;
   
-  xc_mix_init(p, 4, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, 4, funcs_id, funcs_coef);
 
-  xc_func_set_ext_params(p->func_aux[1], &omega);
+  dvc_xc_func_set_ext_params(p->func_aux[1], &omega);
   
   p->cam_omega = omega;
   p->cam_alpha = alpha;
   p->cam_beta  = beta;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_camy_b3lyp = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_camy_b3lyp = {
   XC_HYB_GGA_XC_CAMY_B3LYP,
   XC_EXCHANGE_CORRELATION,
   "CAMY version of B3LYP",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Seth2012_901, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Seth2012_901, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAMY | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1e-32,
   0, NULL, NULL,
-  xc_hyb_gga_xc_camy_b3lyp_init, NULL,
+  dvc_xc_hyb_gga_xc_camy_b3lyp_init, NULL,
   NULL, NULL, NULL
 };
 

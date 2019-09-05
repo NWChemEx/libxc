@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define MIN_GRAD             5.0e-13
 
@@ -20,6 +21,8 @@
 */
 #define XC_GGA_X_LB  160 /* van Leeuwen & Baerends */
 #define XC_GGA_X_LBM 182 /* van Leeuwen & Baerends modified*/
+
+#pragma omp declare target
 
 typedef struct{
   int    modified; /* shall we use a modified version */
@@ -38,8 +41,9 @@ typedef struct{
   Calculates van Leeuwen Baerends functional
 ************************************************************************/
 
+DEVICE
 static void
-gga_lb_init(xc_func_type *p)
+dvc_gga_lb_init(xc_func_type *p)
 {
   xc_gga_x_lb_params *params;
 
@@ -49,7 +53,7 @@ gga_lb_init(xc_func_type *p)
   p->func_aux    = (xc_func_type **) malloc(1*sizeof(xc_func_type *));
   p->func_aux[0] = (xc_func_type *)  malloc(  sizeof(xc_func_type));
 
-  xc_func_init(p->func_aux[0], XC_LDA_X, p->nspin);
+  dvc_xc_func_init(p->func_aux[0], XC_LDA_X, p->nspin);
 
   p->params = malloc(sizeof(xc_gga_x_lb_params));
 
@@ -67,8 +71,9 @@ gga_lb_init(xc_func_type *p)
 }
 
 
+DEVICE
 void 
-xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const double *sigma, double r, double *vrho)
+dvc_xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const double *sigma, double r, double *vrho)
 {
   int ip, is, is2;
   double ds, gdm, x, sfact;
@@ -80,7 +85,7 @@ xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const do
   assert(func->params != NULL);
   params = (xc_gga_x_lb_params *) (func->params);
 
-  xc_lda_vxc(func->func_aux[0], np, rho, vrho);
+  dvc_xc_lda_vxc(func->func_aux[0], np, rho, vrho);
 
   sfact = (func->nspin == XC_POLARIZED) ? 1.0 : 2.0;
 
@@ -129,18 +134,20 @@ xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const do
 }
 
 
+DEVICE
 static void 
-gga_x_lb(const xc_func_type *p, int np, const double *rho, const double *sigma,
+dvc_gga_x_lb(const xc_func_type *p, int np, const double *rho, const double *sigma,
 	 double *zk, double *vrho, double *vsigma,
 	 double *v2rho2, double *v2rhosigma, double *v2sigma2,
 	 double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
 {
   if (vrho != NULL)
-    xc_gga_lb_modified(p, np, rho, sigma, 0.0, vrho);
+    dvc_xc_gga_lb_modified(p, np, rho, sigma, 0.0, vrho);
 }
 
 
-static const func_params_type ext_params[] = {
+DEVICE
+static const func_params_type dvc_ext_params[] = {
   {"mode", 0, "Modified: 0 (no) | 1 (yes)"},
   {"I", 0.0, "Ionization potential (a.u.)"},
   {"threshold", 1e-32, "Asymptotic correction is applied if density smaller than this parameter"},
@@ -148,18 +155,19 @@ static const func_params_type ext_params[] = {
 };
 
 
+DEVICE
 static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   xc_gga_x_lb_params *params;
 
   assert(p!=NULL && p->params!=NULL);
   params = (xc_gga_x_lb_params *) (p->params);
 
-  params->modified  = (int)round(get_ext_param(p->info->ext_params, ext_params, 0));
-  params->threshold = get_ext_param(p->info->ext_params, ext_params, 1);
-  params->ip        = get_ext_param(p->info->ext_params, ext_params, 2);
-  params->qtot      = get_ext_param(p->info->ext_params, ext_params, 3);
+  params->modified  = (int)round(dvc_get_ext_param(p->info->ext_params, ext_params, 0));
+  params->threshold = dvc_get_ext_param(p->info->ext_params, ext_params, 1);
+  params->ip        = dvc_get_ext_param(p->info->ext_params, ext_params, 2);
+  params->qtot      = dvc_get_ext_param(p->info->ext_params, ext_params, 3);
 
   if(params->modified){
     params->aa   = (params->ip > 0.0) ? 2.0*sqrt(2.0*params->ip) : 0.5;
@@ -171,30 +179,33 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 }
 
 
-const xc_func_info_type xc_func_info_gga_x_lb = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_lb = {
   XC_GGA_X_LB,
   XC_EXCHANGE,
   "van Leeuwen & Baerends",
   XC_FAMILY_GGA,
-  {&xc_ref_vanLeeuwen1994_2421, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_vanLeeuwen1994_2421, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_VXC,
   1e-32,
-  4, ext_params, set_ext_params,
-  gga_lb_init, NULL,
-  NULL, gga_x_lb, NULL
+  4, dvc_ext_params, dvc_set_ext_params,
+  dvc_gga_lb_init, NULL,
+  NULL, dvc_gga_x_lb, NULL
 };
 
 
-const xc_func_info_type xc_func_info_gga_x_lbm = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_lbm = {
   XC_GGA_X_LBM,
   XC_EXCHANGE,
   "van Leeuwen & Baerends modified",
   XC_FAMILY_GGA,
-  {&xc_ref_Schipper2000_1344, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Schipper2000_1344, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_VXC,
   1e-32,
-  4, ext_params, set_ext_params,
-  gga_lb_init, NULL,
-  NULL, gga_x_lb, NULL
+  4, dvc_ext_params, dvc_set_ext_params,
+  dvc_gga_lb_init, NULL,
+  NULL, dvc_gga_x_lb, NULL
 };
 
+#pragma omp end declare target

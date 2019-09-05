@@ -8,16 +8,19 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_K_TF      50   /* Thomas-Fermi kinetic energy functional */
 #define XC_LDA_K_LP      51   /* Lee and Parr Gaussian ansatz           */
+
+#pragma omp declare target
 
 typedef struct {
   double ax;
 } lda_k_tf_params;
 
-static void 
-lda_k_tf_init(xc_func_type *p)
+DEVICE static void 
+dvc_lda_k_tf_init(xc_func_type *p)
 {
   lda_k_tf_params *params;
 
@@ -35,37 +38,41 @@ lda_k_tf_init(xc_func_type *p)
     params->ax = 1.142427709758666675644309251677891925671;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in lda_k_tf\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/lda_exc/lda_k_tf.c"
-#include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_k_tf = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_k_tf = {
   XC_LDA_K_TF,
   XC_KINETIC,
   "Thomas-Fermi kinetic energy",
   XC_FAMILY_LDA,
-  {&xc_ref_Thomas1927_542, &xc_ref_Fermi1927_602, NULL, NULL, NULL},
+  {&dvc_xc_ref_Thomas1927_542, &dvc_xc_ref_Fermi1927_602, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_k_tf_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_k_tf_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_k_lp = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_k_lp = {
   XC_LDA_K_LP,
   XC_KINETIC,
   "Lee and Parr Gaussian ansatz for the kinetic energy",
   XC_FAMILY_LDA,
-  {&xc_ref_Lee1987_2377, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Lee1987_2377, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_k_tf_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_k_tf_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
+#pragma omp end declare target

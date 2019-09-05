@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_SCAN_E0        553 /* GGA component of SCAN */
 
-#include "maple2c/gga_exc/gga_c_scan_e0.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_scan_e0 = {
+#include "maple2c/gga_exc/gga_c_scan_e0.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_scan_e0 = {
   XC_GGA_C_SCAN_E0,
   XC_CORRELATION,
   "GGA component of SCAN",
   XC_FAMILY_GGA,
-  {&xc_ref_Sun2015_036402, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Sun2015_036402, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-26,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

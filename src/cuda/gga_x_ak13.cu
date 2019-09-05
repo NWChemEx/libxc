@@ -7,13 +7,19 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_AK13  56 /* Armiento & Kuemmel 2013 */
 
+#pragma omp declare target
+
+DEVICE
 static const double ak13_B1 =  1.74959015598863046792081721182; /* 3*muGE/5 + 8 pi/15 */
+DEVICE
 static const double ak13_B2 = -1.62613336586517367779736042170; /* muGE - B1 */
 
-double xc_gga_ak13_get_asymptotic (double homo)
+DEVICE
+double dvc_xc_gga_ak13_get_asymptotic (double homo)
 {
   double Qx, aa, aa2, factor;
 
@@ -29,18 +35,20 @@ double xc_gga_ak13_get_asymptotic (double homo)
 
 
 #include "maple2c/gga_exc/gga_x_ak13.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_ak13 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_ak13 = {
   XC_GGA_X_AK13,
   XC_EXCHANGE,
   "Armiento & Kuemmel 2013",
   XC_FAMILY_GGA,
-  {&xc_ref_Armiento2013_036402, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Armiento2013_036402, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
 
+#pragma omp end declare target

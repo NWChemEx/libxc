@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 /************************************************************************
  Random Phase Approximation (RPA)
@@ -14,18 +15,21 @@
 
 #define XC_LDA_C_GK72  578   /* Gordon and Kim 1972 */
 
-#include "maple2c/lda_exc/lda_c_gk72.c"
-#include "work_lda_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_lda_c_gk72 = {
+#include "maple2c/lda_exc/lda_c_gk72.c"
+#include "work_lda_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_gk72 = {
   XC_LDA_C_GK72,
   XC_CORRELATION,
   "Gordon and Kim 1972",
   XC_FAMILY_LDA,
-  {&xc_ref_Gordon1972_3122, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Gordon1972_3122, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+#pragma omp end declare target

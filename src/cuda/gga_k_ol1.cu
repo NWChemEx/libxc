@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_OL1          512 /* Ou-Yang and Levy v.1 */
 
-#include "maple2c/gga_exc/gga_k_ol1.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_k_ol1 = {
+#include "maple2c/gga_exc/gga_k_ol1.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_k_ol1 = {
   XC_GGA_K_OL1,
   XC_KINETIC,
   "Ou-Yang and Levy v.1",
   XC_FAMILY_GGA,
-  {&xc_ref_OuYang1991_379, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_OuYang1991_379, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   5e-26,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

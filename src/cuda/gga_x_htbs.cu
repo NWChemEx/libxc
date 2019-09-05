@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_HTBS         191 /* Haas, Tran, Blaha, and Schwarz  */
 
-#include "maple2c/gga_exc/gga_x_htbs.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_x_htbs = {
+#include "maple2c/gga_exc/gga_x_htbs.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_htbs = {
   XC_GGA_X_HTBS,
   XC_EXCHANGE,
   "Haas, Tran, Blaha, and Schwarz",
   XC_FAMILY_GGA,
-  {&xc_ref_Haas2011_205117, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Haas2011_205117, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-16,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

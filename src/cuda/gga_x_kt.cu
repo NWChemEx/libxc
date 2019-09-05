@@ -7,105 +7,117 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_KT1          145 /* Exchange part of Keal and Tozer version 1 */
 #define XC_GGA_XC_KT1         167 /* Keal and Tozer version 1                  */
 #define XC_GGA_XC_KT2         146 /* Keal and Tozer version 2                  */
 #define XC_GGA_XC_KT3         587 /* Keal and Tozer version 3                  */
 
+#pragma omp declare target
+
 typedef struct{
   double gamma, delta;
 } gga_x_kt_params;
 
+DEVICE
 static void 
-gga_x_kt_init(xc_func_type *p)
+dvc_gga_x_kt_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
   p->params = malloc(sizeof(gga_x_kt_params));
 }
 
-static const func_params_type ext_params[] = {
+DEVICE
+static const func_params_type dvc_ext_params[] = {
   {"_gamma", -0.006, "gamma"},
   {"_delta",    0.1, "delta"},
 };
 
+DEVICE
 static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_kt_params *params;
 
   assert(p != NULL && p->params != NULL);
   params = (gga_x_kt_params *) (p->params);
 
-  params->gamma = get_ext_param(p->info->ext_params, ext_params, 0);
-  params->delta = get_ext_param(p->info->ext_params, ext_params, 1);
+  params->gamma = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
+  params->delta = dvc_get_ext_param(p->info->ext_params, ext_params, 1);
 }
 
 #include "maple2c/gga_exc/gga_x_kt.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_kt1 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_kt1 = {
   XC_GGA_X_KT1,
   XC_EXCHANGE,
   "Exchange part of Keal and Tozer version 1",
   XC_FAMILY_GGA,
-  {&xc_ref_Keal2003_3015, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Keal2003_3015, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  2, ext_params, set_ext_params,
-  gga_x_kt_init, NULL, 
-  NULL, work_gga, NULL
+  2, dvc_ext_params, dvc_set_ext_params,
+  dvc_gga_x_kt_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
 
+DEVICE
 static void
-gga_xc_kt1_init(xc_func_type *p)
+dvc_gga_xc_kt1_init(xc_func_type *p)
 {
   static int   funcs_id  [2] = {XC_GGA_X_KT1, XC_LDA_C_VWN};
   static double funcs_coef[2] = {1.0, 1.0};
 
-  xc_mix_init(p, 2, funcs_id, funcs_coef);  
+  dvc_xc_mix_init(p, 2, funcs_id, funcs_coef);  
 }
 
-const xc_func_info_type xc_func_info_gga_xc_kt1 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_xc_kt1 = {
   XC_GGA_XC_KT1,
   XC_EXCHANGE_CORRELATION,
   "Keal and Tozer, version 1",
   XC_FAMILY_GGA,
-  {&xc_ref_Keal2003_3015, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Keal2003_3015, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  gga_xc_kt1_init, NULL, 
+  dvc_gga_xc_kt1_init, NULL, 
   NULL, NULL, NULL
 };
 
 
+DEVICE
 static void
-gga_xc_kt2_init(xc_func_type *p)
+dvc_gga_xc_kt2_init(xc_func_type *p)
 {
   static int   funcs_id  [3] = {XC_LDA_X, XC_GGA_X_KT1, XC_LDA_C_VWN};
   static double funcs_coef[3] = {1.07173 - 1.0, 1.0, 0.576727};
 
-  xc_mix_init(p, 3, funcs_id, funcs_coef);  
+  dvc_xc_mix_init(p, 3, funcs_id, funcs_coef);  
 }
 
-const xc_func_info_type xc_func_info_gga_xc_kt2 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_xc_kt2 = {
   XC_GGA_XC_KT2,
   XC_EXCHANGE_CORRELATION,
   "Keal and Tozer, version 2",
   XC_FAMILY_GGA,
-  {&xc_ref_Keal2003_3015, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Keal2003_3015, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  gga_xc_kt2_init, NULL, 
+  dvc_gga_xc_kt2_init, NULL, 
   NULL, NULL, NULL
 };
 
 
+DEVICE
 static void
-gga_xc_kt3_init(xc_func_type *p)
+dvc_gga_xc_kt3_init(xc_func_type *p)
 {
   static int   funcs_id  [4] = {XC_LDA_X, XC_GGA_C_LYP, XC_GGA_X_KT1, XC_GGA_X_OPTX};
   double funcs_coef[4];
@@ -124,19 +136,22 @@ gga_xc_kt3_init(xc_func_type *p)
   funcs_coef[2] = 1.0;
   funcs_coef[3] = eps/a2;
 
-  xc_mix_init(p, 4, funcs_id, funcs_coef);
-  set_ext_params(p->func_aux[2], par_kt);
+  dvc_xc_mix_init(p, 4, funcs_id, funcs_coef);
+  dvc_set_ext_params(p->func_aux[2], par_kt);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_kt3 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_xc_kt3 = {
   XC_GGA_XC_KT3,
   XC_EXCHANGE_CORRELATION,
   "Keal and Tozer, version 3",
   XC_FAMILY_GGA,
-  {&xc_ref_Keal2004_5654, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Keal2004_5654, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  gga_xc_kt3_init, NULL, 
+  dvc_gga_xc_kt3_init, NULL, 
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

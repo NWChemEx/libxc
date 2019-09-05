@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_PW91 134 /* Perdew & Wang 91 */
 
-#include "maple2c/gga_exc/gga_c_pw91.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_pw91 = {
+#include "maple2c/gga_exc/gga_c_pw91.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_pw91 = {
   XC_GGA_C_PW91,
   XC_CORRELATION,
   "Perdew & Wang 91",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew1991, &xc_ref_Perdew1992_6671, &xc_ref_Perdew1992_6671_err, NULL, NULL},
+  {&dvc_xc_ref_Perdew1991, &dvc_xc_ref_Perdew1992_6671, &dvc_xc_ref_Perdew1992_6671_err, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -8,68 +8,73 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_X_1D_SOFT  21 /* Exchange in 1D for a soft-Coulomb interaction */
+
+#pragma omp declare target
 
 typedef struct{
   double beta;         /* screening parameter beta */
 } lda_x_1d_exponential_params;
 
-static void 
-lda_x_1d_exponential_init(xc_func_type *p)
+DEVICE static void 
+dvc_lda_x_1d_exponential_init(xc_func_type *p)
 {
   assert(p->params == NULL);
   p->params = malloc(sizeof(lda_x_1d_exponential_params));
 }
 
-static inline double FT_inter(double x)
+DEVICE static inline double dvc_FT_inter(double x)
 {
-  return 2.0*xc_bessel_K0(x);
+  return 2.0*dvc_xc_bessel_K0(x);
 }
 
-static void func1(double *x, int n, void *dummy)
-{
-  int ii;
-  
-  for(ii=0; ii<n; ii++)
-    x[ii] = FT_inter(x[ii]);
-}
-
-static void func2(double *x, int n, void *dummy)
+DEVICE static void func1(double *x, int n, void *dummy)
 {
   int ii;
   
   for(ii=0; ii<n; ii++)
-    x[ii] = x[ii]*FT_inter(x[ii]);
+    x[ii] = dvc_FT_inter(x[ii]);
 }
 
-#include "maple2c/lda_exc/lda_x_1d_soft.c"
-#include "work_lda_new.c"
+DEVICE static void func2(double *x, int n, void *dummy)
+{
+  int ii;
+  
+  for(ii=0; ii<n; ii++)
+    x[ii] = x[ii]*dvc_FT_inter(x[ii]);
+}
 
-static const func_params_type ext_params[] = {
+#include "maple2c/lda_exc/lda_x_1d_soft.cu"
+#include "work_lda_new.cu"
+
+DEVICE static const func_params_type dvc_ext_params[] = {
   {"beta", 1.0, "Screening parameter"}
 };
-static void 
 
-set_ext_params(xc_func_type *p, const double *ext_params)
+DEVICE static void 
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_x_1d_exponential_params *params;
 
   assert(p != NULL && p->params != NULL);
   params = (lda_x_1d_exponential_params *)(p->params);
 
-  params->beta = get_ext_param(p->info->ext_params, ext_params, 0);
+  params->beta = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
 }
 
-const xc_func_info_type xc_func_info_lda_x_1d_soft = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_1d_soft = {
   XC_LDA_X_1D_SOFT,
   XC_EXCHANGE,
   "Exchange in 1D for an soft-Coulomb interaction",
   XC_FAMILY_LDA,
-  {&xc_ref_Helbig2011_032503, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Helbig2011_032503, NULL, NULL, NULL, NULL},
   XC_FLAGS_1D | XC_FLAGS_I_HAVE_ALL,
   1e-26,
-  1, ext_params, set_ext_params,
-  lda_x_1d_exponential_init, NULL,
-  work_lda, NULL, NULL
+  1, dvc_ext_params, dvc_set_ext_params,
+  dvc_lda_x_1d_exponential_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

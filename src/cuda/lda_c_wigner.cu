@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_C_WIGNER    2   /* Wigner parametrization       */
 #define XC_LDA_XC_LP_A   547   /* Lee-Parr reparametrization B */
@@ -16,12 +17,14 @@
 #define XC_LDA_C_OW_LYP  573   /* Wigner with corresponding LYP parameters */
 #define XC_LDA_C_OW      574   /* Optimized Wigner */
 
+#pragma omp declare target
+
 typedef struct {
   double a, b;
 } lda_c_wigner_params;
 
-static void 
-lda_c_wigner_init(xc_func_type *p)
+DEVICE static void 
+dvc_lda_c_wigner_init(xc_func_type *p)
 {
   lda_c_wigner_params *params;
 
@@ -59,102 +62,106 @@ lda_c_wigner_init(xc_func_type *p)
     params->b = RS_FACTOR/0.349;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in lda_c_wigner\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/lda_exc/lda_c_wigner.c"
-#include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_wigner = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_wigner = {
   XC_LDA_C_WIGNER,
   XC_CORRELATION,
   "Wigner",
   XC_FAMILY_LDA,
-  {&xc_ref_Wigner1938_678, &xc_ref_Stewart1995_4337, NULL, NULL, NULL},
+  {&dvc_xc_ref_Wigner1938_678, &dvc_xc_ref_Stewart1995_4337, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_wigner_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_xc_lp_a = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_lp_a = {
   XC_LDA_XC_LP_A,
   XC_EXCHANGE_CORRELATION,
   "Lee-Parr reparametrization A",
   XC_FAMILY_LDA,
-  {&xc_ref_Lee1990_193, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Lee1990_193, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_wigner_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_xc_lp_b = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_lp_b = {
   XC_LDA_XC_LP_B,
   XC_EXCHANGE_CORRELATION,
   "Lee-Parr reparametrization B",
   XC_FAMILY_LDA,
-  {&xc_ref_Lee1990_193, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Lee1990_193, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_wigner_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_c_mcweeny = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_mcweeny = {
   XC_LDA_C_MCWEENY,
   XC_CORRELATION,
   "McWeeny 76",
   XC_FAMILY_LDA,
-  {&xc_ref_McWeeny1976_3, &xc_ref_Brual1978_1177, NULL, NULL, NULL},
+  {&dvc_xc_ref_McWeeny1976_3, &dvc_xc_ref_Brual1978_1177, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_wigner_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_c_br78 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_br78 = {
   XC_LDA_C_BR78,
   XC_CORRELATION,
   "Brual & Rothstein 78",
   XC_FAMILY_LDA,
-  {&xc_ref_Brual1978_1177, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Brual1978_1177, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_wigner_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_c_ow_lyp = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ow_lyp = {
   XC_LDA_C_OW_LYP,
   XC_CORRELATION,
   "Wigner with corresponding LYP parameters",
   XC_FAMILY_LDA,
-  {&xc_ref_Stewart1995_4337, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Stewart1995_4337, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_wigner_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_c_ow = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ow = {
   XC_LDA_C_OW,
   XC_CORRELATION,
   "Optimized Wigner",
   XC_FAMILY_LDA,
-  {&xc_ref_Stewart1995_4337, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Stewart1995_4337, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_wigner_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
+#pragma omp end declare target

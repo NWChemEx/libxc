@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_DK          516 /* DePristo and Kress                    */
 #define XC_GGA_K_PERDEW      517 /* Perdew                                */
@@ -14,12 +15,15 @@
 #define XC_GGA_K_VJKS        519 /* Vitos, Johansson, Kollar, and Skriver */
 #define XC_GGA_K_ERNZERHOF   520 /* Ernzerhof */
 
+#pragma omp declare target
+
 typedef struct{
   double aa[5], bb[5];
 } gga_k_dk_params;
 
+DEVICE
 static void 
-gga_k_dk_init(xc_func_type *p)
+dvc_gga_k_dk_init(xc_func_type *p)
 {
   int i;
   double ff, *aa, *bb;
@@ -107,69 +111,71 @@ gga_k_dk_init(xc_func_type *p)
 }
 
 #include "maple2c/gga_exc/gga_k_dk.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_dk = {
+const xc_func_info_type dvc_xc_func_info_gga_k_dk = {
   XC_GGA_K_DK,
   XC_KINETIC,
   "DePristo and Kress",
   XC_FAMILY_GGA,
-  {&xc_ref_DePristo1987_438, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_DePristo1987_438, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_dk_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_k_dk_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_perdew = {
+const xc_func_info_type dvc_xc_func_info_gga_k_perdew = {
   XC_GGA_K_PERDEW,
   XC_KINETIC,
   "Perdew",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew1992_79, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perdew1992_79, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_k_dk_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_k_dk_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_vsk = {
+const xc_func_info_type dvc_xc_func_info_gga_k_vsk = {
   XC_GGA_K_VSK,
   XC_KINETIC,
   "Vitos, Skriver, and Kollar",
   XC_FAMILY_GGA,
-  {&xc_ref_Vitos1998_12611, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Vitos1998_12611, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_dk_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_k_dk_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_vjks = {
+const xc_func_info_type dvc_xc_func_info_gga_k_vjks = {
   XC_GGA_K_VJKS,
   XC_KINETIC,
   "Vitos, Johansson, Kollar, and Skriver",
   XC_FAMILY_GGA,
-  {&xc_ref_Vitos2000_052511, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Vitos2000_052511, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_dk_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_k_dk_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_ernzerhof = {
+const xc_func_info_type dvc_xc_func_info_gga_k_ernzerhof = {
   XC_GGA_K_ERNZERHOF,
   XC_KINETIC,
   "Ernzerhof",
   XC_FAMILY_GGA,
-  {&xc_ref_Ernzerhof2000_59, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Ernzerhof2000_59, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_dk_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_k_dk_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_REGTPSS       83 /* Regularized TPSS correlation (ex-VPBE)             */
 
-#include "maple2c/gga_exc/gga_c_regtpss.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_regtpss = {
+#include "maple2c/gga_exc/gga_c_regtpss.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_regtpss = {
   XC_GGA_C_REGTPSS,
   XC_CORRELATION,
   "regularized TPSS correlation",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew2009_026403, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perdew2009_026403, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-16,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

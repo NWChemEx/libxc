@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_C09X         158 /* C09x to be used with the VdW of Rutgers-Chalmers     */
 
-#include "maple2c/gga_exc/gga_x_c09x.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_x_c09x = {
+#include "maple2c/gga_exc/gga_x_c09x.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_c09x = {
   XC_GGA_X_C09X,
   XC_EXCHANGE,
   "C09x to be used with the VdW of Rutgers-Chalmers",
   XC_FAMILY_GGA,
-  {&xc_ref_Cooper2010_161104, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Cooper2010_161104, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

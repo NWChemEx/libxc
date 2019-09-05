@@ -8,14 +8,17 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_X_M11_L        226 /* M11-L exchange functional from Minnesota  */
+
+#pragma omp declare target
 
 typedef struct{
   const double a[12], b[21], c[12], d[12];
 } mgga_x_m11_l_params;
 
-static const mgga_x_m11_l_params par_m11_l = {
+DEVICE static const mgga_x_m11_l_params dvc_par_m11_l = {
   {
      8.121131e-01,  1.738124e+01,  1.154007e+00,  6.869556e+01,  1.016864e+02, -5.887467e+00, 
      4.517409e+01, -2.773149e+00, -2.617211e+01,  0.000000e+00,  0.000000e+00,  0.000000e+00
@@ -31,8 +34,8 @@ static const mgga_x_m11_l_params par_m11_l = {
   }
 };
 
-static void
-mgga_x_m11_l_init(xc_func_type *p)
+DEVICE static void
+dvc_mgga_x_m11_l_init(xc_func_type *p)
 {
   mgga_x_m11_l_params *params;
 
@@ -42,27 +45,32 @@ mgga_x_m11_l_init(xc_func_type *p)
 
   switch(p->info->number){
   case XC_MGGA_X_M11_L:
-    memcpy(params, &par_m11_l, sizeof(mgga_x_m11_l_params));
+    memcpy(params, &dvc_par_m11_l, sizeof(mgga_x_m11_l_params));
     p->cam_omega = 0.25;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in mgga_x_m11_l\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/mgga_exc/mgga_x_m11_l.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_m11_l = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_m11_l = {
   XC_MGGA_X_M11_L,
   XC_EXCHANGE,
   "Minnesota M11-L exchange functional",
   XC_FAMILY_MGGA,
-  {&xc_ref_Peverati2012_117, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Peverati2012_117, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-13,
   0, NULL, NULL,
-  mgga_x_m11_l_init, NULL, 
-  NULL, NULL, work_mgga,
+  dvc_mgga_x_m11_l_init, NULL, 
+  NULL, NULL, dvc_work_mgga,
 };
+
+#pragma omp end declare target

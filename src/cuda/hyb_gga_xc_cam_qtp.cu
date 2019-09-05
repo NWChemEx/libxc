@@ -8,14 +8,15 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_HYB_GGA_XC_CAM_QTP_00       490 /* CAM-QTP-00 */
 #define XC_HYB_GGA_XC_CAM_QTP_01       482 /* CAM-QTP-01 */
 #define XC_HYB_GGA_XC_CAM_QTP_02       491 /* CAM-QTP-02 */
 #define XC_HYB_GGA_XC_LC_QTP           492 /* LC-QTP     */
 
-void
-xc_hyb_gga_xc_cam_qtp_init(xc_func_type *p)
+DEVICE void
+dvc_xc_hyb_gga_xc_cam_qtp_init(xc_func_type *p)
 {
   /* Variables that define the functionals, using Yanai's definitions */
   double alpha, beta, omega;
@@ -53,8 +54,11 @@ xc_hyb_gga_xc_cam_qtp_init(xc_func_type *p)
     flyp = 1.0;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr,"Internal error in hyb_gga_xc_cam_qtp_init.\n");
     exit(1);
+    #endif
+    break;
   }
 
   /* N.B. The notation used in Yanai et al uses a different convention
@@ -76,63 +80,67 @@ xc_hyb_gga_xc_cam_qtp_init(xc_func_type *p)
   funcs_coef[3] = 1.0 - flyp;
 
   nfuncs = (flyp == 1.0) ? 3 : 4;
-  xc_mix_init(p, nfuncs, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, nfuncs, funcs_id, funcs_coef);
 
-  xc_func_set_ext_params(p->func_aux[1], &omega);
+  dvc_xc_func_set_ext_params(p->func_aux[1], &omega);
 
   p->cam_omega = omega;
   p->cam_alpha = cam_alpha;
   p->cam_beta  = cam_beta;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_00 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_cam_qtp_00 = {
   XC_HYB_GGA_XC_CAM_QTP_00,
   XC_EXCHANGE_CORRELATION,
   "CAM-B3LYP retuned using ionization potentials of water",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Verma2014_18A534, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Verma2014_18A534, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1e-32,
   0, NULL, NULL,
-  xc_hyb_gga_xc_cam_qtp_init,
+  dvc_xc_hyb_gga_xc_cam_qtp_init,
   NULL, NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_01 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_cam_qtp_01 = {
   XC_HYB_GGA_XC_CAM_QTP_01,
   XC_EXCHANGE_CORRELATION,
   "CAM-B3LYP retuned using ionization potentials of water",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Jin2016_034107, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Jin2016_034107, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1e-32,
   0, NULL, NULL,
-  xc_hyb_gga_xc_cam_qtp_init,
+  dvc_xc_hyb_gga_xc_cam_qtp_init,
   NULL, NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_02 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_cam_qtp_02 = {
   XC_HYB_GGA_XC_CAM_QTP_02,
   XC_EXCHANGE_CORRELATION,
   "CAM-B3LYP retuned using ionization potentials of water",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Haiduke2018_184106, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Haiduke2018_184106, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1e-32,
   0, NULL, NULL,
-  xc_hyb_gga_xc_cam_qtp_init,
+  dvc_xc_hyb_gga_xc_cam_qtp_init,
   NULL, NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lc_qtp = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_lc_qtp = {
   XC_HYB_GGA_XC_LC_QTP,
   XC_EXCHANGE_CORRELATION,
   "CAM-B3LYP retuned using ionization potentials of water",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Haiduke2018_184106, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Haiduke2018_184106, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1e-32,
   0, NULL, NULL,
-  xc_hyb_gga_xc_cam_qtp_init,
+  dvc_xc_hyb_gga_xc_cam_qtp_init,
   NULL, NULL, NULL, NULL
 };

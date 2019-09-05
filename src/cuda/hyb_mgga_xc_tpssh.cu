@@ -7,55 +7,56 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_HYB_MGGA_XC_TPSSH       457 /*    TPSS hybrid */
 #define XC_HYB_MGGA_XC_REVTPSSH    458 /* revTPSS hybrid */
 
-static void
-hyb_mgga_xc_tpssh_init(xc_func_type *p)
+DEVICE static void
+dvc_hyb_mgga_xc_tpssh_init(xc_func_type *p)
 {
   static int   funcs_id  [2] = {XC_MGGA_X_TPSS, XC_MGGA_C_TPSS};
   static double funcs_coef[2] = {0.9, 1.0};
 
-  xc_mix_init(p, 2, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, 2, funcs_id, funcs_coef);
   p->cam_alpha = 0.10;
 }
 
-
-const xc_func_info_type xc_func_info_hyb_mgga_xc_tpssh = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_tpssh = {
   XC_HYB_MGGA_XC_TPSSH,
   XC_EXCHANGE_CORRELATION,
   "TPSSh",
   XC_FAMILY_HYB_MGGA,
-  {&xc_ref_Staroverov2003_12129, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Staroverov2003_12129, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1e-32,
   0, NULL, NULL,
-  hyb_mgga_xc_tpssh_init,
+  dvc_hyb_mgga_xc_tpssh_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
 };
 
 
-static void
-hyb_mgga_xc_revtpssh_init(xc_func_type *p)
+DEVICE static void
+dvc_hyb_mgga_xc_revtpssh_init(xc_func_type *p)
 {
   static int   funcs_id  [2] = {XC_MGGA_X_REVTPSS, XC_MGGA_C_REVTPSS};
   static double funcs_coef[2] = {0.9, 1.0};
 
-  xc_mix_init(p, 2, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, 2, funcs_id, funcs_coef);
   p->cam_alpha = 0.10;
 }
 
-
-const xc_func_info_type xc_func_info_hyb_mgga_xc_revtpssh = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_revtpssh = {
   XC_HYB_MGGA_XC_REVTPSSH,
   XC_EXCHANGE_CORRELATION,
   "revTPSSh",
   XC_FAMILY_HYB_MGGA,
-  {&xc_ref_Csonka2010_3688, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Csonka2010_3688, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1e-32,
   0, NULL, NULL,
-  hyb_mgga_xc_revtpssh_init,
+  dvc_hyb_mgga_xc_revtpssh_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
 };

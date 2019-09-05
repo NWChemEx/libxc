@@ -7,9 +7,12 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_PBE3         595 /* Three parameter PBE-like expansion             */
 #define XC_GGA_K_PBE4         596 /* Four  parameter PBE-like expansion             */
+
+#pragma omp declare target
 
 typedef struct{
   double a;
@@ -17,8 +20,9 @@ typedef struct{
 } gga_k_mpbe_params;
 
 
+DEVICE
 static void 
-gga_k_mpbe_init(xc_func_type *p)
+dvc_gga_k_mpbe_init(xc_func_type *p)
 {
   gga_k_mpbe_params *params;
 
@@ -40,37 +44,44 @@ gga_k_mpbe_init(xc_func_type *p)
     params->c3 = -93.683;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_k_mpbe\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 
 #include "maple2c/gga_exc/gga_k_mpbe.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_pbe3 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_k_pbe3 = {
   XC_GGA_K_PBE3,
   XC_KINETIC,
   "Three parameter PBE-like expansion",
   XC_FAMILY_GGA,
-  {&xc_ref_Karasiev2006_111, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Karasiev2006_111, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-21,
   0, NULL, NULL,
-  gga_k_mpbe_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_k_mpbe_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_pbe4 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_k_pbe4 = {
   XC_GGA_K_PBE4,
   XC_KINETIC,
   "Four parameter PBE-like expansion",
   XC_FAMILY_GGA,
-  {&xc_ref_Karasiev2006_111, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Karasiev2006_111, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-21,
   0, NULL, NULL,
-  gga_k_mpbe_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_k_mpbe_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 /************************************************************************
  Correlation energy per particle and potentials for a homogeneous electron
@@ -16,18 +17,21 @@
 
 #define XC_LDA_C_2D_AMGB  15   /* Attaccalite et al             */
 
-#include "maple2c/lda_exc/lda_c_2d_amgb.c"
-#include "work_lda_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_lda_c_2d_amgb = {
+#include "maple2c/lda_exc/lda_c_2d_amgb.c"
+#include "work_lda_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_2d_amgb = {
   XC_LDA_C_2D_AMGB,
   XC_CORRELATION,
   "AMGB (for 2D systems)",
   XC_FAMILY_LDA,
-  {&xc_ref_Attaccalite2002_256601, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Attaccalite2002_256601, NULL, NULL, NULL, NULL},
   XC_FLAGS_2D | XC_FLAGS_I_HAVE_ALL,
   1e-9,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+#pragma omp end declare target

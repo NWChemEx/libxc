@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_AIRY  192 /* Constantin et al based on the Airy gas */
 
-#include "maple2c/gga_exc/gga_x_airy.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_x_airy = {
+#include "maple2c/gga_exc/gga_x_airy.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_airy = {
   XC_GGA_X_AIRY,
   XC_EXCHANGE,
   "Constantin et al based on the Airy gas",
   XC_FAMILY_GGA,
-  {&xc_ref_Constantin2009_035125, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Constantin2009_035125, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -7,16 +7,20 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_ZVPBEINT       557 /* another spin-dependent correction to PBEint       */
 #define XC_GGA_C_ZVPBESOL       558 /* another spin-dependent correction to PBEsol       */
+
+#pragma omp declare target
 
 typedef struct{
   double beta, alpha, omega;
 } gga_c_zvpbeint_params;
 
+DEVICE
 static void 
-gga_c_zvpbeint_init(xc_func_type *p)
+dvc_gga_c_zvpbeint_init(xc_func_type *p)
 {
   gga_c_zvpbeint_params *params;
 
@@ -36,36 +40,43 @@ gga_c_zvpbeint_init(xc_func_type *p)
     params->omega = 4.5;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_c_zvpbeint\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/gga_exc/gga_c_zvpbeint.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_zvpbeint = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_zvpbeint = {
   XC_GGA_C_ZVPBEINT,
   XC_CORRELATION,
   "another spin-dependent correction to PBEint",
   XC_FAMILY_GGA,
-  {&xc_ref_Constantin2012_194105, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Constantin2012_194105, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-10,
   0, NULL, NULL,
-  gga_c_zvpbeint_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_zvpbeint_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_c_zvpbesol = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_zvpbesol = {
   XC_GGA_C_ZVPBESOL,
   XC_CORRELATION,
   "another spin-dependent correction to PBEsol",
   XC_FAMILY_GGA,
-  {&xc_ref_Constantin2012_194105, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Constantin2012_194105, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-10,
   0, NULL, NULL,
-  gga_c_zvpbeint_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_c_zvpbeint_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

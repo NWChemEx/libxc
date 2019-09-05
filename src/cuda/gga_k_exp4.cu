@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_EXP4          597 /* Intermediate form between PBE3 and PBE4 */
 
-#include "maple2c/gga_exc/gga_k_exp4.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_k_exp4 = {
+#include "maple2c/gga_exc/gga_k_exp4.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_k_exp4 = {
   XC_GGA_K_EXP4,
   XC_KINETIC,
   "Intermediate form between PBE3 and PBE4",
   XC_FAMILY_GGA,
-  {&xc_ref_Karasiev2006_111, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Karasiev2006_111, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

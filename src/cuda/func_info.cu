@@ -8,33 +8,35 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
-int xc_func_info_get_number(const xc_func_info_type *info)
+#pragma omp declare target
+DEVICE int dvc_xc_func_info_get_number(const xc_func_info_type *info)
 {
   return info->number;
 }
 
-int xc_func_info_get_kind(const xc_func_info_type *info)
+DEVICE int dvc_xc_func_info_get_kind(const xc_func_info_type *info)
 {
   return info->kind;
 }
 
-char const *xc_func_info_get_name(const xc_func_info_type *info)
+DEVICE char const *dvc_xc_func_info_get_name(const xc_func_info_type *info)
 {
   return info->name;
 }
 
-int xc_func_info_get_family(const xc_func_info_type *info)
+DEVICE int dvc_xc_func_info_get_family(const xc_func_info_type *info)
 {
   return info->family;
 }
 
-int xc_func_info_get_flags(const xc_func_info_type *info)
+DEVICE int dvc_xc_func_info_get_flags(const xc_func_info_type *info)
 {
   return info->flags;
 }
 
-const func_reference_type *xc_func_info_get_references(const xc_func_info_type *info, int number)
+DEVICE const func_reference_type *dvc_xc_func_info_get_references(const xc_func_info_type *info, int number)
 {
   assert(number >=0 && number < XC_MAX_REFERENCES);
 
@@ -45,23 +47,24 @@ const func_reference_type *xc_func_info_get_references(const xc_func_info_type *
   }
 }
 
-int xc_func_info_get_n_ext_params(xc_func_info_type *info)
+DEVICE int dvc_xc_func_info_get_n_ext_params(xc_func_info_type *info)
 {
   assert(info!=NULL);
 
   return info->n_ext_params;
 }
 
-char const *xc_func_info_get_ext_params_description(xc_func_info_type *info, int number)
+DEVICE char const *dvc_xc_func_info_get_ext_params_description(xc_func_info_type *info, int number)
 {
   assert(number >=0 && number < info->n_ext_params);
 
   return info->ext_params[number].description;
 }
 
-double xc_func_info_get_ext_params_default_value(xc_func_info_type *info, int number)
+DEVICE double dvc_xc_func_info_get_ext_params_default_value(xc_func_info_type *info, int number)
 {
   assert(number >=0 && number < info->n_ext_params);
 
   return info->ext_params[number].value;
 }
+#pragma omp end declare target

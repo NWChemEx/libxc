@@ -8,21 +8,27 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_FT97          88 /* Filatov & Thiel correlation */
 
-#include "maple2c/gga_exc/gga_c_ft97.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_ft97 = {
+#include "maple2c/gga_exc/gga_c_ft97.cu"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_ft97 = {
   XC_GGA_C_FT97,
   XC_CORRELATION,
   "Filatov & Thiel correlation",
   XC_FAMILY_GGA,
-  {&xc_ref_Filatov1997_603, &xc_ref_Filatov1997_847, NULL, NULL, NULL},
+  {&dvc_xc_ref_Filatov1997_603, &dvc_xc_ref_Filatov1997_847, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -7,21 +7,25 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_C_1D_LOOS          26 /* P-F Loos correlation LDA     */
 
-#include "maple2c/lda_exc/lda_c_1d_loos.c"
-#include "work_lda_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_lda_c_1d_loos = {
+#include "maple2c/lda_exc/lda_c_1d_loos.c"
+#include "work_lda_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_1d_loos = {
   XC_LDA_C_1D_LOOS,
   XC_CORRELATION,
   "P-F Loos correlation LDA",
   XC_FAMILY_LDA,
-  {&xc_ref_Loos2013_064108, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Loos2013_064108, NULL, NULL, NULL, NULL},
   XC_FLAGS_1D |  XC_FLAGS_I_HAVE_ALL,
   5e-28,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+#pragma omp end declare target

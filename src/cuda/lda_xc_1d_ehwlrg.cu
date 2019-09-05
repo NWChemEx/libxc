@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 /* these functionals is for the soft-Coulomb interaction with alpha=1 */
 
@@ -14,13 +15,15 @@
 #define XC_LDA_XC_1D_EHWLRG_2     537 /* LDA constructed from slab-like systems of 2 electrons */
 #define XC_LDA_XC_1D_EHWLRG_3     538 /* LDA constructed from slab-like systems of 3 electrons */
 
+#pragma omp declare target
+
 typedef struct {
   double alpha;
   double a1, a2, a3;
 } lda_xc_1d_ehwlrg_params;
 
-static void 
-lda_xc_1d_ehwlrg_init(xc_func_type *p)
+DEVICE static void 
+dvc_lda_xc_1d_ehwlrg_init(xc_func_type *p)
 {
   lda_xc_1d_ehwlrg_params *params;
 
@@ -51,44 +54,46 @@ lda_xc_1d_ehwlrg_init(xc_func_type *p)
 }
 
 #include "maple2c/lda_exc/lda_xc_1d_ehwlrg.c"
-#include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_1 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_1 = {
   XC_LDA_XC_1D_EHWLRG_1,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 1 electron",
   XC_FAMILY_LDA,
-  {&xc_ref_Entwistle2016_205134, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Entwistle2016_205134, NULL, NULL, NULL, NULL},
   XC_FLAGS_1D |  XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  lda_xc_1d_ehwlrg_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_xc_1d_ehwlrg_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_2 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_2 = {
   XC_LDA_XC_1D_EHWLRG_2,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 2 electrons",
   XC_FAMILY_LDA,
-  {&xc_ref_Entwistle2016_205134, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Entwistle2016_205134, NULL, NULL, NULL, NULL},
   XC_FLAGS_1D |  XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  lda_xc_1d_ehwlrg_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_xc_1d_ehwlrg_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
 
-const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_3 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_3 = {
   XC_LDA_XC_1D_EHWLRG_3,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 3 electrons",
   XC_FAMILY_LDA,
-  {&xc_ref_Entwistle2016_205134, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Entwistle2016_205134, NULL, NULL, NULL, NULL},
   XC_FLAGS_1D |  XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  lda_xc_1d_ehwlrg_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_xc_1d_ehwlrg_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

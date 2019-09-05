@@ -7,15 +7,19 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_OL2          513 /* Ou-Yang and Levy v.2 */
+
+#pragma omp declare target
 
 typedef struct{
   double aa, bb, cc;
 } gga_k_ol2_params;
 
+DEVICE
 static void 
-gga_k_ol2_init(xc_func_type *p)
+dvc_gga_k_ol2_init(xc_func_type *p)
 {
   gga_k_ol2_params *params;
 
@@ -33,17 +37,20 @@ gga_k_ol2_init(xc_func_type *p)
 }
 
 #include "maple2c/gga_exc/gga_k_ol2.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_ol2 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_k_ol2 = {
   XC_GGA_K_OL2,
   XC_KINETIC,
   "Ou-Yang and Levy v.2",
   XC_FAMILY_GGA,
-  {&xc_ref_OuYang1991_379, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_OuYang1991_379, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   5e-26,
   0, NULL, NULL,
-  gga_k_ol2_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_ol2_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -8,16 +8,20 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_FD_LB94     604 /* Functional derivative recovered from the stray LB94 potential */
 #define XC_GGA_X_FD_REVLB94  605 /* Revised FD_LB94 */
+
+#pragma omp declare target
 
 typedef struct{
   double beta;         /* screening parameter beta */
 } gga_x_fd_lb94_params;
 
+DEVICE
 static void 
-gga_x_fd_lb94_init(xc_func_type *p)
+dvc_gga_x_fd_lb94_init(xc_func_type *p)
 {
   gga_x_fd_lb94_params *params;
 
@@ -38,7 +42,8 @@ gga_x_fd_lb94_init(xc_func_type *p)
   }
 }
 
-static inline double FT_inter(int n, double x)
+DEVICE
+static inline double dvc_FT_inter(int n, double x)
 {
   static double fd_beta = 0.05, fd_csi = M_CBRT2;
 
@@ -50,47 +55,51 @@ static inline double FT_inter(int n, double x)
     (1 + 3*fd_beta*fd_csi*x*log(fd_csi*x + sqrt(fd_csi*fd_csi*x*x + 1)));
 }
 
+DEVICE
 static void func0(double *x, int n, void *dummy)
 {
   int ii;
   
   for(ii=0; ii<n; ii++)
-    x[ii] = FT_inter(0, x[ii]);
+    x[ii] = dvc_FT_inter(0, x[ii]);
 }
 
+DEVICE
 static void func1(double *x, int n, void *dummy)
 {
   int ii;
   
   for(ii=0; ii<n; ii++)
-    x[ii] = FT_inter(1, x[ii]);
+    x[ii] = dvc_FT_inter(1, x[ii]);
 }
 
 #include "maple2c/gga_exc/gga_x_fd_lb94.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_fd_lb94 = {
+const xc_func_info_type dvc_xc_func_info_gga_x_fd_lb94 = {
   XC_GGA_X_FD_LB94,
   XC_EXCHANGE,
   "Functional derivative recovered from the stray LB94 potential",
   XC_FAMILY_GGA,
-  {&xc_ref_Gaiduk2011_012509, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Gaiduk2011_012509, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-26,
   0, NULL, NULL,
-  gga_x_fd_lb94_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_x_fd_lb94_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_fd_revlb94 = {
+const xc_func_info_type dvc_xc_func_info_gga_x_fd_revlb94 = {
   XC_GGA_X_FD_REVLB94,
   XC_EXCHANGE,
   "Revised FD_LB94",
   XC_FAMILY_GGA,
-  {&xc_ref_Gaiduk2011_012509, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Gaiduk2011_012509, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-26,
   0, NULL, NULL,
-  gga_x_fd_lb94_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_x_fd_lb94_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

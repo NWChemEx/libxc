@@ -8,8 +8,11 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_C_CS          72 /* Colle and Salvetti */
+
+#pragma omp declare target
 
 /*
     [1] Eq. (15) in http://dx.doi.org/10.1103/PhysRevB.37.785
@@ -22,17 +25,19 @@
 */
 
 #include "maple2c/mgga_exc/mgga_c_cs.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_c_cs = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_cs = {
   XC_MGGA_C_CS,
   XC_CORRELATION,
   "Colle and Salvetti",
   XC_FAMILY_MGGA,
-  {&xc_ref_Colle1975_329, &xc_ref_Lee1988_785, NULL, NULL, NULL},
+  {&dvc_xc_ref_Colle1975_329, &dvc_xc_ref_Lee1988_785, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, NULL, work_mgga,
+  NULL, NULL, dvc_work_mgga,
 };
+
+#pragma omp end declare target

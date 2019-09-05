@@ -7,18 +7,21 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_APBEINT       54 /* interpolated version of APBE                   */
 #define XC_GGA_K_REVAPBEINT    53 /* interpolated version of REVAPBE                */
 
+#pragma omp declare target
 
 typedef struct{
   double kappa, alpha, muPBE, muGE;
 } gga_k_apbeint_params;
 
 
+DEVICE
 static void 
-gga_k_apbe_init(xc_func_type *p)
+dvc_gga_k_apbe_init(xc_func_type *p)
 {
   gga_k_apbeint_params *params;
 
@@ -46,30 +49,32 @@ gga_k_apbe_init(xc_func_type *p)
 }
 
 #include "maple2c/gga_exc/gga_k_apbeint.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_apbeint = {
+const xc_func_info_type dvc_xc_func_info_gga_k_apbeint = {
   XC_GGA_K_APBEINT,
   XC_KINETIC,
   "interpolated version of APBE",
   XC_FAMILY_GGA,
-  {&xc_ref_Laricchia2011_2439, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Laricchia2011_2439, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_apbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_revapbeint = {
+const xc_func_info_type dvc_xc_func_info_gga_k_revapbeint = {
   XC_GGA_K_REVAPBEINT,
   XC_KINETIC,
   "interpolated version of revAPBE",
   XC_FAMILY_GGA,
-  {&xc_ref_Laricchia2011_2439, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Laricchia2011_2439, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_apbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_OPTC       200 /* Optimized correlation functional of Cohen and Handy */
 
-#include "maple2c/gga_exc/gga_c_optc.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_optc = {
+#include "maple2c/gga_exc/gga_c_optc.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_optc = {
   XC_GGA_C_OPTC,
   XC_CORRELATION,
   "Optimized correlation functional of Cohen and Handy",
   XC_FAMILY_GGA,
-  {&xc_ref_Cohen2001_607, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Cohen2001_607, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -7,34 +7,40 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_WPBEH 524 /* short-range version of the PBE */
+
+#pragma omp declare target
 
 typedef struct{
   double omega;
 } gga_x_wpbeh_params;
 
+DEVICE
 static void
-gga_x_wpbeh_init(xc_func_type *p)
+dvc_gga_x_wpbeh_init(xc_func_type *p)
 {
   assert(p->params == NULL);
   p->params = malloc(sizeof(gga_x_wpbeh_params));
 }
 
 /* The default value is actually PBEh */
-static func_params_type ext_params[] = {
+DEVICE
+static func_params_type dvc_ext_params[] = {
   {"_omega", 0.0, "Screening parameter for HF"},
 };
 
+DEVICE
 static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_wpbeh_params *params;
 
   assert(p != NULL && p->params != NULL);
   params = (gga_x_wpbeh_params *) (p->params);
 
-  params->omega = get_ext_param(p->info->ext_params, ext_params, 0);
+  params->omega = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
 }
 
 
@@ -58,18 +64,21 @@ set_ext_params(xc_func_type *p, const double *ext_params)
    *) TM Henderson, AF Izmaylov, G Scalmani, and GE Scuseria, J. Chem. Phys. 131, 044108 (2009)
 */
 
-#include "maple2c/gga_exc/gga_x_wpbeh.c"
-#include "work_gga_new.c"
+#include "maple2c/gga_exc/gga_x_wpbeh.cu"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_wpbeh = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_wpbeh = {
   XC_GGA_X_WPBEH,
   XC_EXCHANGE,
   "short-range part of the PBE (default w=0 gives PBEh)",
   XC_FAMILY_GGA,
-  {&xc_ref_Heyd2003_8207, &xc_ref_Heyd2003_8207_err, &xc_ref_Ernzerhof1998_3313, &xc_ref_Heyd2004_7274, &xc_ref_Henderson2009_044108},
+  {&dvc_xc_ref_Heyd2003_8207, &dvc_xc_ref_Heyd2003_8207_err, &dvc_xc_ref_Ernzerhof1998_3313, &dvc_xc_ref_Heyd2004_7274, &dvc_xc_ref_Henderson2009_044108},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  1, ext_params, set_ext_params,
-  gga_x_wpbeh_init, NULL, 
-  NULL, work_gga, NULL
+  1, dvc_ext_params, dvc_set_ext_params,
+  dvc_gga_x_wpbeh_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

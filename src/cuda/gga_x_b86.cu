@@ -8,19 +8,23 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_B86          103 /* Becke 86 Xalpha,beta,gamma                      */
 #define XC_GGA_X_B86_MGC      105 /* Becke 86 Xalpha,beta,gamma (with mod. grad. correction) */
 #define XC_GGA_X_B86_R         41 /* Revised Becke 86 Xalpha,beta,gamma (with mod. grad. correction) */
 #define XC_GGA_X_OPTB86B_VDW  171 /* Becke 86 reoptimized for use with vdW functional of Dion et al */
 
+#pragma omp declare target
+
 typedef struct{
   double beta, gamma, omega;
 } gga_x_b86_params;
 
 
+DEVICE
 static void
-gga_x_b86_init(xc_func_type *p)
+dvc_gga_x_b86_init(xc_func_type *p)
 {
   gga_x_b86_params *params;
   double mu, kappa;
@@ -54,19 +58,24 @@ gga_x_b86_init(xc_func_type *p)
     params->omega = 4.0/5.0;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_x_b86\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
-static const func_params_type ext_params[] = {
+DEVICE
+static const func_params_type dvc_ext_params[] = {
   {"_beta", 0.0036/X_FACTOR_C, "Small x limit"},
   {"_gamma", 0.004, "Parameter in the denominator"},
   {"_omega", 1.0, "Exponent of denominator"},
 };
 
+DEVICE
 static void
-set_ext_params(xc_func_type *p, const double *ext_params)
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_b86_params *params;
 
@@ -80,57 +89,59 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 
 #include "maple2c/gga_exc/gga_x_b86.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_b86 = {
+const xc_func_info_type dvc_xc_func_info_gga_x_b86 = {
   XC_GGA_X_B86,
   XC_EXCHANGE,
   "Becke 86",
   XC_FAMILY_GGA,
-  {&xc_ref_Becke1986_4524, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Becke1986_4524, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
-  3, ext_params, set_ext_params,
-  gga_x_b86_init, NULL, 
-  NULL, work_gga, NULL
+  3, dvc_ext_params, dvc_set_ext_params,
+  dvc_gga_x_b86_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_b86_mgc = {
+const xc_func_info_type dvc_xc_func_info_gga_x_b86_mgc = {
   XC_GGA_X_B86_MGC,
   XC_EXCHANGE,
   "Becke 86 with modified gradient correction",
   XC_FAMILY_GGA,
-  {&xc_ref_Becke1986_4524, &xc_ref_Becke1986_7184, NULL, NULL, NULL},
+  {&dvc_xc_ref_Becke1986_4524, &dvc_xc_ref_Becke1986_7184, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  gga_x_b86_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_b86_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_b86_r = {
+const xc_func_info_type dvc_xc_func_info_gga_x_b86_r = {
   XC_GGA_X_B86_R,
   XC_EXCHANGE,
   "Revised Becke 86 with modified gradient correction",
   XC_FAMILY_GGA,
-  {&xc_ref_Hamada2014_121103, &xc_ref_Becke1986_4524, &xc_ref_Becke1986_7184, NULL, NULL},
+  {&dvc_xc_ref_Hamada2014_121103, &dvc_xc_ref_Becke1986_4524, &dvc_xc_ref_Becke1986_7184, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  gga_x_b86_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_b86_init, NULL, 
+  NULL, dvc_work_gga, NULL
 
 };
 
-const xc_func_info_type xc_func_info_gga_x_optb86b_vdw = {
+const xc_func_info_type dvc_xc_func_info_gga_x_optb86b_vdw = {
   XC_GGA_X_OPTB86B_VDW,
   XC_EXCHANGE,
   "Becke 86 reoptimized for use with vdW functional of Dion et al",
   XC_FAMILY_GGA,
-  {&xc_ref_Klimes2011_195131, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Klimes2011_195131, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  gga_x_b86_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_x_b86_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

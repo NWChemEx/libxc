@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_TCA          100 /* Tognetti, Cortona, Adamo */
 
-#include "maple2c/gga_exc/gga_c_tca.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_tca = {
+#include "maple2c/gga_exc/gga_c_tca.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_tca = {
   XC_GGA_C_TCA,
   XC_CORRELATION,
   "Tognetti, Cortona, Adamo",
   XC_FAMILY_GGA,
-  {&xc_ref_Tognetti2008_034101, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Tognetti2008_034101, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

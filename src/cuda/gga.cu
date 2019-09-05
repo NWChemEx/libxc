@@ -7,7 +7,8 @@
 */
 
 
-#include "util.cuh"
+#include "util.h"
+#include "dvc_util.h"
 #include "funcs_gga.cu"
 #include "funcs_hyb_gga.cu"
 
@@ -45,8 +46,8 @@ if nspin == 2
    v3sigma(10)     = (uu_uu_uu, uu_uu_ud, uu_uu_dd, uu_ud_ud, uu_ud_dd, uu_dd_dd, ud_ud_ud, ud_ud_dd, ud_dd_dd, dd_dd_dd)
    
 */
-__device__
-void xc_gga_cuda(const xc_func_type *func, int np, const double *rho, const double *sigma,
+DEVICE
+void dvc_xc_gga(const xc_func_type *func, int np, const double *rho, const double *sigma,
 	     double *zk, double *vrho, double *vsigma,
 	     double *v2rho2, double *v2rhosigma, double *v2sigma2,
 	     double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
@@ -55,27 +56,35 @@ void xc_gga_cuda(const xc_func_type *func, int np, const double *rho, const doub
   
   /* sanity check */
   if(zk != NULL && !(func->info->flags & XC_FLAGS_HAVE_EXC)){
+    #ifndef __CUDACC__
     fprintf(stderr, "Functional '%s' does not provide an implementation of Exc\n",
 	    func->info->name);
     exit(1);
+    #endif
   }
 
   if(vrho != NULL && !(func->info->flags & XC_FLAGS_HAVE_VXC)){
+    #ifndef __CUDACC__
     fprintf(stderr, "Functional '%s' does not provide an implementation of vxc\n",
 	    func->info->name);
     exit(1);
+    #endif
   }
 
   if(v2rho2 != NULL && !(func->info->flags & XC_FLAGS_HAVE_FXC)){
+    #ifndef __CUDACC__
     fprintf(stderr, "Functional '%s' does not provide an implementation of fxc\n",
 	    func->info->name);
     exit(1);
+    #endif
   }
 
   if(v3rho3 != NULL && !(func->info->flags & XC_FLAGS_HAVE_KXC)){
+    #ifndef __CUDACC__
     fprintf(stderr, "Functional '%s' does not provide an implementation of kxc\n",
 	    func->info->name);
     exit(1);
+    #endif
   }
 
   /* initialize output to zero */
@@ -108,12 +117,12 @@ void xc_gga_cuda(const xc_func_type *func, int np, const double *rho, const doub
 
   /* call functional */
   if(func->info->gga != NULL)
-    func->info->gga_cuda(func, np, rho, sigma, zk, vrho, vsigma, 
+    func->info->gga(func, np, rho, sigma, zk, vrho, vsigma, 
 		    v2rho2, v2rhosigma, v2sigma2,
 		    v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
 
   if(func->mix_coef != NULL)
-    xc_mix_func_cuda(func, np, rho, sigma, NULL, NULL, zk, vrho, vsigma, NULL, NULL,
+    dvc_xc_mix_func(func, np, rho, sigma, NULL, NULL, zk, vrho, vsigma, NULL, NULL,
                 v2rho2, v2rhosigma, NULL, NULL, v2sigma2, NULL, NULL, NULL, NULL, NULL,
                 v3rho3, v3rho2sigma, NULL, NULL,
                 v3rhosigma2, NULL, NULL,
@@ -129,46 +138,46 @@ void xc_gga_cuda(const xc_func_type *func, int np, const double *rho, const doub
 
 /* specializations */
 /* returns only energy */
-__device__
+DEVICE
 void
-xc_gga_exc_cuda(const xc_func_type *p, int np, const double *rho, const double *sigma, 
+dvc_xc_gga_exc(const xc_func_type *p, int np, const double *rho, const double *sigma, 
 	    double *zk)
 {
-  xc_gga_cuda(p, np, rho, sigma, zk, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+  dvc_xc_gga(p, np, rho, sigma, zk, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 /* returns only potential */
-__device__
+DEVICE
 void
-xc_gga_vxc_cuda(const xc_func_type *p, int np, const double *rho, const double *sigma,
+dvc_xc_gga_vxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 	    double *vrho, double *vsigma)
 {
-  xc_gga_cuda(p, np, rho, sigma, NULL, vrho, vsigma, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+  dvc_xc_gga(p, np, rho, sigma, NULL, vrho, vsigma, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 /* returns both energy and potential (the most common call usually) */
-__device__
+DEVICE
 void
-xc_gga_exc_vxc_cuda(const xc_func_type *p, int np, const double *rho, const double *sigma,
+dvc_xc_gga_exc_vxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 		double *zk, double *vrho, double *vsigma)
 {
-  xc_gga_cuda(p, np, rho, sigma, zk, vrho, vsigma, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+  dvc_xc_gga(p, np, rho, sigma, zk, vrho, vsigma, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 /* returns second derivatives */
-__device__
+DEVICE
 void
-xc_gga_fxc_cuda(const xc_func_type *p, int np, const double *rho, const double *sigma,
+dvc_xc_gga_fxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 	    double *v2rho2, double *v2rhosigma, double *v2sigma2)
 {
-  xc_gga_cuda(p, np, rho, sigma, NULL, NULL, NULL, v2rho2, v2rhosigma, v2sigma2, NULL, NULL, NULL, NULL);
+  dvc_xc_gga(p, np, rho, sigma, NULL, NULL, NULL, v2rho2, v2rhosigma, v2sigma2, NULL, NULL, NULL, NULL);
 }
 
 /* returns third derivatives */
-__device__
+DEVICE
 void
-xc_gga_kxc_cuda(const xc_func_type *p, int np, const double *rho, const double *sigma,
+dvc_xc_gga_kxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 	    double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
 {
-  xc_gga_cuda(p, np, rho, sigma, NULL, NULL, NULL, NULL, NULL, NULL, v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
+  dvc_xc_gga(p, np, rho, sigma, NULL, NULL, NULL, NULL, NULL, NULL, v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
 }

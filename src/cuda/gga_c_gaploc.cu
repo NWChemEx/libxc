@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_GAPLOC  556 /* Gaploc */
 
-#include "maple2c/gga_exc/gga_c_gaploc.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_gaploc = {
+#include "maple2c/gga_exc/gga_c_gaploc.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_gaploc = {
   XC_GGA_C_GAPLOC,
   XC_CORRELATION,
   "Gaploc",
   XC_FAMILY_GGA,
-  {&xc_ref_Fabiano2014_2016, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Fabiano2014_2016, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-18,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

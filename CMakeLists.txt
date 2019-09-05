@@ -42,8 +42,34 @@ include(CMakePackageConfigHelpers)
 # Check for CUDA support
 find_package(CUDA)
 if (CUDA_FOUND)
-    #list (APPEND CUDA_NVCC_FLAGS "-D__STRICT_ANSI__")
     enable_language(CUDA)
+    # Never use CUDA_NVCC_FLAGS and company as these variables are a complete
+    # red herring. Setting these variables does not actually do anything!
+    #
+    #list(APPEND CUDA_NVCC_FLAGS                "--relocatable-device-code true")
+    #list(APPEND CUDA_NVCC_FLAGS_DEBUG          "--relocatable-device-code true")
+    #list(APPEND CUDA_NVCC_FLAGS_MINSIZEREL     "--relocatable-device-code true")
+    #list(APPEND CUDA_NVCC_FLAGS_RELEASE        "--relocatable-device-code true")
+    #list(APPEND CUDA_NVCC_FLAGS_RELWITHDEBINFO "--relocatable-device-code true")
+    #
+    # Setting CMAKE_CUDA_FLAGS will pass the flags to the invocation of nvcc. However,
+    # you may need to specify CMAKE_CUDA_FLAGS on the CMake command line or edit
+    # the CMakeCache.txt file. Setting this variable here typically has no effect.
+    # Also do not add "--relocatable-device-code true" to any of the other 
+    # CMAKE_CUDA_FLAGS variables as in that case the flag will be passed to nvcc multiple
+    # times. Note, nvcc considers passing --relocatable-device-code twice a fatal
+    # error.
+    #
+    # Note: setting CMAKE_CUDA_FLAGS on the CMake command line causes the configure
+    # stage to fail (cmake/3.15.2). Instead running the CMake command without it works,
+    # and then you have to edit the resulting CMakeCache.txt so the right compiler
+    # flags are used with compiling the library.
+    #
+    #list(APPEND CMAKE_CUDA_FLAGS                "--relocatable-device-code true")
+    #list(APPEND CMAKE_CUDA_FLAGS_DEBUG          "--relocatable-device-code true")
+    #list(APPEND CMAKE_CUDA_FLAGS_MINSIZEREL     "--relocatable-device-code true")
+    #list(APPEND CMAKE_CUDA_FLAGS_RELEASE        "--relocatable-device-code true")
+    #list(APPEND CMAKE_CUDA_FLAGS_RELWITHDEBINFO "--relocatable-device-code true")
 else()
     # Check for OpenMP to support GPU offloading
     find_package(OpenMP)
@@ -109,6 +135,7 @@ message(STATUS "Libxc SO Full ${${PROJECT_NAME}_SOVERSION} Major ${${PROJECT_NAM
 
 # Always include the CUDA sources. If the language CUDA is not enabled (see enable_language
 # above) then CMake will simply check the CUDA files exist and subsequently ignore them.
+if (CUDA_FOUND)
 set(raw_sources_list
 cuda/bessel.cu
 cuda/expint_e1.cu
@@ -344,7 +371,245 @@ cuda/mix_func.cu
 cuda/references.cu
 cuda/special_functions.cu
 cuda/util.cu
-cuda/version.cu
+bessel.c
+expint_e1.c
+func_info.c
+func_reference.c
+functionals.c
+gga.c
+gga_c_acgga.c
+gga_c_acggap.c
+gga_c_am05.c
+gga_c_bmk.c
+gga_c_cs1.c
+gga_c_ft97.c
+gga_c_gapc.c
+gga_c_gaploc.c
+gga_c_hcth_a.c
+gga_c_lm.c
+gga_c_lyp.c
+gga_c_op_b88.c
+gga_c_op_g96.c
+gga_c_op_pbe.c
+gga_c_op_pw91.c
+gga_c_op_xalpha.c
+gga_c_optc.c
+gga_c_p86.c
+gga_c_pbe.c
+gga_c_pbeloc.c
+gga_c_pw91.c
+gga_c_q2d.c
+gga_c_regtpss.c
+gga_c_revtca.c
+gga_c_scan_e0.c
+gga_c_sg4.c
+gga_c_sogga11.c
+gga_c_tca.c
+gga_c_w94.c
+gga_c_wi.c
+gga_c_wl.c
+gga_c_zpbeint.c
+gga_c_zvpbeint.c
+gga_c_zvpbeloc.c
+gga_k_dk.c
+gga_k_meyer.c
+gga_k_ol1.c
+gga_k_ol2.c
+gga_x_ol2.c
+gga_k_pearson.c
+gga_k_tflw.c
+gga_k_thakkar.c
+gga_k_gds08.c
+gga_k_exp4.c
+gga_x_2d_b86.c
+gga_x_2d_b86_mgc.c
+gga_x_2d_b88.c
+gga_x_2d_pbe.c
+gga_x_airy.c
+gga_x_ak13.c
+gga_x_am05.c
+gga_x_b86.c
+gga_x_b88.c
+gga_k_llp.c
+gga_k_pw86.c
+gga_k_mpbe.c
+gga_k_apbe.c
+gga_k_apbeint.c
+gga_k_lc94.c
+gga_x_bayesian.c
+gga_x_beefvdw.c
+gga_x_bpccac.c
+gga_x_c09x.c
+gga_x_cap.c
+gga_x_chachiyo.c
+gga_x_dk87.c
+gga_x_ev93.c
+gga_x_ft97.c
+gga_x_g96.c
+gga_x_gg99.c
+gga_x_hcth_a.c
+gga_x_herman.c
+gga_x_hjs.c
+gga_x_hjs_b88_v2.c
+gga_x_htbs.c
+gga_x_ityh.c
+gga_x_kt.c
+gga_x_lag.c
+gga_x_lb.c
+gga_x_lg93.c
+gga_x_lspbe.c
+gga_x_lsrpbe.c
+gga_x_lv_rpw86.c
+gga_x_mpbe.c
+gga_x_n12.c
+gga_x_optx.c
+gga_x_pbe.c
+gga_x_pbea.c
+gga_x_pbeint.c
+gga_x_pbepow.c
+gga_x_pbetrans.c
+gga_x_pw86.c
+gga_x_pw91.c
+gga_x_q2d.c
+gga_x_rge2.c
+gga_x_rpbe.c
+gga_x_sfat.c
+gga_x_sfat_pbe.c
+gga_x_sg4.c
+gga_x_sogga11.c
+gga_x_ssb_sw.c
+gga_x_vmt.c
+gga_x_vmt84.c
+gga_x_wc.c
+gga_x_wpbeh.c
+gga_x_fd_lb94.c
+gga_xc_1w.c
+gga_xc_b97.c
+gga_xc_edf1.c
+gga_xc_oblyp_d.c
+gga_xc_th1.c
+gga_xc_th2.c
+gga_xc_th3.c
+gga_xc_vv10.c
+hyb_gga_xc_b1wc.c
+hyb_gga_xc_b3lyp.c
+hyb_gga_xc_cam_b3lyp.c
+hyb_gga_xc_cam_qtp.c
+hyb_gga_xc_camy_b3lyp.c
+hyb_gga_xc_camy_blyp.c
+hyb_gga_xc_edf2.c
+hyb_gga_xc_hse.c
+hyb_gga_xc_lcy_blyp.c
+hyb_gga_xc_lcy_pbe.c
+hyb_gga_xc_o3lyp.c
+hyb_gga_xc_pbeh.c
+hyb_gga_xc_wb97.c
+hyb_mgga_x_dldf.c
+hyb_mgga_x_m05.c
+hyb_mgga_x_mvsh.c
+hyb_mgga_xc_b88b95.c
+hyb_mgga_xc_kcis.c
+hyb_mgga_xc_tpssh.c
+hyb_mgga_xc_wb97mv.c
+integrate.c
+lda.c
+lda_c_1d_csc.c
+lda_c_1d_loos.c
+lda_c_2d_amgb.c
+lda_c_2d_prm.c
+lda_c_chachiyo.c
+lda_c_gombas.c
+lda_c_hl.c
+lda_c_lp96.c
+lda_c_ml1.c
+lda_c_pk09.c
+lda_c_pw.c
+lda_c_pz.c
+lda_c_rc04.c
+lda_c_rpa.c
+lda_c_vwn.c
+lda_c_vwn_1.c
+lda_c_vwn_2.c
+lda_c_vwn_3.c
+lda_c_vwn_4.c
+lda_c_vwn_rpa.c
+lda_c_wigner.c
+lda_c_gk72.c
+lda_k_tf.c
+lda_k_zlp.c
+lda_k_gds08_worker.c
+lda_x.c
+lda_x_1d_soft.c
+lda_x_1d_exponential.c
+lda_x_2d.c
+lda_x_erf.c
+lda_x_rel.c
+lda_xc_1d_ehwlrg.c
+lda_xc_ksdt.c
+lda_xc_teter93.c
+lda_xc_zlp.c
+lda_xc_bn05.c
+lda_c_pmgb06.c
+lda_xc_tih.c
+mgga.c
+mgga_c_b88.c
+mgga_c_bc95.c
+mgga_c_cs.c
+mgga_c_kcis.c
+mgga_xc_lp90.c
+mgga_c_m05.c
+mgga_c_m06l.c
+mgga_c_m08.c
+mgga_c_pkzb.c
+mgga_c_revscan.c
+mgga_c_revtpss.c
+mgga_c_scan.c
+mgga_c_tpss.c
+mgga_c_tpssloc.c
+mgga_c_vsxc.c
+mgga_k_pc07.c
+mgga_x_2d_prhg07.c
+mgga_x_br89.c
+mgga_x_br89_explicit.c
+mgga_x_gvt4.c
+mgga_x_gx.c
+mgga_x_lta.c
+mgga_x_m06l.c
+mgga_x_m08.c
+mgga_x_m11.c
+mgga_x_m11_l.c
+mgga_x_mbeef.c
+mgga_x_mbeefvdw.c
+mgga_x_mk00.c
+mgga_x_mn12.c
+mgga_x_ms.c
+mgga_x_msb.c
+mgga_x_mvs.c
+mgga_x_mvsb.c
+mgga_x_pbe_gx.c
+mgga_x_pkzb.c
+mgga_x_sa_tpss.c
+mgga_x_scan.c
+mgga_x_tau_hcth.c
+mgga_x_tm.c
+mgga_x_tpss.c
+mgga_x_regtpss.c
+mgga_x_vt84.c
+mgga_x_rtpss.c
+mgga_xc_b97mv.c
+mgga_xc_cc06.c
+mgga_xc_hle17.c
+mgga_xc_otpss_d.c
+mgga_xc_zlp.c
+mgga_xc_b98.c
+mix_func.c
+references.c
+special_functions.c
+util.c
+version.c
+)
+else()
+set(raw_sources_list
 bessel.c
 expint_e1.c
 func_info.c
@@ -581,6 +846,7 @@ special_functions.c
 util.c
 version.c
 )
+endif()
 
 set(src_prefix "src/")
 string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list "${raw_sources_list}")
@@ -601,14 +867,10 @@ string(REPLACE "<xc_version.h>" "\"xc_version.h\"" _quoted_src "${_src_contents}
 file(WRITE ${PROJECT_BINARY_DIR}/${src_prefix}xc.h "${_quoted_src}")
 
 # STATIC/SHARED on below governed by BUILD_SHARED_LIBS
-#DEBUG
-message(STATUS "HVD: List of source files")
-message(STATUS "${sources_list}")
-#DEBUG
+list(APPEND CMAKE_C_FLAGS "-std=c99")
 add_library(xc ${sources_list})
 target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY})
 set_target_properties(xc PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
-                                    COMPILE_FLAGS "-std=c99"
                                     SOVERSION ${${PROJECT_NAME}_SOMAJOR})
 if(${BUILD_SHARED_LIBS})
     target_link_libraries(xc PRIVATE ${LIBC_INTERJECT})
@@ -659,7 +921,11 @@ execute_process(
 add_executable(xc-info "${src_prefix}/xc-info.c")
 target_link_libraries(xc-info xc)
 
-add_executable(xc-threshold "${src_prefix}/xc-threshold.c")
+#if (CUDA_FOUND)
+#    add_executable(xc-threshold "${src_prefix}/cuda/xc-threshold.cu")
+#else()
+    add_executable(xc-threshold "${src_prefix}/xc-threshold.c")
+#endif()
 target_link_libraries(xc-threshold xc)
 
 

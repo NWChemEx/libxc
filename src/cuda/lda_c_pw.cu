@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 /************************************************************************
  Correlation energy per-particle and potential of a HEG as parameterized 
@@ -25,13 +26,15 @@ the constants of PW.
 #define XC_LDA_C_OB_PW  14   /* Ortiz & Ballone (PW)         */
 #define XC_LDA_C_PW_RPA 25   /* Perdew & Wang fit of the RPA */
 
+#pragma omp declare target
+
 typedef struct {
   double pp[3], a[3], alpha1[3];
   double beta1[3], beta2[3], beta3[3], beta4[3];
   double fz20;
 } lda_c_pw_params;
 
-static const lda_c_pw_params par_pw = {
+DEVICE static const lda_c_pw_params dvc_par_pw = {
   {1.0,  1.0,  1.0},
   {0.031091,  0.015545,   0.016887},
   {0.21370,  0.20548,  0.11125},
@@ -42,7 +45,7 @@ static const lda_c_pw_params par_pw = {
   1.709921
 };
 
-static const lda_c_pw_params par_pw_mod = {
+DEVICE static const lda_c_pw_params dvc_par_pw_mod = {
   {1.0,  1.0,  1.0},
   {0.0310907, 0.01554535, 0.0168869},
   {0.21370,  0.20548,  0.11125},
@@ -53,7 +56,7 @@ static const lda_c_pw_params par_pw_mod = {
   1.709920934161365617563962776245
 };
 
-static const lda_c_pw_params par_ob = {
+DEVICE static const lda_c_pw_params dvc_par_ob = {
   {1.0,  1.0,  1.0},
   {0.031091,  0.015545, 0.016887},
   {0.026481, 0.022465, 0.11125},
@@ -64,7 +67,7 @@ static const lda_c_pw_params par_ob = {
   1.709921
 };
 
-static const lda_c_pw_params par_pw_rpa = {
+DEVICE static const lda_c_pw_params dvc_par_pw_rpa = {
   {0.75, 0.75, 1.0},
   {0.031091,  0.015545,   0.016887},
   {0.082477, 0.035374, 0.028829},
@@ -75,8 +78,8 @@ static const lda_c_pw_params par_pw_rpa = {
   1.709921
 };
 
-static void 
-lda_c_pw_init(xc_func_type *p)
+DEVICE static void 
+dvc_lda_c_pw_init(xc_func_type *p)
 {  
   lda_c_pw_params *params;
 
@@ -86,86 +89,90 @@ lda_c_pw_init(xc_func_type *p)
 
   switch(p->info->number){
   case XC_LDA_C_PW:
-    memcpy(params, &par_pw, sizeof(lda_c_pw_params));
+    memcpy(params, &dvc_par_pw, sizeof(lda_c_pw_params));
     break;
   case XC_LDA_C_PW_MOD:
-    memcpy(params, &par_pw_mod, sizeof(lda_c_pw_params));
+    memcpy(params, &dvc_par_pw_mod, sizeof(lda_c_pw_params));
     break;
   case XC_LDA_C_OB_PW:
-    memcpy(params, &par_ob, sizeof(lda_c_pw_params));
+    memcpy(params, &dvc_par_ob, sizeof(lda_c_pw_params));
     break;
   case XC_LDA_C_PW_RPA:
-    memcpy(params, &par_pw_rpa, sizeof(lda_c_pw_params));
+    memcpy(params, &dvc_par_pw_rpa, sizeof(lda_c_pw_params));
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in lda_c_pw\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/lda_exc/lda_c_pw.c"
-#include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_pw = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw = {
   XC_LDA_C_PW,
   XC_CORRELATION,
   "Perdew & Wang",
   XC_FAMILY_LDA,
-  {&xc_ref_Perdew1992_13244, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perdew1992_13244, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_pw_init, /* init */
+  dvc_lda_c_pw_init, /* init */
   NULL,     /* end  */
-  work_lda, /* lda  */
+  dvc_work_lda, /* lda  */
   NULL,
   NULL
 };
 
-const xc_func_info_type xc_func_info_lda_c_pw_mod = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw_mod = {
   XC_LDA_C_PW_MOD,
   XC_CORRELATION,
   "Perdew & Wang (modified)",
   XC_FAMILY_LDA,
-  {&xc_ref_Perdew1992_13244_mod, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perdew1992_13244_mod, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_pw_init, /* init */
+  dvc_lda_c_pw_init, /* init */
   NULL,     /* end  */
-  work_lda, /* lda  */
+  dvc_work_lda, /* lda  */
   NULL,
   NULL
 };
 
-const xc_func_info_type xc_func_info_lda_c_ob_pw = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ob_pw = {
   XC_LDA_C_OB_PW,
   XC_CORRELATION,
   "Ortiz & Ballone (PW parametrization)",
   XC_FAMILY_LDA,
-  {&xc_ref_Ortiz1994_1391, &xc_ref_Ortiz1994_1391_err, &xc_ref_Perdew1992_13244_mod, NULL, NULL},
+  {&dvc_xc_ref_Ortiz1994_1391, &dvc_xc_ref_Ortiz1994_1391_err, &dvc_xc_ref_Perdew1992_13244_mod, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_pw_init, /* init */
+  dvc_lda_c_pw_init, /* init */
   NULL,     /* end  */
-  work_lda, /* lda  */
+  dvc_work_lda, /* lda  */
   NULL,
   NULL
 };
 
-const xc_func_info_type xc_func_info_lda_c_pw_rpa = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw_rpa = {
   XC_LDA_C_PW_RPA,
   XC_CORRELATION,
   "Perdew & Wang (fit to the RPA energy)",
   XC_FAMILY_LDA,
-  {&xc_ref_Perdew1992_13244, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perdew1992_13244, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_pw_init, /* init */
+  dvc_lda_c_pw_init, /* init */
   NULL,     /* end  */
-  work_lda, /* lda  */
+  dvc_work_lda, /* lda  */
   NULL,
   NULL
 };
+#pragma omp end declare target

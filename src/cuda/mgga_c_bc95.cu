@@ -8,51 +8,55 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_C_BC95          240 /* Becke correlation 95 */
+
+#pragma omp declare target
 
 typedef struct{
   double css, copp;
 } mgga_c_bc95_params;
 
 
-static void 
-mgga_c_bc95_init(xc_func_type *p)
+DEVICE static void 
+dvc_mgga_c_bc95_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
   p->params = malloc(sizeof(mgga_c_bc95_params));
 }
 
-static const func_params_type ext_params[] = {
+DEVICE static const func_params_type dvc_ext_params[] = {
   {"_css",  0.038,  "Parallel spin"},
   {"_copp", 0.0031, "Opposite spin"},
 };
 
-static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+DEVICE static void 
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_c_bc95_params *params;
 
   assert(p != NULL && p->params != NULL);
   params = (mgga_c_bc95_params *) (p->params);
 
-  params->css  = get_ext_param(p->info->ext_params, ext_params, 0);
-  params->copp = get_ext_param(p->info->ext_params, ext_params, 1);
+  params->css  = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
+  params->copp = dvc_get_ext_param(p->info->ext_params, ext_params, 1);
 }
 
 #include "maple2c/mgga_exc/mgga_c_bc95.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_c_bc95 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_bc95 = {
   XC_MGGA_C_BC95,
   XC_CORRELATION,
   "Becke correlation 95",
   XC_FAMILY_MGGA,
-  {&xc_ref_Becke1996_1040, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Becke1996_1040, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
-  2, ext_params, set_ext_params,
-  mgga_c_bc95_init, NULL,
-  NULL, NULL, work_mgga,
+  2, dvc_ext_params, dvc_set_ext_params,
+  dvc_mgga_c_bc95_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };
 
+#pragma omp end declare target

@@ -7,21 +7,25 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_C_VWN_4   31   /* Vosko, Wilk, & Nusair (4)   */
 
-#include "maple2c/lda_exc/lda_c_vwn_4.c"
-#include "work_lda_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_lda_c_vwn_4 = {
+#include "maple2c/lda_exc/lda_c_vwn_4.c"
+#include "work_lda_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_vwn_4 = {
   XC_LDA_C_VWN_4,
   XC_CORRELATION,
   "Vosko, Wilk & Nusair (VWN4)",
   XC_FAMILY_LDA,
-  {&xc_ref_Vosko1980_1200, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Vosko1980_1200, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+#pragma omp end declare target

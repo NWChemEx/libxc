@@ -24,8 +24,8 @@
 /**
  * @param[in,out] func_type: pointer to functional structure
  */
-static void 
-work_lda(const XC(func_type) *p, int np, const double *rho, 
+DEVICE static void 
+dvc_work_lda(const XC(func_type) *p, int np, const double *rho, 
 	 double *zk, double *vrho, double *v2rho2, double *v3rho3)
 {
   int ip, order;
@@ -40,7 +40,7 @@ work_lda(const XC(func_type) *p, int np, const double *rho,
   if(order < 0) return;
 
   for(ip = 0; ip < np; ip++){
-    xc_rho2dzeta(p->nspin, rho, &dens, &zeta);
+    dvc_xc_rho2dzeta(p->nspin, rho, &dens, &zeta);
 
     if(dens > p->dens_threshold){
       if(p->nspin == XC_UNPOLARIZED){             /* unpolarized case */
@@ -50,15 +50,15 @@ work_lda(const XC(func_type) *p, int np, const double *rho,
         func_ferr(p, order, rho, OUT_PARAMS);
         
       }else if(zeta < -1.0 + 1e-10){              /* ferromagnetic case - spin 1 */
-        internal_counters_lda_next(&(p->dim), -1, &rho, &zk, &vrho, &v2rho2, &v3rho3);
+        dvc_internal_counters_lda_next(&(p->dim), -1, &rho, &zk, &vrho, &v2rho2, &v3rho3);
         func_ferr(p, order, rho, OUT_PARAMS);
-        internal_counters_lda_prev(&(p->dim), -1, &rho, &zk, &vrho, &v2rho2, &v3rho3);
+        dvc_internal_counters_lda_prev(&(p->dim), -1, &rho, &zk, &vrho, &v2rho2, &v3rho3);
 
       }else{                                      /* polarized (general) case */
         func_pol(p, order, rho, OUT_PARAMS);
       } /* polarization */
     }
     
-    internal_counters_lda_next(&(p->dim), 0, &rho, &zk, &vrho, &v2rho2, &v3rho3);
+    dvc_internal_counters_lda_next(&(p->dim), 0, &rho, &zk, &vrho, &v2rho2, &v3rho3);
   }   /* for(ip) */
 }

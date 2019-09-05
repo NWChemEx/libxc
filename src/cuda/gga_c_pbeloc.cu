@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_PBELOC       246 /* Semilocal dynamical correlation                    */
 
-#include "maple2c/gga_exc/gga_c_pbeloc.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_pbeloc = {
+#include "maple2c/gga_exc/gga_c_pbeloc.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_pbeloc = {
   XC_GGA_C_PBELOC,
   XC_CORRELATION,
   "Semilocal dynamical correlation",
   XC_FAMILY_GGA,
-  {&xc_ref_Constantin2012_035130, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Constantin2012_035130, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-11,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

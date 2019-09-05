@@ -8,21 +8,27 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_AM05          135 /* Armiento & Mattsson 05 correlation             */
 
-#include "maple2c/gga_exc/gga_c_am05.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_am05 = {
+#include "maple2c/gga_exc/gga_c_am05.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_am05 = {
   XC_GGA_C_AM05,
   XC_CORRELATION,
   "Armiento & Mattsson 05",
   XC_FAMILY_GGA,
-  {&xc_ref_Armiento2005_085108, &xc_ref_Mattsson2008_084714, NULL, NULL, NULL},
+  {&dvc_xc_ref_Armiento2005_085108, &dvc_xc_ref_Mattsson2008_084714, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

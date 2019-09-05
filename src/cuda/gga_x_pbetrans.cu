@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_PBETRANS  291 /* Gradient-based interpolation between PBE and revPBE */
 
-#include "maple2c/gga_exc/gga_x_pbetrans.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_x_pbetrans = {
+#include "maple2c/gga_exc/gga_x_pbetrans.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_pbetrans = {
   XC_GGA_X_PBETRANS,
   XC_EXCHANGE,
   "Gradient-regulated connection-based correction for the PBE exchange",
   XC_FAMILY_GGA,
-  {&xc_ref_Bremond2016_1059, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Bremond2016_1059, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

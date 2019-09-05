@@ -8,21 +8,26 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_X_MBEEFVDW       250 /* mBEEF-vdW exchange */
 
-#include "maple2c/mgga_exc/mgga_x_mbeefvdw.c"
-#include "work_mgga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_mgga_x_mbeefvdw = {
+#include "maple2c/mgga_exc/mgga_x_mbeefvdw.c"
+#include "work_mgga_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mbeefvdw = {
   XC_MGGA_X_MBEEFVDW,
   XC_EXCHANGE,
   "mBEEF-vdW exchange",
   XC_FAMILY_MGGA,
-  {&xc_ref_Lundgaard2016_235162, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Lundgaard2016_235162, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-10,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, NULL, work_mgga,
+  NULL, NULL, dvc_work_mgga,
 };
+
+#pragma omp end declare target

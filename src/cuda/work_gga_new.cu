@@ -22,8 +22,9 @@
 /**
  * @param[in,out] func_type: pointer to functional structure
  */
-static void 
-work_gga(const XC(func_type) *p, int np,
+
+DEVICE static void 
+dvc_work_gga(const XC(func_type) *p, int np,
          const double *rho, const double *sigma,
          double *zk, double *vrho, double *vsigma,
          double *v2rho2, double *v2rhosigma, double *v2sigma2,
@@ -41,7 +42,7 @@ work_gga(const XC(func_type) *p, int np,
   if(order < 0) return;
 
   for(ip = 0; ip < np; ip++){
-    xc_rho2dzeta(p->nspin, rho, &dens, &zeta);
+    dvc_xc_rho2dzeta(p->nspin, rho, &dens, &zeta);
 
     if(dens > p->dens_threshold){
       if(p->nspin == XC_UNPOLARIZED){             /* unpolarized case */
@@ -51,11 +52,11 @@ work_gga(const XC(func_type) *p, int np,
         func_ferr(p, order, rho, sigma, OUT_PARAMS);
         
       }else if(zeta < -1.0 + 1e-10){              /* ferromagnetic case - spin 1 */
-        internal_counters_gga_next
+        dvc_internal_counters_gga_next
           (&(p->dim), -1, &rho, &sigma, &zk, &vrho, &vsigma,
            &v2rho2, &v2rhosigma, &v2sigma2, &v3rho3, &v3rho2sigma, &v3rhosigma2, &v3sigma3);
         func_ferr(p, order, rho, sigma, OUT_PARAMS);
-        internal_counters_gga_prev
+        dvc_internal_counters_gga_prev
           (&(p->dim), -1, &rho, &sigma, &zk, &vrho, &vsigma,
            &v2rho2, &v2rhosigma, &v2sigma2, &v3rho3, &v3rho2sigma, &v3rhosigma2, &v3sigma3);
 
@@ -64,7 +65,7 @@ work_gga(const XC(func_type) *p, int np,
       } /* polarization */
     }
     
-    internal_counters_gga_next
+    dvc_internal_counters_gga_next
       (&(p->dim), 0, &rho, &sigma, &zk, &vrho, &vsigma,
        &v2rho2, &v2rhosigma, &v2sigma2, &v3rho3, &v3rho2sigma, &v3rhosigma2, &v3sigma3);
   }   /* for(ip) */

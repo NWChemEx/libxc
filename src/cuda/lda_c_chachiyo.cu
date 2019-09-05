@@ -8,19 +8,24 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_C_CHACHIYO  287   /* Chachiyo simple 2 parameter correlation   */
 #define XC_LDA_C_KARASIEV  579   /* Karasiev reparameterization of Chachiyo   */
+
+#pragma omp declare target
 
 typedef struct {
   double ap, bp, af, bf;
 } lda_c_chachiyo_params;
 
-static lda_c_chachiyo_params par_chachiyo = {-0.01554535, 20.4562557, -0.007772675, 27.4203609};
-static lda_c_chachiyo_params par_karasiev = {-0.01554535, 21.7392245, -0.007772675, 28.3559732};
+DEVICE
+static lda_c_chachiyo_params dvc_par_chachiyo = {-0.01554535, 20.4562557, -0.007772675, 27.4203609};
+DEVICE
+static lda_c_chachiyo_params dvc_par_karasiev = {-0.01554535, 21.7392245, -0.007772675, 28.3559732};
 
-static void 
-lda_c_chachiyo_init(xc_func_type *p)
+DEVICE static void 
+dvc_lda_c_chachiyo_init(xc_func_type *p)
 {
   lda_c_chachiyo_params *params;
 
@@ -30,42 +35,46 @@ lda_c_chachiyo_init(xc_func_type *p)
 
   switch(p->info->number){
   case XC_LDA_C_CHACHIYO:
-    memcpy(params, &par_chachiyo, sizeof(lda_c_chachiyo_params));
+    memcpy(params, &dvc_par_chachiyo, sizeof(lda_c_chachiyo_params));
     break;
   case XC_LDA_C_KARASIEV:
-    memcpy(params, &par_karasiev, sizeof(lda_c_chachiyo_params));
+    memcpy(params, &dvc_par_karasiev, sizeof(lda_c_chachiyo_params));
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in lda_c_chachiyo\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/lda_exc/lda_c_chachiyo.c"
-#include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_chachiyo = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_chachiyo = {
   XC_LDA_C_CHACHIYO,
   XC_CORRELATION,
   "Chachiyo simple 2 parameter correlation",
   XC_FAMILY_LDA,
-  {&xc_ref_Chachiyo2016_021101, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Chachiyo2016_021101, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_chachiyo_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_chachiyo_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_c_karasiev = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_karasiev = {
   XC_LDA_C_KARASIEV,
   XC_CORRELATION,
   "Karasiev reparameterization of Chachiyo",
   XC_FAMILY_LDA,
-  {&xc_ref_Karasiev2016_157101, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Karasiev2016_157101, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_chachiyo_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_chachiyo_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
+#pragma omp end declare target

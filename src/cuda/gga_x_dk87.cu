@@ -7,24 +7,30 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_DK87_R1      111 /* dePristo & Kress 87 (version R1)               */
 #define XC_GGA_X_DK87_R2      112 /* dePristo & Kress 87 (version R2)               */
+
+#pragma omp declare target
 
 typedef struct {
   double a1, b1, alpha;
 } gga_x_dk87_params;
 
-static const gga_x_dk87_params par_dk87_r1 = {
+DEVICE
+static const gga_x_dk87_params dvc_par_dk87_r1 = {
   0.861504, 0.044286, 1.0
 };
 
-static const gga_x_dk87_params par_dk87_r2 = {
+DEVICE
+static const gga_x_dk87_params dvc_par_dk87_r2 = {
   0.861213, 0.042076, 0.98
 };
 
+DEVICE
 static void 
-gga_x_dk87_init(xc_func_type *p)
+dvc_gga_x_dk87_init(xc_func_type *p)
 {
   gga_x_dk87_params *params;
 
@@ -34,42 +40,49 @@ gga_x_dk87_init(xc_func_type *p)
 
   switch(p->info->number){
   case XC_GGA_X_DK87_R1: 
-    memcpy(params, &par_dk87_r1, sizeof(gga_x_dk87_params));
+    memcpy(params, &dvc_par_dk87_r1, sizeof(gga_x_dk87_params));
     break;
   case XC_GGA_X_DK87_R2:
-    memcpy(params, &par_dk87_r2, sizeof(gga_x_dk87_params));
+    memcpy(params, &dvc_par_dk87_r2, sizeof(gga_x_dk87_params));
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_x_dk87\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/gga_exc/gga_x_dk87.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_dk87_r1 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_dk87_r1 = {
   XC_GGA_X_DK87_R1,
   XC_EXCHANGE,
   "dePristo & Kress 87 version R1",
   XC_FAMILY_GGA,
-  {&xc_ref_DePristo1987_1425, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_DePristo1987_1425, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  gga_x_dk87_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_dk87_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_dk87_r2 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_dk87_r2 = {
   XC_GGA_X_DK87_R2,
   XC_EXCHANGE,
   "dePristo & Kress 87 version R2",
   XC_FAMILY_GGA,
-  {&xc_ref_DePristo1987_1425, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_DePristo1987_1425, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  gga_x_dk87_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_dk87_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 /************************************************************************
  LDA parametrization of Vosko, Wilk & Nusair
@@ -15,18 +16,22 @@
 
 #define XC_LDA_K_ZLP     550   /* kinetic energy version of ZLP */
 
-#include "maple2c/lda_exc/lda_k_zlp.c"
-#include "work_lda_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_lda_k_zlp = {
+#include "maple2c/lda_exc/lda_k_zlp.c"
+#include "work_lda_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_k_zlp = {
   XC_LDA_K_ZLP,
   XC_KINETIC,
   "Wigner including kinetic energy contribution",
   XC_FAMILY_LDA,
-  {&xc_ref_Fuentealba1995_31, &xc_ref_Zhao1993_918, NULL, NULL, NULL},
+  {&dvc_xc_ref_Fuentealba1995_31, &dvc_xc_ref_Zhao1993_918, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

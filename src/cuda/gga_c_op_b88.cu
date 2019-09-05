@@ -8,21 +8,27 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_C_OP_B88      87 /* one-parameter progressive functional (B88 version)     */
 
-#include "maple2c/gga_exc/gga_c_op_b88.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_op_b88 = {
+#include "maple2c/gga_exc/gga_c_op_b88.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_op_b88 = {
   XC_GGA_C_OP_B88,
   XC_CORRELATION,
   "one-parameter progressive functional (B88 version)",
   XC_FAMILY_GGA,
-  {&xc_ref_Tsuneda1999_10664, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Tsuneda1999_10664, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

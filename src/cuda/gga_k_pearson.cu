@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_PEARSON          511 /* Pearson */
 
-#include "maple2c/gga_exc/gga_k_pearson.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_k_pearson = {
+#include "maple2c/gga_exc/gga_k_pearson.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_k_pearson = {
   XC_GGA_K_PEARSON,
   XC_KINETIC,
   "Pearson 1992",
   XC_FAMILY_GGA,
-  {&xc_ref_Lacks1994_4446, &xc_ref_Pearson1985_881, &xc_ref_Pearson1983, NULL, NULL},
+  {&dvc_xc_ref_Lacks1994_4446, &dvc_xc_ref_Pearson1985_881, &dvc_xc_ref_Pearson1983, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

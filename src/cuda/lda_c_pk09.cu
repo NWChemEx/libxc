@@ -7,21 +7,25 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_C_PK09   554   /* Proynov and Kong 2009 */
 
-#include "maple2c/lda_exc/lda_c_pk09.c"
-#include "work_lda_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_lda_c_pk09 = {
+#include "maple2c/lda_exc/lda_c_pk09.c"
+#include "work_lda_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pk09 = {
   XC_LDA_C_PK09,
   XC_CORRELATION,
   "Proynov and Kong 2009",
   XC_FAMILY_LDA,
-  {&xc_ref_Proynov2009_014103, &xc_ref_Proynov2017_059904, NULL, NULL, NULL},
+  {&dvc_xc_ref_Proynov2009_014103, &dvc_xc_ref_Proynov2017_059904, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   5e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+#pragma omp end declare target

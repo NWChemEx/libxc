@@ -8,11 +8,14 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_X_MN12_L        227 /* MN12-L exchange functional from Minnesota          */
 #define XC_HYB_MGGA_X_MN12_SX   248 /* MN12-SX hybrid exchange functional from Minnesota  */
 #define XC_MGGA_X_MN15_L        260 /* MN15-L exhange functional from Minnesota           */
 #define XC_HYB_MGGA_X_MN15      268 /* MN15 hybrid exchange functional from Minnesota     */
+
+#pragma omp declare target
 
 typedef struct{
   const double c[40];
@@ -30,7 +33,7 @@ CC200 [30], CC201 [31], CC202 [32], CC203 [33],
 CC210 [34], CC211 [35], CC212 [36],
 CC300 [37], CC301 [38], CC302 [39]
 */
-static const mgga_x_mn12_params par_mn12_l = {{
+DEVICE static const mgga_x_mn12_params dvc_par_mn12_l = {{
     6.735981e-01, -2.270598e+00, -2.613712e+00,  3.993609e+00,  4.635575e+00, 1.250676e+00,
     8.444920e-01, -1.301173e+01, -1.777730e+01, -4.627211e+00,  5.976605e+00,
     1.142897e+00, -2.040226e+01, -2.382843e+01,  7.119109e+00,
@@ -43,7 +46,7 @@ static const mgga_x_mn12_params par_mn12_l = {{
     6.851693e-01, -7.406948e-02, -6.788000e-01
   }};
 
-static const mgga_x_mn12_params par_mn12_sx = {{
+DEVICE static const mgga_x_mn12_params dvc_par_mn12_sx = {{
    5.226556e-01, -2.681208e-01, -4.670705e+00,  3.067320e+00,  4.095370e+00,  2.653023e+00,
    5.165969e-01, -2.035442e+01, -9.946472e+00,  2.938637e+00,  1.131100e+01,
    4.752452e+00, -3.061331e+00, -2.523173e+01,  1.710903e+01,
@@ -56,7 +59,7 @@ static const mgga_x_mn12_params par_mn12_sx = {{
    1.517278e+00, -3.442503e+00,  1.100161e+00
   }};
 
-static const mgga_x_mn12_params par_mn15_l = {{
+DEVICE static const mgga_x_mn12_params dvc_par_mn15_l = {{
    0.670864162, -0.822003903, -1.022407046,  1.689460986, -0.00562032,  -0.110293849,
    0.972245178, -6.697641991, -4.322814495, -6.786641376, -5.687461462,
    9.419643818, 11.83939406,   5.086951311,  4.302369948,
@@ -69,7 +72,7 @@ static const mgga_x_mn12_params par_mn15_l = {{
    0.584030245, -0.720941131, -2.836037078
   }};
 
-static const mgga_x_mn12_params par_mn15 = {{
+DEVICE static const mgga_x_mn12_params dvc_par_mn15 = {{
    0.073852235, -0.839976156, -3.082660125, -1.02881285, -0.811697255,   -0.063404387,
    2.54805518,  -5.031578906,  0.31702159,  2.981868205, -0.749503735,
    0.231825661,  1.261961411,  1.665920815, 7.483304941,
@@ -82,8 +85,8 @@ static const mgga_x_mn12_params par_mn15 = {{
    0.630701064, -0.505825216, -3.562354535
   }};
 
-static void
-mgga_x_mn12_init(xc_func_type *p)
+DEVICE static void
+dvc_mgga_x_mn12_init(xc_func_type *p)
 {
   mgga_x_mn12_params *params;
 
@@ -93,81 +96,86 @@ mgga_x_mn12_init(xc_func_type *p)
 
   switch(p->info->number){
   case XC_MGGA_X_MN12_L:
-    memcpy(params, &par_mn12_l, sizeof(mgga_x_mn12_params));
+    memcpy(params, &dvc_par_mn12_l, sizeof(mgga_x_mn12_params));
     break;
   case XC_HYB_MGGA_X_MN12_SX:
-    memcpy(params, &par_mn12_sx, sizeof(mgga_x_mn12_params));
+    memcpy(params, &dvc_par_mn12_sx, sizeof(mgga_x_mn12_params));
     p->cam_alpha = 0.00;
     p->cam_beta  = 0.25;
     p->cam_omega = 0.11;
     break;
   case XC_MGGA_X_MN15_L:
-    memcpy(params, &par_mn15_l, sizeof(mgga_x_mn12_params));
+    memcpy(params, &dvc_par_mn15_l, sizeof(mgga_x_mn12_params));
     break;
   case XC_HYB_MGGA_X_MN15:
-    memcpy(params, &par_mn15, sizeof(mgga_x_mn12_params));
+    memcpy(params, &dvc_par_mn15, sizeof(mgga_x_mn12_params));
     p->cam_alpha = 0.44;
     p->cam_beta  = 0.00;
     p->cam_omega = 0.00;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in mgga_x_mn12\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/mgga_exc/mgga_x_mn12.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
 
-const xc_func_info_type xc_func_info_mgga_x_mn12_l = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mn12_l = {
   XC_MGGA_X_MN12_L,
   XC_EXCHANGE,
   "Minnesota MN12-L exchange functional",
   XC_FAMILY_MGGA,
-  {&xc_ref_Peverati2012_13171, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Peverati2012_13171, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
   0, NULL, NULL,
-  mgga_x_mn12_init, NULL,
-  NULL, NULL, work_mgga,
+  dvc_mgga_x_mn12_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_mn12_sx = {
+DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_mn12_sx = {
   XC_HYB_MGGA_X_MN12_SX,
   XC_EXCHANGE,
   "Minnesota MN12-SX hybrid exchange functional",
   XC_FAMILY_HYB_MGGA,
-  {&xc_ref_Peverati2012_16187, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Peverati2012_16187, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  mgga_x_mn12_init, NULL,
-  NULL, NULL, work_mgga
+  dvc_mgga_x_mn12_init, NULL,
+  NULL, NULL, dvc_work_mgga
 };
 
-const xc_func_info_type xc_func_info_mgga_x_mn15_l = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mn15_l = {
   XC_MGGA_X_MN15_L,
   XC_EXCHANGE,
   "Minnesota MN15-L exchange functional",
   XC_FAMILY_MGGA,
-  {&xc_ref_Yu2016_1280, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Yu2016_1280, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
   0, NULL, NULL,
-  mgga_x_mn12_init, NULL,
-  NULL, NULL, work_mgga,
+  dvc_mgga_x_mn12_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_mn15 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_mn15 = {
   XC_HYB_MGGA_X_MN15,
   XC_EXCHANGE,
   "Minnesota MN15 hybrid exchange functional",
   XC_FAMILY_HYB_MGGA,
-  {&xc_ref_Yu2016_5032, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Yu2016_5032, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  mgga_x_mn12_init, NULL,
-  NULL, NULL, work_mgga,
+  dvc_mgga_x_mn12_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };
+
+#pragma omp end declare target

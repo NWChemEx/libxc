@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_X_BR89         206 /* Becke-Roussel 89, gamma = 0.8 */
 #define XC_MGGA_X_BR89_1       214 /* Becke-Roussel 89, gamma = 1.0 */
@@ -15,6 +16,8 @@
 #define XC_MGGA_X_TB09         208 /* Tran & Blaha correction to Becke & Johnson  */
 #define XC_MGGA_X_RPP09        209 /* Rasanen, Pittalis, and Proetto correction to Becke & Johnson  */
 #define XC_MGGA_X_B00          284 /* Becke 2000 */
+
+#pragma omp declare target
 
 typedef struct xc_mgga_work_x_t {
   int   order; /* to which order should I return the derivatives */
@@ -30,11 +33,11 @@ typedef struct{
   double c;
 } mgga_x_tb09_params;
 
-static double br89_gamma = 0.8;
-static double b00_at     = 0.928;
+DEVICE static double br89_gamma = 0.8;
+DEVICE static double b00_at     = 0.928;
 
-static void
-mgga_x_tb09_init(xc_func_type *p)
+DEVICE static void
+dvc_mgga_x_tb09_init(xc_func_type *p)
 {
   mgga_x_tb09_params *params;
 
@@ -63,8 +66,8 @@ mgga_x_tb09_init(xc_func_type *p)
 
 
 /* This code follows the inversion done in the PINY_MD package */
-static double
-br_newt_raph(double a, double tol,  double * res, int *ierr)
+DEVICE static double
+dvc_br_newt_raph(double a, double tol,  double * res, int *ierr)
 {
   int count;
   double x, f;
@@ -99,8 +102,8 @@ br_newt_raph(double a, double tol,  double * res, int *ierr)
    return x;
 }
 
-static double
-br_bisect(double a, double tol, int *ierr) {
+DEVICE static double
+dvc_br_bisect(double a, double tol, int *ierr) {
   int count;
   double f, x, x1, x2;
   static int max_iter = 500;
@@ -138,7 +141,7 @@ br_bisect(double a, double tol, int *ierr) {
   return x;
 }
 
-double xc_mgga_x_br89_get_x(double Q)
+DEVICE double dvc_xc_mgga_x_br89_get_x(double Q)
 {
   double rhs, br_x, tol, res;
   int ierr;
@@ -149,22 +152,24 @@ double xc_mgga_x_br89_get_x(double Q)
      Remember we use a different definition of tau */
   rhs = 2.0/3.0*pow(M_PI, 2.0/3.0)/Q;
 
-  br_x = br_newt_raph(rhs, tol, &res, &ierr);
+  br_x = dvc_br_newt_raph(rhs, tol, &res, &ierr);
   if(ierr == 0){
-    br_x = br_bisect(rhs, tol, &ierr);
+    br_x = dvc_br_bisect(rhs, tol, &ierr);
+    #ifndef __CUDACC__
     if(ierr == 0){
       fprintf(stderr,
 	      "Warning: Convergence not reached in Becke-Roussel functional\n"
 	      "For rhs = %e (residual = %e)\n", rhs, res);
     }
+    #endif
   }
 
   return br_x;
 }
 
 /* Eq. (22) */
-void
-xc_mgga_b00_fw(int order, double t, double *fw, double *dfwdt)
+DEVICE void
+dvc_xc_mgga_b00_fw(int order, double t, double *fw, double *dfwdt)
 {
   double w, w2;
 
@@ -180,7 +185,7 @@ xc_mgga_b00_fw(int order, double t, double *fw, double *dfwdt)
 }
 
 
-static void
+DEVICE static void
 func(const xc_func_type *pt, xc_mgga_work_x_t *r)
 {
   double Q, br_x, v_BR, dv_BRdbx, d2v_BRdbx2, dxdQ, d2xdQ2, ff, dffdx, d2ffdx2;
@@ -193,7 +198,7 @@ func(const xc_func_type *pt, xc_mgga_work_x_t *r)
   Q = (r->u - 4.0*gamma*r->t + 0.5*gamma*r->x*r->x)/6.0;
   if(fabs(Q) < min_Q) Q = (Q < 0) ? -min_Q : min_Q;
 
-  br_x = xc_mgga_x_br89_get_x(Q);
+  br_x = dvc_xc_mgga_x_br89_get_x(Q);
 
   cnst = -2.0*CBRT(M_PI)/X_FACTOR_C;
   exp1 = exp(br_x/3.0);
@@ -210,7 +215,7 @@ func(const xc_func_type *pt, xc_mgga_work_x_t *r)
     r->f = - v_BR / 2.0;
 
     if(pt->info->number == XC_MGGA_X_B00){
-      xc_mgga_b00_fw(r->order, r->t, &fw, &dfwdt);
+      dvc_xc_mgga_b00_fw(r->order, r->t, &fw, &dfwdt);
       r->f *= 1.0 + b00_at*fw;
     }
   }else{ /* XC_MGGA_X_BJ06 & XC_MGGA_X_TB09 */
@@ -284,99 +289,101 @@ func(const xc_func_type *pt, xc_mgga_work_x_t *r)
 
 }
 
-#include "work_mgga_x.c"
+#include "work_mgga_x.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_br89 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89 = {
   XC_MGGA_X_BR89,
   XC_EXCHANGE,
   "Becke-Roussel 89, gamma = 0.8",
   XC_FAMILY_MGGA,
-  {&xc_ref_Becke1989_3761, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Becke1989_3761, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC | XC_FLAGS_I_HAVE_FXC,
   1.0e-12,
   0, NULL, NULL,
   NULL, NULL,
   NULL, NULL,        /* this is not an LDA                   */
-  work_mgga_x,
+  dvc_work_mgga_x,
 };
 
-const xc_func_info_type xc_func_info_mgga_x_br89_1 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89_1 = {
   XC_MGGA_X_BR89_1,
   XC_EXCHANGE,
   "Becke-Roussel 89, gamma = 1.0",
   XC_FAMILY_MGGA,
-  {&xc_ref_Becke1989_3761, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Becke1989_3761, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC | XC_FLAGS_I_HAVE_FXC,
   1.0e-12,
   0, NULL, NULL,
   NULL, NULL,
   NULL, NULL,        /* this is not an LDA                   */
-  work_mgga_x,
+  dvc_work_mgga_x,
 };
 
-const xc_func_info_type xc_func_info_mgga_x_bj06 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_bj06 = {
   XC_MGGA_X_BJ06,
   XC_EXCHANGE,
   "Becke & Johnson 06",
   XC_FAMILY_MGGA,
-  {&xc_ref_Becke2006_221101, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Becke2006_221101, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_I_HAVE_VXC,
   1e-23,
   0, NULL, NULL,
-  mgga_x_tb09_init, NULL,
-  NULL, NULL, work_mgga_x,
+  dvc_mgga_x_tb09_init, NULL,
+  NULL, NULL, dvc_work_mgga_x,
 };
 
-static const func_params_type ext_params[] = {
+DEVICE static const func_params_type dvc_ext_params[] = {
   {"c", 1.0, "This parameter involves an average over the unit cell and must be calculated by the calling program."},
 };
 
-static void
-set_ext_params(xc_func_type *p, const double *ext_params)
+DEVICE static void
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_x_tb09_params *params;
 
   assert(p != NULL && p->params != NULL);
   params = (mgga_x_tb09_params *) (p->params);
 
-  params->c = get_ext_param(p->info->ext_params, ext_params, 0);
+  params->c = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
 }
 
-const xc_func_info_type xc_func_info_mgga_x_tb09 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_tb09 = {
   XC_MGGA_X_TB09,
   XC_EXCHANGE,
   "Tran & Blaha 09",
   XC_FAMILY_MGGA,
-  {&xc_ref_Tran2009_226401, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Tran2009_226401, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_I_HAVE_VXC,
   1.0e-23,
-  1, ext_params, set_ext_params,
-  mgga_x_tb09_init, NULL,
-  NULL, NULL, work_mgga_x,
+  1, dvc_ext_params, dvc_set_ext_params,
+  dvc_mgga_x_tb09_init, NULL,
+  NULL, NULL, dvc_work_mgga_x,
 };
 
-const xc_func_info_type xc_func_info_mgga_x_rpp09 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_rpp09 = {
   XC_MGGA_X_RPP09,
   XC_EXCHANGE,
   "Rasanen, Pittalis & Proetto 09",
   XC_FAMILY_MGGA,
-  {&xc_ref_Rasanen2010_044112, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Rasanen2010_044112, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_I_HAVE_VXC,
   1e-23,
   0, NULL, NULL,
-  mgga_x_tb09_init, NULL,
-  NULL, NULL, work_mgga_x,
+  dvc_mgga_x_tb09_init, NULL,
+  NULL, NULL, dvc_work_mgga_x,
 };
 
-const xc_func_info_type xc_func_info_mgga_x_b00 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_b00 = {
   XC_MGGA_X_B00,
   XC_EXCHANGE,
   "Becke 2000",
   XC_FAMILY_MGGA,
-  {&xc_ref_Becke2000_4020, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Becke2000_4020, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1.0e-23,
   0, NULL, NULL,
-  mgga_x_tb09_init, NULL,
-  NULL, NULL, work_mgga_x,
+  dvc_mgga_x_tb09_init, NULL,
+  NULL, NULL, dvc_work_mgga_x,
 };
+
+#pragma omp end declare target

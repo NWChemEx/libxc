@@ -8,23 +8,27 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_XC_CC06          229 /* Cancio and Chou 2006 */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_xc_cc06.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
 
-const xc_func_info_type xc_func_info_mgga_xc_cc06 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_xc_cc06 = {
   XC_MGGA_XC_CC06,
   XC_EXCHANGE_CORRELATION,
   "Cancio and Chou 2006",
   XC_FAMILY_MGGA,
-  {&xc_ref_Cancio2006_081202, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Cancio2006_081202, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_I_HAVE_ALL,
   1e-23,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, NULL, work_mgga,
+  NULL, NULL, dvc_work_mgga,
 };
 
+#pragma omp end declare target

@@ -8,22 +8,27 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_C_REVTPSS       241 /* revised TPSS correlation */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_c_revtpss.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
 
-const xc_func_info_type xc_func_info_mgga_c_revtpss = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revtpss = {
   XC_MGGA_C_REVTPSS,
   XC_CORRELATION,
   "revised TPSS correlation",
   XC_FAMILY_MGGA,
-  {&xc_ref_Perdew2009_026403, &xc_ref_Perdew2009_026403_err, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perdew2009_026403, &dvc_xc_ref_Perdew2009_026403_err, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-13, /* densities smaller than 1e-26 give NaNs */
   0, NULL, NULL,
   NULL, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, dvc_work_mgga
 };
+
+#pragma omp end declare target

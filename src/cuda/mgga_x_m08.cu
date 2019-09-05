@@ -8,15 +8,18 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_HYB_MGGA_X_M08_HX   295 /* M08-HX exchange functional from Minnesota  */
 #define XC_HYB_MGGA_X_M08_SO   296 /* M08-SO exchange functional from Minnesota  */
+
+#pragma omp declare target
 
 typedef struct{
   const double a[12], b[12];
 } mgga_x_m08_params;
 
-static const mgga_x_m08_params par_m08_hx = {
+DEVICE static const mgga_x_m08_params dvc_par_m08_hx = {
   {
      1.3340172e+00, -9.4751087e+00, -1.2541893e+01,  9.1369974e+00,  3.4717204e+01,  5.8831807e+01,
      7.1369574e+01,  2.3312961e+01,  4.8314679e+00, -6.5044167e+00, -1.4058265e+01,  1.2880570e+01
@@ -26,7 +29,7 @@ static const mgga_x_m08_params par_m08_hx = {
   }
 };
 
-static const mgga_x_m08_params par_m08_so = {
+DEVICE static const mgga_x_m08_params dvc_par_m08_so = {
   {
     -3.4888428e-01, -5.8157416e+00,  3.7550810e+01,  6.3727406e+01, -5.3742313e+01, -9.8595529e+01,
      1.6282216e+01,  1.7513468e+01, -6.7627553e+00,  1.1106658e+01,  1.5663545e+00,  8.7603470e+00
@@ -37,8 +40,8 @@ static const mgga_x_m08_params par_m08_so = {
 };
 
 
-static void
-mgga_x_m08_init(xc_func_type *p)
+DEVICE static void
+dvc_mgga_x_m08_init(xc_func_type *p)
 {
   mgga_x_m08_params *params;
 
@@ -48,45 +51,50 @@ mgga_x_m08_init(xc_func_type *p)
 
   switch(p->info->number){
   case XC_HYB_MGGA_X_M08_HX:
-    memcpy(params, &par_m08_hx, sizeof(mgga_x_m08_params));
+    memcpy(params, &dvc_par_m08_hx, sizeof(mgga_x_m08_params));
     p->cam_alpha = 0.5223;
   break;
   case XC_HYB_MGGA_X_M08_SO:
-    memcpy(params, &par_m08_so, sizeof(mgga_x_m08_params));
+    memcpy(params, &dvc_par_m08_so, sizeof(mgga_x_m08_params));
     p->cam_alpha = 0.5679;
   break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in mgga_x_m08\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/mgga_exc/mgga_x_m08.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_m08_hx = {
+DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m08_hx = {
   XC_HYB_MGGA_X_M08_HX,
   XC_EXCHANGE,
   "Minnesota M08-HX hybrid exchange functional",
   XC_FAMILY_HYB_MGGA,
-  {&xc_ref_Zhao2008_1849, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Zhao2008_1849, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-20,
   0, NULL, NULL,
-  mgga_x_m08_init, NULL,
-  NULL, NULL, work_mgga,
+  dvc_mgga_x_m08_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_m08_so = {
+DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m08_so = {
   XC_HYB_MGGA_X_M08_SO,
   XC_EXCHANGE,
   "Minnesota M08-SO hybrid exchange functional",
   XC_FAMILY_HYB_MGGA,
-  {&xc_ref_Zhao2008_1849, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Zhao2008_1849, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-20,
   0, NULL, NULL,
-  mgga_x_m08_init, NULL,
-  NULL, NULL, work_mgga,
+  dvc_mgga_x_m08_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };
+
+#pragma omp end declare target

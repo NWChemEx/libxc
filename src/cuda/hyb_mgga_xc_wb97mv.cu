@@ -8,11 +8,12 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_HYB_MGGA_XC_WB97M_V   531 /* Mardirossian and Head-Gordon */
 
-static void
-hyb_mgga_xc_wb97mv_init(xc_func_type *p)
+DEVICE static void
+dvc_hyb_mgga_xc_wb97mv_init(xc_func_type *p)
 {
   p->cam_omega =  0.3;
   p->cam_alpha =  1.0;
@@ -22,17 +23,18 @@ hyb_mgga_xc_wb97mv_init(xc_func_type *p)
 }
 
 #include "maple2c/mgga_exc/hyb_mgga_xc_wb97mv.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_wb97m_v = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_wb97m_v = {
   XC_HYB_MGGA_XC_WB97M_V,
   XC_EXCHANGE_CORRELATION,
   "wB97M-V exchange-correlation functional",
   XC_FAMILY_HYB_MGGA,
-  {&xc_ref_Mardirossian2016_214110, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Mardirossian2016_214110, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_VV10 | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
   1e-13,
   0, NULL, NULL,
-  hyb_mgga_xc_wb97mv_init, NULL,
-  NULL, NULL, work_mgga,
+  dvc_hyb_mgga_xc_wb97mv_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };

@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_X         1   /* Exchange                            */
 #define XC_LDA_C_XALPHA  6   /* Slater Xalpha                       */
@@ -28,12 +29,14 @@
     J. Toulouse, A. Savin, H.-J. Flad, Int. J. of Quant. Chem. 100, 1047-1056 (2004).
 */
 
+#pragma omp declare target
+
 typedef struct{
   double alpha;       /* parameter for Xalpha functional */
 } lda_x_params;
 
-static void 
-lda_x_init(xc_func_type *p)
+DEVICE static void 
+dvc_lda_x_init(xc_func_type *p)
 {
   lda_x_params *params;
 
@@ -45,55 +48,55 @@ lda_x_init(xc_func_type *p)
 }
 
 #include "maple2c/lda_exc/lda_x.c"
-#include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_x = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_x = {
   XC_LDA_X,
   XC_EXCHANGE,
   "Slater exchange",
   XC_FAMILY_LDA,
-  {&xc_ref_Dirac1930_376, &xc_ref_Bloch1929_545, NULL, NULL, NULL},
+  {&dvc_xc_ref_Dirac1930_376, &dvc_xc_ref_Bloch1929_545, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_x_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_x_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-static const func_params_type ext_params[] = {
+DEVICE static const func_params_type dvc_ext_params[] = {
   {"alpha", 1.0, "X-alpha multiplicative parameter"},
 };
 
-static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+DEVICE static void 
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_x_params *params;
 
   assert(p != NULL && p->params != NULL);
   params = (lda_x_params *)(p->params);
 
-  params->alpha = 1.5*get_ext_param(p->info->ext_params, ext_params, 0) - 1.0;
+  params->alpha = 1.5*dvc_get_ext_param(p->info->ext_params, ext_params, 0) - 1.0;
 }
 
-const xc_func_info_type xc_func_info_lda_c_xalpha = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_xalpha = {
   XC_LDA_C_XALPHA,
   XC_CORRELATION,
   "Slater's Xalpha",
   XC_FAMILY_LDA,
-  {&xc_ref_Slater1951_385, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Slater1951_385, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
-  1, ext_params, set_ext_params,
-  lda_x_init, NULL,
-  work_lda, NULL, NULL
+  1, dvc_ext_params, dvc_set_ext_params,
+  dvc_lda_x_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-static const func_params_type N_ext_params[] = {
+DEVICE static const func_params_type dvc_N_ext_params[] = {
   {"N", 1.0, "Number of electrons"},
 };
 
-static void 
-N_set_ext_params(xc_func_type *p, const double *ext_params)
+DEVICE static void 
+dvc_N_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_x_params *params;
   double ff, N, dx, dx2;
@@ -109,15 +112,17 @@ N_set_ext_params(xc_func_type *p, const double *ext_params)
   params->alpha = 1.0 - 8.0/3.0*dx + 2.0*dx2 - dx2*dx2/3.0;
 }
 
-const xc_func_info_type xc_func_info_lda_x_rae = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_rae = {
   XC_LDA_X_RAE,
   XC_EXCHANGE,
   "Rae self-energy corrected exchange",
   XC_FAMILY_LDA,
-  {&xc_ref_Rae1973_574, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Rae1973_574, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
-  1, N_ext_params, N_set_ext_params,
-  lda_x_init, NULL,
-  work_lda, NULL, NULL
+  1, dvc_N_ext_params, dvc_N_set_ext_params,
+  dvc_lda_x_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

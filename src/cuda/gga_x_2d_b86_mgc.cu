@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_2D_B86_MGC      124 /* Becke 86 MGC for 2D systems */
 
-#include "maple2c/gga_exc/gga_x_2d_b86_mgc.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_x_2d_b86_mgc = {
+#include "maple2c/gga_exc/gga_x_2d_b86_mgc.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_2d_b86_mgc = {
   XC_GGA_X_2D_B86_MGC,
   XC_EXCHANGE,
   "Becke 86 with modified gradient correction for 2D",
   XC_FAMILY_GGA,
-  {&xc_ref_Pittalis2009_012503, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Pittalis2009_012503, NULL, NULL, NULL, NULL},
   XC_FLAGS_2D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

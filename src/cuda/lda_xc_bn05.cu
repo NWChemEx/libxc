@@ -7,21 +7,26 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_XC_BN05   588   /* Baer and Neuhauser, gamma=1 */
 
-#include "maple2c/lda_exc/lda_xc_bn05.c"
-#include "work_lda_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_lda_xc_bn05 = {
+#include "maple2c/lda_exc/lda_xc_bn05.c"
+#include "work_lda_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_bn05 = {
   XC_LDA_XC_BN05,
   XC_EXCHANGE_CORRELATION,
   "Baer and Neuhauser, gamma=1",
   XC_FAMILY_LDA,
-  {&xc_ref_Baer2005_043002, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Baer2005_043002, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   5e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

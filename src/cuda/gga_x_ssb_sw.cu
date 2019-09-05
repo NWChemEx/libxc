@@ -7,24 +7,29 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_SSB_SW       90  /* Swart, Sola and Bickelhaupt correction to PBE  */
 #define XC_GGA_X_SSB          91  /* Swart, Sola and Bickelhaupt  */
 #define XC_GGA_X_SSB_D        92  /* Swart, Sola and Bickelhaupt dispersion  */
+
+#pragma omp declare target
 
 typedef struct{
   double A, B, C, D, E;
 } gga_x_ssb_sw_params;
 
 
+DEVICE
 static void 
-gga_x_ssb_sw_init(xc_func_type *p)
+dvc_gga_x_ssb_sw_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
   p->params = malloc(sizeof(gga_x_ssb_sw_params));
 }
 
-static const func_params_type ext_params[] = {
+DEVICE
+static const func_params_type dvc_ext_params[] = {
   {"_A", 1.0515,   "Constant s limit"},
   {"_B", 0.191458, "B s^2/(1 + C s^2)"},
   {"_C", 0.254443, "B s^2/(1 + C s^2)"},
@@ -32,39 +37,42 @@ static const func_params_type ext_params[] = {
   {"_E", 4.036674, "D s^2/(1 + E s^4)"},
 };
 
+DEVICE
 static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_ssb_sw_params *params;
 
   assert(p != NULL && p->params != NULL);
   params = (gga_x_ssb_sw_params *) (p->params);
 
-  params->A = get_ext_param(p->info->ext_params, ext_params, 0);
-  params->B = get_ext_param(p->info->ext_params, ext_params, 1);
-  params->C = get_ext_param(p->info->ext_params, ext_params, 2);
-  params->D = get_ext_param(p->info->ext_params, ext_params, 3);
-  params->E = get_ext_param(p->info->ext_params, ext_params, 4);
+  params->A = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
+  params->B = dvc_get_ext_param(p->info->ext_params, ext_params, 1);
+  params->C = dvc_get_ext_param(p->info->ext_params, ext_params, 2);
+  params->D = dvc_get_ext_param(p->info->ext_params, ext_params, 3);
+  params->E = dvc_get_ext_param(p->info->ext_params, ext_params, 4);
 }
 
 #include "maple2c/gga_exc/gga_x_ssb_sw.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_ssb_sw = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_ssb_sw = {
   XC_GGA_X_SSB_SW,
   XC_EXCHANGE,
   "Swart, Sola and Bickelhaupt correction to PBE",
   XC_FAMILY_GGA,
-  {&xc_ref_Swart2009_69, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Swart2009_69, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-22,
-  5, ext_params, set_ext_params,
-  gga_x_ssb_sw_init, NULL, 
-  NULL, work_gga, NULL
+  5, dvc_ext_params, dvc_set_ext_params,
+  dvc_gga_x_ssb_sw_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
+DEVICE
 static void
-gga_x_ssb_init(xc_func_type *p)
+dvc_gga_x_ssb_init(xc_func_type *p)
 {
   static const double u = -1.205643, F = 0.995010, B = 0.137574;
 
@@ -75,29 +83,31 @@ gga_x_ssb_init(xc_func_type *p)
   static double par_x_kt[] = {-1, 0.1};
   par_x_kt[0] = u*F*X_FACTOR_C*B*(X2S*X2S);
   
-  xc_mix_init(p, 3, funcs_id, funcs_coef);  
+  dvc_xc_mix_init(p, 3, funcs_id, funcs_coef);  
 
-  xc_func_set_ext_params(p->func_aux[1], par_x_ssb_sw);
-  xc_func_set_ext_params(p->func_aux[2], par_x_kt);
+  dvc_xc_func_set_ext_params(p->func_aux[1], par_x_ssb_sw);
+  dvc_xc_func_set_ext_params(p->func_aux[2], par_x_kt);
 }
 
 
-const xc_func_info_type xc_func_info_gga_x_ssb = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_ssb = {
   XC_GGA_X_SSB,
   XC_EXCHANGE,
   "Swart, Sola and Bickelhaupt",
   XC_FAMILY_GGA,
-  {&xc_ref_Swart2009_094103, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Swart2009_094103, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  gga_x_ssb_init, NULL, 
+  dvc_gga_x_ssb_init, NULL, 
   NULL, NULL, NULL
 };
 
 
+DEVICE
 static void
-gga_x_ssb_d_init(xc_func_type *p)
+dvc_gga_x_ssb_d_init(xc_func_type *p)
 {
   static const double u = -0.749940, F = 0.949488, B = 0.197465;
 
@@ -108,23 +118,24 @@ gga_x_ssb_d_init(xc_func_type *p)
   static double par_x_kt[] = {-1, 0.1};
   par_x_kt[0] = u*F*X_FACTOR_C*B*(X2S*X2S);
   
-  xc_mix_init(p, 3, funcs_id, funcs_coef);  
+  dvc_xc_mix_init(p, 3, funcs_id, funcs_coef);  
 
-  xc_func_set_ext_params(p->func_aux[1], par_x_ssb_sw);
-  xc_func_set_ext_params(p->func_aux[2], par_x_kt);
+  dvc_xc_func_set_ext_params(p->func_aux[1], par_x_ssb_sw);
+  dvc_xc_func_set_ext_params(p->func_aux[2], par_x_kt);
 }
 
-const xc_func_info_type xc_func_info_gga_x_ssb_d = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_ssb_d = {
   XC_GGA_X_SSB_D,
   XC_EXCHANGE,
   "Swart, Sola and Bickelhaupt dispersion",
   XC_FAMILY_GGA,
-  {&xc_ref_Swart2009_094103, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Swart2009_094103, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
   0, NULL, NULL,
-  gga_x_ssb_d_init, NULL, 
+  dvc_gga_x_ssb_d_init, NULL, 
   NULL, NULL, NULL
 };
 
-
+#pragma omp end declare target

@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 /************************************************************************
  Random Phase Approximation (RPA)
@@ -14,18 +15,22 @@
 
 #define XC_LDA_C_RPA  3   /* Random Phase Approximation   */
 
-#include "maple2c/lda_exc/lda_c_rpa.c"
-#include "work_lda_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_lda_c_rpa = {
+#include "maple2c/lda_exc/lda_c_rpa.c"
+#include "work_lda_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_rpa = {
   XC_LDA_C_RPA,
   XC_CORRELATION,
   "Random Phase Approximation (RPA)",
   XC_FAMILY_LDA,
-  {&xc_ref_GellMann1957_364, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_GellMann1957_364, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

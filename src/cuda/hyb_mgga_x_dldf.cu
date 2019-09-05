@@ -8,27 +8,29 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_HYB_MGGA_X_DLDF      36 /* Dispersionless Density Functional */
 
-static void
-mgga_x_dldf_init(xc_func_type *p)
+DEVICE static void
+dvc_mgga_x_dldf_init(xc_func_type *p)
 {
   p->cam_alpha   = 0.6144129;
 }
 
 #include "maple2c/mgga_exc/hyb_mgga_x_dldf.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_dldf = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_dldf = {
   XC_HYB_MGGA_X_DLDF,
   XC_EXCHANGE,
   "Dispersionless Density Functional",
   XC_FAMILY_HYB_MGGA,
-  {&xc_ref_Pernal2009_263201, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Pernal2009_263201, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1.0e-22,
   0, NULL, NULL,
-  mgga_x_dldf_init, NULL,
-  NULL, NULL, work_mgga,
+  dvc_mgga_x_dldf_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };

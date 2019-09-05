@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_APBE         185 /* mu fixed from the semiclassical neutral atom   */
 #define XC_GGA_K_TW1          187 /* Tran and Wesolowski set 1 (Table II)           */
@@ -15,6 +16,7 @@
 #define XC_GGA_K_TW4          190 /* Tran and Wesolowski set 4 (Table II)           */
 #define XC_GGA_K_REVAPBE       55 /* revised APBE                                   */
 
+#pragma omp declare target
 
 typedef struct{
   double kappa, mu;
@@ -22,8 +24,9 @@ typedef struct{
 } gga_k_apbe_params;
 
 
+DEVICE
 static void 
-gga_k_apbe_init(xc_func_type *p)
+dvc_gga_k_apbe_init(xc_func_type *p)
 {
   gga_k_apbe_params *params;
 
@@ -65,82 +68,84 @@ gga_k_apbe_init(xc_func_type *p)
 }
 
 #include "maple2c/gga_exc/gga_k_apbe.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_apbe = {
+const xc_func_info_type dvc_xc_func_info_gga_k_apbe = {
   XC_GGA_K_APBE,
   XC_KINETIC,
   "mu fixed from the semiclassical neutral atom",
   XC_FAMILY_GGA,
-  {&xc_ref_Constantin2011_186406, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Constantin2011_186406, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_apbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_revapbe = {
+const xc_func_info_type dvc_xc_func_info_gga_k_revapbe = {
   XC_GGA_K_REVAPBE,
   XC_KINETIC,
   "revised APBE",
   XC_FAMILY_GGA,
-  {&xc_ref_Constantin2011_186406, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Constantin2011_186406, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_apbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_tw1 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_tw1 = {
   XC_GGA_K_TW1,
   XC_KINETIC,
   "Tran and Wesolowski set 1 (Table II)",
   XC_FAMILY_GGA,
-  {&xc_ref_Tran2002_441, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Tran2002_441, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_apbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_tw2 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_tw2 = {
   XC_GGA_K_TW2,
   XC_KINETIC,
   "Tran and Wesolowski set 2 (Table II)",
   XC_FAMILY_GGA,
-  {&xc_ref_Tran2002_441, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Tran2002_441, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_apbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_tw3 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_tw3 = {
   XC_GGA_K_TW3,
   XC_KINETIC,
   "Tran and Wesolowski set 3 (Table II)",
   XC_FAMILY_GGA,
-  {&xc_ref_Tran2002_441, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Tran2002_441, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_apbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_tw4 = {
+const xc_func_info_type dvc_xc_func_info_gga_k_tw4 = {
   XC_GGA_K_TW4,
   XC_KINETIC,
   "Tran and Wesolowski set 4 (Table II)",
   XC_FAMILY_GGA,
-  {&xc_ref_Tran2002_441, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Tran2002_441, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_k_apbe_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

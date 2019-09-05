@@ -7,17 +7,21 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_VMT84_PBE        69 /* VMT{8,4} with constraint satisfaction with mu = mu_PBE  */
 #define XC_GGA_X_VMT84_GE         68 /* VMT{8,4} with constraint satisfaction with mu = mu_GE  */
+
+#pragma omp declare target
 
 typedef struct{
   double mu;
   double alpha;
 } gga_x_vmt84_params;
 
+DEVICE
 static void 
-gga_x_vmt84_init(xc_func_type *p)
+dvc_gga_x_vmt84_init(xc_func_type *p)
 {
   gga_x_vmt84_params *params;
 
@@ -35,36 +39,43 @@ gga_x_vmt84_init(xc_func_type *p)
     params->alpha = 0.000023;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_x_vmt84\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/gga_exc/gga_x_vmt84.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_vmt84_pbe = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_vmt84_pbe = {
   XC_GGA_X_VMT84_PBE,
   XC_EXCHANGE,
   "VMT{8,4} with constraint satisfaction with mu = mu_PBE",
   XC_FAMILY_GGA,
-  {&xc_ref_Vela2012_144115, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Vela2012_144115, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_x_vmt84_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_vmt84_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_x_vmt84_ge = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_vmt84_ge = {
   XC_GGA_X_VMT84_GE,
   XC_EXCHANGE,
   "VMT{8,4} with constraint satisfaction with mu = mu_GE",
   XC_FAMILY_GGA,
-  {&xc_ref_Vela2012_144115, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Vela2012_144115, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_x_vmt84_init, NULL, 
-  NULL, work_gga, NULL
+  dvc_gga_x_vmt84_init, NULL, 
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

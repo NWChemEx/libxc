@@ -21,11 +21,12 @@
 #  define XC_DIMENSIONS 3
 #endif
 
-static void
+#pragma omp declare target
+DEVICE static void
 #ifdef XC_KINETIC_FUNCTIONAL
-work_mgga_k
+dvc_work_mgga_k
 #else
-work_mgga_x
+dvc_work_mgga_x
 #endif
 (const xc_func_type *p, int np,
  const double *rho, const double *sigma, const double *lapl, const double *tau,
@@ -74,7 +75,7 @@ work_mgga_x
   sfact2 = sfact*sfact;
   
   for(ip = 0; ip < np; ip++){
-    xc_rho2dzeta(p->nspin, rho, &dens, &r.zeta);
+    dvc_xc_rho2dzeta(p->nspin, rho, &dens, &r.zeta);
 
     if(dens < p->dens_threshold) goto end_ip_loop;
 
@@ -160,7 +161,7 @@ work_mgga_x
       *zk /= dens; /* we want energy per particle */
 
   end_ip_loop:
-internal_counters_mgga_next(&(p->dim), 0, &rho, &sigma, &lapl, &tau,
+dvc_internal_counters_mgga_next(&(p->dim), 0, &rho, &sigma, &lapl, &tau,
                                 &zk, &vrho, &vsigma, &vlapl, &vtau,
                                 &v2rho2, &v2rhosigma, &v2rholapl, &v2rhotau,
                                 &v2sigma2, &v2sigmalapl, &v2sigmatau,
@@ -178,3 +179,4 @@ internal_counters_mgga_next(&(p->dim), 0, &rho, &sigma, &lapl, &tau,
                                 &v3tau3);
   }
 }
+#pragma omp end declare target

@@ -7,28 +7,33 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_CAP         270 /* Correct Asymptotic Potential */
 #define XC_HYB_GGA_XC_CAP0   477 /* Correct Asymptotic Potential hybrid */
 
-#include "maple2c/gga_exc/gga_x_cap.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_x_cap = {
+#include "maple2c/gga_exc/gga_x_cap.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_cap = {
   XC_GGA_X_CAP,
   XC_EXCHANGE,
   "Correct Asymptotic Potential",
   XC_FAMILY_GGA,
-  {&xc_ref_Carmona2015_054105, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Carmona2015_054105, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
 
+DEVICE
 void
-xc_hyb_gga_xc_cap0_init(xc_func_type *p)
+dvc_xc_hyb_gga_xc_cap0_init(xc_func_type *p)
 {
   static int    funcs_id  [2] = {XC_GGA_X_CAP, XC_GGA_C_PBE};
   static double funcs_coef[2] = {0.75, 1.0};
@@ -36,20 +41,23 @@ xc_hyb_gga_xc_cap0_init(xc_func_type *p)
   static double par_c_pbe[] = {0.75*0.06672455060314922,
                                XC_EXT_PARAMS_DEFAULT, XC_EXT_PARAMS_DEFAULT};
   
-  xc_mix_init(p, 2, funcs_id, funcs_coef);
-  xc_func_set_ext_params(p->func_aux[1], par_c_pbe);
+  dvc_xc_mix_init(p, 2, funcs_id, funcs_coef);
+  dvc_xc_func_set_ext_params(p->func_aux[1], par_c_pbe);
   p->cam_alpha = 0.75;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_cap0 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_cap0 = {
   XC_HYB_GGA_XC_CAP0,
   XC_EXCHANGE_CORRELATION,
   "Correct Asymptotic Potential hybrid",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Carmona2016_120, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Carmona2016_120, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  xc_hyb_gga_xc_cap0_init, NULL,
+  dvc_xc_hyb_gga_xc_cap0_init, NULL,
   NULL, NULL, NULL
 };
+
+#pragma omp end declare target

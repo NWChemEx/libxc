@@ -7,22 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_XC_TIH   599   /* Neural network LDA from Tozer et al */
 
+#pragma omp declare target
+
 #include "maple2c/lda_vxc/lda_xc_tih.c"
 #define XC_NO_EXC
-#include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_xc_tih = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_tih = {
   XC_LDA_XC_TIH,
   XC_EXCHANGE_CORRELATION,
   "Neural network LDA from Tozer et al",
   XC_FAMILY_LDA,
-  {&xc_ref_Tozer1996_9200, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Tozer1996_9200, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_VXC | XC_FLAGS_I_HAVE_FXC | XC_FLAGS_I_HAVE_KXC,
   5e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

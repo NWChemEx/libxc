@@ -7,8 +7,17 @@
 */
 
 #include "xc.h"
-#include "funcs_key.c"
+#include "util.h"
+#include "dvc_util.h"
+#include "funcs_key.cu"
+//ifdef __CUDACC__
+//undef max
+//undef min
+//include <string>
+//else
+#ifndef __CUDACC__
 #include <string.h>
+#endif
 #ifdef _MSC_VER
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp
@@ -16,33 +25,33 @@
 #include <strings.h>
 #endif
 
-extern xc_func_info_type 
-  *xc_lda_known_funct[], 
-  *xc_gga_known_funct[],
-  *xc_hyb_gga_known_funct[],
-  *xc_mgga_known_funct[],
-  *xc_hyb_mgga_known_funct[];
+#pragma omp declare target
+extern DEVICE xc_func_info_type **dvc_xc_lda_known_funct;      // *xc_lda_known_funct[]; 
+extern DEVICE xc_func_info_type **dvc_xc_gga_known_funct;      // *xc_gga_known_funct[];
+extern DEVICE xc_func_info_type **dvc_xc_hyb_gga_known_funct;  // *xc_hyb_gga_known_funct[];
+extern DEVICE xc_func_info_type **dvc_xc_mgga_known_funct;     // *xc_mgga_known_funct[];
+extern DEVICE xc_func_info_type **dvc_xc_hyb_mgga_known_funct; // *xc_hyb_mgga_known_funct[];
 
 
 /*------------------------------------------------------*/
-int xc_functional_get_number(const char *name)
+DEVICE int dvc_xc_functional_get_number(const char *name)
 {
   int ii;
   int key=-1;
   const char *p;
 
   /* Does name begin with xc_? */
-  if(strncasecmp(name,"XC_",3) == 0) {
+  if(dvc_strncasecmp(name,"XC_",3) == 0) {
     p=name+3;
   } else {
     p=name;
   }
 
   for(ii=0;;ii++){
-    if(xc_functional_keys[ii].number == -1)
+    if(dvc_xc_functional_keys[ii].number == -1)
       break;
-    if(strcasecmp(xc_functional_keys[ii].name, p) == 0){
-      key = xc_functional_keys[ii].number;
+    if(dvc_strcasecmp(dvc_xc_functional_keys[ii].name, p) == 0){
+      key = dvc_xc_functional_keys[ii].number;
       break;
     }
   }
@@ -52,19 +61,19 @@ int xc_functional_get_number(const char *name)
 
 
 /*------------------------------------------------------*/
-char *xc_functional_get_name(int number)
+DEVICE char *dvc_xc_functional_get_name(int number)
 {
   int ii;
   char *p;
 
   for(ii=0;;ii++){
-    if(xc_functional_keys[ii].number == -1)
+    if(dvc_xc_functional_keys[ii].number == -1)
       return NULL;
-    if(xc_functional_keys[ii].number == number) {
+    if(dvc_xc_functional_keys[ii].number == number) {
       /* return duplicated: caller has the responsibility to dealloc string.
          Do this the old way since strdup and strndup aren't C standard. */
-      p=malloc(strlen(xc_functional_keys[ii].name)+1);
-      strcpy(p,xc_functional_keys[ii].name);
+      p=(char*)malloc(dvc_strlen(dvc_xc_functional_keys[ii].name)+1);
+      dvc_strcpy(p,dvc_xc_functional_keys[ii].name);
       return p;
     }
   }
@@ -72,13 +81,13 @@ char *xc_functional_get_name(int number)
 
 
 /*------------------------------------------------------*/
-int xc_family_from_id(int id, int *family, int *number)
+DEVICE int dvc_xc_family_from_id(int id, int *family, int *number)
 {
   int ii;
 
   /* first let us check if it is an LDA */
-  for(ii=0; xc_lda_known_funct[ii]!=NULL; ii++){
-    if(xc_lda_known_funct[ii]->number == id){
+  for(ii=0; dvc_xc_lda_known_funct[ii]!=NULL; ii++){
+    if(dvc_xc_lda_known_funct[ii]->number == id){
       if(family != NULL) *family = XC_FAMILY_LDA;
       if(number != NULL) *number = ii;
       return XC_FAMILY_LDA;
@@ -86,8 +95,8 @@ int xc_family_from_id(int id, int *family, int *number)
   }
 
   /* or is it a GGA? */
-  for(ii=0; xc_gga_known_funct[ii]!=NULL; ii++){
-    if(xc_gga_known_funct[ii]->number == id){
+  for(ii=0; dvc_xc_gga_known_funct[ii]!=NULL; ii++){
+    if(dvc_xc_gga_known_funct[ii]->number == id){
       if(family != NULL) *family = XC_FAMILY_GGA;
       if(number != NULL) *number = ii;
       return XC_FAMILY_GGA;
@@ -95,8 +104,8 @@ int xc_family_from_id(int id, int *family, int *number)
   }
 
   /* or is it a hybrid GGA? */
-  for(ii=0; xc_hyb_gga_known_funct[ii]!=NULL; ii++){
-    if(xc_hyb_gga_known_funct[ii]->number == id){
+  for(ii=0; dvc_xc_hyb_gga_known_funct[ii]!=NULL; ii++){
+    if(dvc_xc_hyb_gga_known_funct[ii]->number == id){
       if(family != NULL) *family = XC_FAMILY_HYB_GGA;
       if(number != NULL) *number = ii;
       return XC_FAMILY_HYB_GGA;
@@ -104,8 +113,8 @@ int xc_family_from_id(int id, int *family, int *number)
   }
 
   /* or is it a meta GGA? */
-  for(ii=0; xc_mgga_known_funct[ii]!=NULL; ii++){
-    if(xc_mgga_known_funct[ii]->number == id){
+  for(ii=0; dvc_xc_mgga_known_funct[ii]!=NULL; ii++){
+    if(dvc_xc_mgga_known_funct[ii]->number == id){
       if(family != NULL) *family = XC_FAMILY_MGGA;
       if(number != NULL) *number = ii;
       return XC_FAMILY_MGGA;
@@ -113,8 +122,8 @@ int xc_family_from_id(int id, int *family, int *number)
   }
 
   /* or is it a hybrid meta GGA? */
-  for(ii=0; xc_hyb_mgga_known_funct[ii]!=NULL; ii++){
-    if(xc_hyb_mgga_known_funct[ii]->number == id){
+  for(ii=0; dvc_xc_hyb_mgga_known_funct[ii]!=NULL; ii++){
+    if(dvc_xc_hyb_mgga_known_funct[ii]->number == id){
       if(family != NULL) *family = XC_FAMILY_HYB_MGGA;
       if(number != NULL) *number = ii;
       return XC_FAMILY_HYB_MGGA;
@@ -125,28 +134,30 @@ int xc_family_from_id(int id, int *family, int *number)
 }
 
 /*------------------------------------------------------*/
-int xc_number_of_functionals()
+DEVICE int dvc_xc_number_of_functionals()
 {
   int num;
 
   for(num=0;;num++){
-    if(xc_functional_keys[num].number == -1)
+    if(dvc_xc_functional_keys[num].number == -1)
       return num;
   }
 
+  #ifndef __CUDACC__
   fprintf(stderr, "Internal error in functionals.c\n");
   exit(1);
+  #endif
 }
 
-int xc_maximum_name_length()
+DEVICE int dvc_xc_maximum_name_length()
 {
   int i, N, maxlen, tmp;
 
-  N=xc_number_of_functionals();
+  N=dvc_xc_number_of_functionals();
 
   maxlen=0;
   for(i=0;i<N;i++){
-    tmp=strlen(xc_functional_keys[i].name);
+    tmp=dvc_strlen(dvc_xc_functional_keys[i].name);
     if(tmp > maxlen) maxlen=tmp;
   }
 
@@ -154,27 +165,27 @@ int xc_maximum_name_length()
 }
 
 /*------------------------------------------------------*/
-void xc_available_functional_numbers(int *list)
+DEVICE void dvc_xc_available_functional_numbers(int *list)
 {
   int ii, N;
-  N=xc_number_of_functionals();
+  N=dvc_xc_number_of_functionals();
   for(ii=0;ii<N;ii++){
-    list[ii]=xc_functional_keys[ii].number;
+    list[ii]=dvc_xc_functional_keys[ii].number;
   }
 }
 
-void xc_available_functional_names(char **list)
+DEVICE void dvc_xc_available_functional_names(char **list)
 {
   int ii, N;
 
-  N=xc_number_of_functionals();
+  N=dvc_xc_number_of_functionals();
   for(ii=0;ii<N;ii++) {
-    strcpy(list[ii],xc_functional_keys[ii].name);
+    dvc_strcpy(list[ii],dvc_xc_functional_keys[ii].name);
   }
 }
 
 /*------------------------------------------------------*/
-xc_func_type *xc_func_alloc()
+DEVICE xc_func_type *dvc_xc_func_alloc()
 {
   xc_func_type *func;
 
@@ -183,7 +194,7 @@ xc_func_type *xc_func_alloc()
 }
 
 /*------------------------------------------------------*/
-int xc_func_init(xc_func_type *func, int functional, int nspin)
+DEVICE int dvc_xc_func_init(xc_func_type *func, int functional, int nspin)
 {
   int number;
 
@@ -201,30 +212,30 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
   func->cam_omega = func->cam_alpha = func->cam_beta = 0.0;
   func->nlc_b = func->nlc_C = 0.0;
 
-  switch(xc_family_from_id(functional, NULL, &number)){
+  switch(dvc_xc_family_from_id(functional, NULL, &number)){
   case(XC_FAMILY_LDA):
-    func->info = xc_lda_known_funct[number];
-    internal_counters_set_lda(func->nspin, &(func->dim));
+    func->info = dvc_xc_lda_known_funct[number];
+    dvc_internal_counters_set_lda(func->nspin, &(func->dim));
     break;
 
   case(XC_FAMILY_GGA):
-    func->info = xc_gga_known_funct[number];
-    internal_counters_set_gga(func->nspin, &(func->dim));
+    func->info = dvc_xc_gga_known_funct[number];
+    dvc_internal_counters_set_gga(func->nspin, &(func->dim));
     break;
 
   case(XC_FAMILY_HYB_GGA):
-    func->info = xc_hyb_gga_known_funct[number];
-    internal_counters_set_gga(func->nspin, &(func->dim));
+    func->info = dvc_xc_hyb_gga_known_funct[number];
+    dvc_internal_counters_set_gga(func->nspin, &(func->dim));
     break;
 
   case(XC_FAMILY_MGGA):
-    func->info = xc_mgga_known_funct[number];
-    internal_counters_set_mgga(func->nspin, &(func->dim));
+    func->info = dvc_xc_mgga_known_funct[number];
+    dvc_internal_counters_set_mgga(func->nspin, &(func->dim));
     break;
 
   case(XC_FAMILY_HYB_MGGA):
-    func->info = xc_hyb_mgga_known_funct[number];
-    internal_counters_set_mgga(func->nspin, &(func->dim));
+    func->info = dvc_xc_hyb_mgga_known_funct[number];
+    dvc_internal_counters_set_mgga(func->nspin, &(func->dim));
     break;
 
   default:
@@ -246,7 +257,7 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
 
 
 /*------------------------------------------------------*/
-void xc_func_end(xc_func_type *func)
+DEVICE void dvc_xc_func_end(xc_func_type *func)
 {
   assert(func != NULL && func->info != NULL);
 
@@ -259,7 +270,7 @@ void xc_func_end(xc_func_type *func)
     int ii;
 
     for(ii=0; ii<func->n_func_aux; ii++){
-      xc_func_end(func->func_aux[ii]);
+      dvc_xc_func_end(func->func_aux[ii]);
       free(func->func_aux[ii]);
     }
     free(func->func_aux);
@@ -281,38 +292,38 @@ void xc_func_end(xc_func_type *func)
 }
 
 /*------------------------------------------------------*/
-void  xc_func_free(xc_func_type *p)
+DEVICE void  dvc_xc_func_free(xc_func_type *p)
 {
   free(p);
 }
 
 /*------------------------------------------------------*/
-const xc_func_info_type *xc_func_get_info(const xc_func_type *p)
+DEVICE const xc_func_info_type *dvc_xc_func_get_info(const xc_func_type *p)
 {
   return p->info;
 }
 
 /*------------------------------------------------------*/
-void xc_func_set_dens_threshold(xc_func_type *p, double dens_threshold)
+DEVICE void dvc_xc_func_set_dens_threshold(xc_func_type *p, double dens_threshold)
 {
   int ii;
 
   p->dens_threshold = dens_threshold;
 
   for(ii=0; ii<p->n_func_aux; ii++) {
-    xc_func_set_dens_threshold(p->func_aux[ii], dens_threshold);
+    dvc_xc_func_set_dens_threshold(p->func_aux[ii], dens_threshold);
   }
 }
 
 /*------------------------------------------------------*/
-void xc_func_set_ext_params(xc_func_type *p, double *ext_params)
+DEVICE void dvc_xc_func_set_ext_params(xc_func_type *p, double *ext_params)
 {
   assert(p->info->n_ext_params > 0);
   p->info->set_ext_params(p, ext_params);
 }
 
 /* returns the mixing coefficient for the hybrid GGAs */
-double xc_hyb_exx_coef(const xc_func_type *p)
+DEVICE double dvc_xc_hyb_exx_coef(const xc_func_type *p)
 {
   assert(p!=NULL);
  
@@ -320,7 +331,7 @@ double xc_hyb_exx_coef(const xc_func_type *p)
 }
 
 /* returns the CAM parameters for screened hybrids */
-void xc_hyb_cam_coef(const xc_func_type *p, double *omega, double *alpha, double *beta)
+DEVICE void dvc_xc_hyb_cam_coef(const xc_func_type *p, double *omega, double *alpha, double *beta)
 {
   assert(p!=NULL);
 
@@ -330,10 +341,11 @@ void xc_hyb_cam_coef(const xc_func_type *p, double *omega, double *alpha, double
 }
 
 /* returns the NLC parameters */
-void xc_nlc_coef(const xc_func_type *p, double *nlc_b, double *nlc_C)
+DEVICE void dvc_xc_nlc_coef(const xc_func_type *p, double *nlc_b, double *nlc_C)
 {
   assert(p!=NULL);
 
   *nlc_b = p->nlc_b;
   *nlc_C = p->nlc_C;
 }
+#pragma omp end declare target

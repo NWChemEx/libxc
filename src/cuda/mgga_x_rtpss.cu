@@ -9,15 +9,18 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_X_RTPSS          299 /* Revised TPSS exchange by Garza, Bell and Head-Gordon */
+
+#pragma omp declare target
 
 typedef struct {
   double b, c, e, kappa, mu;
 } mgga_x_rtpss_params;
 
-static void 
-mgga_x_rtpss_init(xc_func_type *p)
+DEVICE static void 
+dvc_mgga_x_rtpss_init(xc_func_type *p)
 {
   mgga_x_rtpss_params *params;
 
@@ -30,12 +33,15 @@ mgga_x_rtpss_init(xc_func_type *p)
     /* default set by set_ext_params */
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in mgga_x_rtpss\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
-static const func_params_type ext_params[] = {
+DEVICE static const func_params_type dvc_ext_params[] = {
   {"_b",      0.40,    "b"},
   {"_c",      1.59096, "c"},
   {"_e",      1.537,   "e"},
@@ -43,33 +49,35 @@ static const func_params_type ext_params[] = {
   {"_mu",     0.21951, "Coefficient of the 2nd order expansion"},
 };
 
-static void 
-set_ext_params(xc_func_type *p, const double *ext_params)
+DEVICE static void 
+dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_x_rtpss_params *params;
 
   assert(p != NULL && p->params != NULL);
   params = (mgga_x_rtpss_params *) (p->params);
 
-  params->b      = get_ext_param(p->info->ext_params, ext_params, 0);
-  params->c      = get_ext_param(p->info->ext_params, ext_params, 1);
-  params->e      = get_ext_param(p->info->ext_params, ext_params, 2);
-  params->kappa  = get_ext_param(p->info->ext_params, ext_params, 3);
-  params->mu     = get_ext_param(p->info->ext_params, ext_params, 4);
+  params->b      = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
+  params->c      = dvc_get_ext_param(p->info->ext_params, ext_params, 1);
+  params->e      = dvc_get_ext_param(p->info->ext_params, ext_params, 2);
+  params->kappa  = dvc_get_ext_param(p->info->ext_params, ext_params, 3);
+  params->mu     = dvc_get_ext_param(p->info->ext_params, ext_params, 4);
 }
 
 #include "maple2c/mgga_exc/mgga_x_rtpss.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_rtpss = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_rtpss = {
   XC_MGGA_X_RTPSS,
   XC_EXCHANGE,
   "TPSS for surface adsorption",
   XC_FAMILY_MGGA,
-  {&xc_ref_Garza2018_3083, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Garza2018_3083, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
-  5, ext_params, set_ext_params,
-  mgga_x_rtpss_init, NULL, 
-  NULL, NULL, work_mgga,
+  5, dvc_ext_params, dvc_set_ext_params,
+  dvc_mgga_x_rtpss_init, NULL, 
+  NULL, NULL, dvc_work_mgga,
 };
+
+#pragma omp end declare target

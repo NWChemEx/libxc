@@ -8,21 +8,26 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_XC_ZLP     43   /* Zhao, Levy & Parr, Eq. (20)  */
 
-#include "maple2c/lda_exc/lda_xc_zlp.c"
-#include "work_lda_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_lda_xc_zlp = {
+#include "maple2c/lda_exc/lda_xc_zlp.c"
+#include "work_lda_new.cu"
+
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_zlp = {
   XC_LDA_XC_ZLP,
   XC_EXCHANGE_CORRELATION,
   "Zhao, Levy & Parr, Eq. (20)",
   XC_FAMILY_LDA,
-  {&xc_ref_Zhao1993_918, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Zhao1993_918, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  dvc_work_lda, NULL, NULL
 };
+
+#pragma omp end declare target

@@ -7,17 +7,21 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_LLP          522 /* Lee, Lee & Parr */
 #define XC_GGA_K_FR_B88       514 /* Fuentealba & Reyes (B88 version) */
+
+#pragma omp declare target
 
 typedef struct{
   double beta, gamma;
 } gga_k_llp_params;
 
 
+DEVICE
 static void 
-gga_k_llp_init(xc_func_type *p)
+dvc_gga_k_llp_init(xc_func_type *p)
 {
   gga_k_llp_params *params;
 
@@ -36,36 +40,43 @@ gga_k_llp_init(xc_func_type *p)
     params->gamma = 0.02774/(X_FACTOR_C*0.004596);
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_k_llp\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/gga_exc/gga_k_llp.c"
-#include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_llp = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_k_llp = {
   XC_GGA_K_LLP,
   XC_KINETIC,
   "Lee, Lee & Parr",
   XC_FAMILY_GGA,
-  {&xc_ref_Lee1991_768, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Lee1991_768, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_llp_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_k_llp_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type xc_func_info_gga_k_fr_b88 = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_k_fr_b88 = {
   XC_GGA_K_FR_B88,
   XC_KINETIC,
   "Fuentealba & Reyes (B88 version)",
   XC_FAMILY_GGA,
-  {&xc_ref_Fuentealba1995_31, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Fuentealba1995_31, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-25,
   0, NULL, NULL,
-  gga_k_llp_init, NULL,
-  NULL, work_gga, NULL
+  dvc_gga_k_llp_init, NULL,
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

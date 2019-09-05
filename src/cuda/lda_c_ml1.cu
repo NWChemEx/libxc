@@ -8,16 +8,19 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_LDA_C_ML1    22   /* Modified LSD (version 1) of Proynov and Salahub */
 #define XC_LDA_C_ML2    23   /* Modified LSD (version 2) of Proynov and Salahub */
+
+#pragma omp declare target
 
 typedef struct {
   double fc, q;
 } lda_c_ml1_params;
 
-static void 
-lda_c_ml1_init(xc_func_type *p)
+DEVICE static void 
+dvc_lda_c_ml1_init(xc_func_type *p)
 {
   lda_c_ml1_params *params;
 
@@ -35,36 +38,40 @@ lda_c_ml1_init(xc_func_type *p)
     params->q  = 0.5;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in lda_c_ml1\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/lda_exc/lda_c_ml1.c"
-#include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_ml1 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ml1 = {
   XC_LDA_C_ML1,
   XC_CORRELATION,
   "Modified LSD (version 1) of Proynov and Salahub",
   XC_FAMILY_LDA,
-  {&xc_ref_Proynov1994_7874, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Proynov1994_7874, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_ml1_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_ml1_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_lda_c_ml2 = {
+DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ml2 = {
   XC_LDA_C_ML2,
   XC_CORRELATION,
   "Modified LSD (version 2) of Proynov and Salahub",
   XC_FAMILY_LDA,
-  {&xc_ref_Proynov1994_7874, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Proynov1994_7874, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-24,
   0, NULL, NULL,
-  lda_c_ml1_init, NULL,
-  work_lda, NULL, NULL
+  dvc_lda_c_ml1_init, NULL,
+  dvc_work_lda, NULL, NULL
 };
+#pragma omp end declare target

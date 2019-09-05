@@ -8,22 +8,27 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_X_PKZB          213 /* Perdew, Kurth, Zupan, and Blaha */
 
+#pragma omp declare target
+
 #include "maple2c/mgga_exc/mgga_x_pkzb.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
 
-const xc_func_info_type xc_func_info_mgga_x_pkzb = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_pkzb = {
   XC_MGGA_X_PKZB,
   XC_EXCHANGE,
   "Perdew, Kurth, Zupan, and Blaha",
   XC_FAMILY_MGGA,
-  {&xc_ref_Perdew1999_2544, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Perdew1999_2544, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, NULL, work_mgga,
+  NULL, NULL, dvc_work_mgga,
 };
+
+#pragma omp end declare target

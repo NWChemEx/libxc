@@ -9,16 +9,19 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_MGGA_X_MS2B          300  /* MS2beta exchange by Furness and Sun */
 #define XC_MGGA_X_MS2BS         301  /* MS2beta* exchange by Furness and Sun */
+
+#pragma omp declare target
 
 typedef struct{
   double kappa, c, b;
 } mgga_x_msb_params;
 
-static void
-mgga_x_msb_init(xc_func_type *p)
+DEVICE static void
+dvc_mgga_x_msb_init(xc_func_type *p)
 {
   mgga_x_msb_params *params;
 
@@ -38,36 +41,41 @@ mgga_x_msb_init(xc_func_type *p)
     params->c     = 0.12268;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in mgga_x_msb\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/mgga_exc/mgga_x_msb.c"
-#include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_ms2b = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms2b = {
   XC_MGGA_X_MS2B,
   XC_EXCHANGE,
   "MS2beta exchange of Furness and Sun",
   XC_FAMILY_MGGA,
-  {&xc_ref_Furness2019_041119, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Furness2019_041119, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
   0, NULL, NULL,
-  mgga_x_msb_init, NULL,
-  NULL, NULL, work_mgga,
+  dvc_mgga_x_msb_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };
 
-const xc_func_info_type xc_func_info_mgga_x_ms2bs = {
+DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms2bs = {
   XC_MGGA_X_MS2BS,
   XC_EXCHANGE,
   "MS2beta* exchange of Furness and Sun",
   XC_FAMILY_MGGA,
-  {&xc_ref_Furness2018, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Furness2018, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-23,
   0, NULL, NULL,
-  mgga_x_msb_init, NULL,
-  NULL, NULL, work_mgga,
+  dvc_mgga_x_msb_init, NULL,
+  NULL, NULL, dvc_work_mgga,
 };
+
+#pragma omp end declare target

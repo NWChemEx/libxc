@@ -7,12 +7,13 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_HYB_GGA_XC_CAM_B3LYP        433 /* CAM version of B3LYP */
 #define XC_HYB_GGA_XC_TUNED_CAM_B3LYP  434 /* CAM version of B3LYP tuned for excitations*/
 
-void
-xc_hyb_gga_xc_cam_b3lyp_init(xc_func_type *p)
+DEVICE void
+dvc_xc_hyb_gga_xc_cam_b3lyp_init(xc_func_type *p)
 {
   double ac = 0.81;
   static int   funcs_id  [4] = {XC_GGA_X_B88, XC_GGA_X_ITYH, XC_LDA_C_VWN, XC_GGA_C_LYP};
@@ -41,8 +42,11 @@ xc_hyb_gga_xc_cam_b3lyp_init(xc_func_type *p)
     beta  =-0.9201;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr,"Internal error in hyb_gga_xc_cam_b3lyp_init.\n");
     exit(1);
+    #endif
+    break;
   }
 
   funcs_coef[0] = 1.0 - alpha;
@@ -50,37 +54,39 @@ xc_hyb_gga_xc_cam_b3lyp_init(xc_func_type *p)
   funcs_coef[2] = 1.0 - ac;
   funcs_coef[3] = ac;
 
-  xc_mix_init(p, 4, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, 4, funcs_id, funcs_coef);
 
-  xc_func_set_ext_params(p->func_aux[1], &omega);
+  dvc_xc_func_set_ext_params(p->func_aux[1], &omega);
 
   p->cam_omega = omega;
   p->cam_alpha = alpha;
   p->cam_beta  = beta;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_cam_b3lyp = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_cam_b3lyp = {
   XC_HYB_GGA_XC_CAM_B3LYP,
   XC_EXCHANGE_CORRELATION,
   "CAM version of B3LYP",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Yanai2004_51, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Yanai2004_51, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1e-32,
   0, NULL, NULL,
-  xc_hyb_gga_xc_cam_b3lyp_init,
+  dvc_xc_hyb_gga_xc_cam_b3lyp_init,
   NULL, NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_tuned_cam_b3lyp = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_tuned_cam_b3lyp = {
   XC_HYB_GGA_XC_TUNED_CAM_B3LYP,
   XC_EXCHANGE_CORRELATION,
   "CAM version of B3LYP, tuned for excitations and properties",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Okuno2012_29, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Okuno2012_29, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_HAVE_EXC | XC_FLAGS_I_HAVE_VXC,
   1e-32,
   0, NULL, NULL,
-  xc_hyb_gga_xc_cam_b3lyp_init,
+  dvc_xc_hyb_gga_xc_cam_b3lyp_init,
   NULL, NULL, NULL, NULL
 };

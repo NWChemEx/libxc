@@ -7,22 +7,28 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_2D_B86          128 /* Becke 86 Xalpha, beta, gamma                    */
 
-#include "maple2c/gga_exc/gga_x_2d_b86.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_x_2d_b86 = {
+#include "maple2c/gga_exc/gga_x_2d_b86.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_2d_b86 = {
   XC_GGA_X_2D_B86,
   XC_EXCHANGE,
   "Becke 86 in 2D",
   XC_FAMILY_GGA,
-  {&xc_ref_Vilhena2014, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Vilhena2014, NULL, NULL, NULL, NULL},
   XC_FLAGS_2D | XC_FLAGS_I_HAVE_ALL,
   1e-18,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target
 

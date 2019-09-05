@@ -8,12 +8,16 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 
 /* this function converts the spin-density into total density and
 	 relative magnetization */
-/* inline */ void
-xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta)
+
+#pragma omp declare target
+
+DEVICE /* inline */ void
+dvc_xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta)
 {
   if(nspin==XC_UNPOLARIZED){
     *d    = max(rho[0], 0.0);
@@ -31,7 +35,7 @@ xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta)
   }
 }
 
-const char *get_kind(const xc_func_type *func) {
+DEVICE const char *dvc_get_kind(const xc_func_type *func) {
   switch(func->info->kind) {
     case(XC_EXCHANGE):
       return "XC_EXCHANGE";
@@ -51,7 +55,7 @@ const char *get_kind(const xc_func_type *func) {
   }
 }
 
-const char *get_family(const xc_func_type *func) {
+DEVICE const char *dvc_get_family(const xc_func_type *func) {
   switch(func->info->family) {
     case(XC_FAMILY_UNKNOWN):
       return "XC_FAMILY_UNKNOWN";
@@ -85,8 +89,8 @@ const char *get_family(const xc_func_type *func) {
 
 /* this function checks if it should use the default or
    the user assigned value for an external parameter */
-double
-get_ext_param(const func_params_type *params, const double *values, int index)
+DEVICE double
+dvc_get_ext_param(const func_params_type *params, const double *values, int index)
 {
   /* 
      If libxc finds a file in the current directory name
@@ -130,8 +134,8 @@ get_ext_param(const func_params_type *params, const double *values, int index)
    used to move along the input and output arrays.
    We have to pay particular attention to the spin,
    of course. */
-void
-internal_counters_set_lda(int nspin, xc_dimensions *dim)
+DEVICE void
+dvc_internal_counters_set_lda(int nspin, xc_dimensions *dim)
 {
   dim->rho = dim->vrho = nspin;
   dim->zk  = 1;
@@ -143,10 +147,10 @@ internal_counters_set_lda(int nspin, xc_dimensions *dim)
   }
 }
 
-void
-internal_counters_set_gga(int nspin, xc_dimensions *dim)
+DEVICE void
+dvc_internal_counters_set_gga(int nspin, xc_dimensions *dim)
 {
-  internal_counters_set_lda(nspin, dim);
+  dvc_internal_counters_set_lda(nspin, dim);
 
   if(nspin == XC_UNPOLARIZED){
     dim->sigma  = dim->vsigma = 1;
@@ -162,10 +166,10 @@ internal_counters_set_gga(int nspin, xc_dimensions *dim)
   }
 }
 
-void
-internal_counters_set_mgga(int nspin, xc_dimensions *dim)
+DEVICE void
+dvc_internal_counters_set_mgga(int nspin, xc_dimensions *dim)
 {
-  internal_counters_set_gga(nspin, dim);
+  dvc_internal_counters_set_gga(nspin, dim);
 
   dim->lapl = dim->vlapl = nspin;
   dim->tau  = dim->vtau  = nspin;
@@ -196,8 +200,8 @@ internal_counters_set_mgga(int nspin, xc_dimensions *dim)
   }
 }
 
-void
-internal_counters_lda_next
+DEVICE void
+dvc_internal_counters_lda_next
   (
    const xc_dimensions *dim, int offset,
    const double **rho, double **zk,
@@ -211,8 +215,8 @@ internal_counters_lda_next
   if(*v3rho3 != NULL) *v3rho3 += dim->v3rho3 + offset;
 }
 
-void
-internal_counters_lda_prev
+DEVICE void
+dvc_internal_counters_lda_prev
   (
    const xc_dimensions *dim, int offset,
    const double **rho, double **zk,
@@ -226,8 +230,8 @@ internal_counters_lda_prev
   if(*v3rho3 != NULL) *v3rho3 -= dim->v3rho3 + offset;
 }
 
-void
-internal_counters_gga_next
+DEVICE void
+dvc_internal_counters_gga_next
   (
    const xc_dimensions *dim, int offset,
    const double **rho, const double **sigma,
@@ -237,7 +241,7 @@ internal_counters_gga_next
    double **v3rho3, double **v3rho2sigma, double **v3rhosigma2, double **v3sigma3
    )
 {
-  internal_counters_lda_next(dim, offset, rho, zk, vrho, v2rho2, v3rho3);
+  dvc_internal_counters_lda_next(dim, offset, rho, zk, vrho, v2rho2, v3rho3);
 
   *sigma += dim->sigma;
   if(*vrho != NULL) *vsigma += dim->vsigma   + offset;
@@ -252,8 +256,8 @@ internal_counters_gga_next
   }
 }
 
-void
-internal_counters_gga_prev
+DEVICE void
+dvc_internal_counters_gga_prev
   (
    const xc_dimensions *dim, int offset,
    const double **rho, const double **sigma,
@@ -263,7 +267,7 @@ internal_counters_gga_prev
    double **v3rho3, double **v3rho2sigma, double **v3rhosigma2, double **v3sigma3
    )
 {
-  internal_counters_lda_prev(dim, offset, rho, zk, vrho, v2rho2, v3rho3);
+  dvc_internal_counters_lda_prev(dim, offset, rho, zk, vrho, v2rho2, v3rho3);
 
   *sigma -= dim->sigma;
   if(*vrho != NULL) *vsigma -= dim->vsigma   + offset;
@@ -278,13 +282,13 @@ internal_counters_gga_prev
   }
 }
 
-void
-internal_counters_mgga_next
+DEVICE void
+dvc_internal_counters_mgga_next
   (const xc_dimensions *dim, int offset,
    const double **rho, const double **sigma, const double **lapl, const double **tau,
    double **zk, MGGA_OUT_PARAMS_NO_EXC(double **))
 {
-  internal_counters_gga_next(dim, offset, rho, sigma, zk, vrho, vsigma,
+  dvc_internal_counters_gga_next(dim, offset, rho, sigma, zk, vrho, vsigma,
                              v2rho2, v2rhosigma, v2sigma2,
                              v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
 
@@ -330,13 +334,13 @@ internal_counters_mgga_next
   }
 }
 
-void
-internal_counters_mgga_prev
+DEVICE void
+dvc_internal_counters_mgga_prev
   (const xc_dimensions *dim, int offset,
    const double **rho, const double **sigma, const double **lapl, const double **tau,
    double **zk, MGGA_OUT_PARAMS_NO_EXC(double **))
 {
-  internal_counters_gga_prev(dim, offset, rho, sigma, zk, vrho, vsigma,
+  dvc_internal_counters_gga_prev(dim, offset, rho, sigma, zk, vrho, vsigma,
                              v2rho2, v2rhosigma, v2sigma2,
                              v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
 
@@ -377,3 +381,4 @@ internal_counters_mgga_prev
     *v3tau3         -= dim->v3tau3         + offset;
   }
 }
+#pragma omp end declare target

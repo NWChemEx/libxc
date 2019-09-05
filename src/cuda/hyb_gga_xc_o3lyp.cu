@@ -7,14 +7,15 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_HYB_GGA_XC_O3LYP   404 /* hybrid using the optx functional */
 #define XC_HYB_GGA_XC_X3LYP   411 /* hybrid by Xu and Goddard */
 
 
 /*************************************************************/
-static void
-gga_xc_o3lyp_init(xc_func_type *p)
+DEVICE static void
+dvc_gga_xc_o3lyp_init(xc_func_type *p)
 {
   const double a = 0.1161, b = 0.9262, c = 0.8133, CC = 0.81, a1 = 1.05151;
   static int funcs_id[4] = {XC_LDA_X, XC_GGA_X_OPTX, XC_LDA_C_VWN, XC_GGA_C_LYP};
@@ -33,27 +34,28 @@ gga_xc_o3lyp_init(xc_func_type *p)
   funcs_coef[2] = 1.0 - CC;
   funcs_coef[3] = CC;
 
-  xc_mix_init(p, 4, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, 4, funcs_id, funcs_coef);
   p->cam_alpha = a;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_o3lyp = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_o3lyp = {
   XC_HYB_GGA_XC_O3LYP,
   XC_EXCHANGE_CORRELATION,
   "O3LYP",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Cohen2001_607, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Cohen2001_607, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_xc_o3lyp_init,
+  dvc_gga_xc_o3lyp_init,
   NULL, NULL, NULL, NULL
 };
 
 
 /*************************************************************/
-static void
-gga_xc_x3lyp_init(xc_func_type *p)
+DEVICE static void
+dvc_gga_xc_x3lyp_init(xc_func_type *p)
 {
   const double a1=0.765, a2=0.235;
   const double a0=0.218, ax=0.709, ac=0.871;
@@ -67,19 +69,20 @@ gga_xc_x3lyp_init(xc_func_type *p)
   funcs_coef[3] = 1.0 - ac;
   funcs_coef[4] = ac;
 
-  xc_mix_init(p, 5, funcs_id, funcs_coef);
+  dvc_xc_mix_init(p, 5, funcs_id, funcs_coef);
   p->cam_alpha = a0;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_x3lyp = {
+DEVICE
+const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_x3lyp = {
   XC_HYB_GGA_XC_X3LYP,
   XC_EXCHANGE_CORRELATION,
   "X3LYP",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Xu2004_2673, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Xu2004_2673, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
-  gga_xc_x3lyp_init,
+  dvc_gga_xc_x3lyp_init,
   NULL, NULL, NULL, NULL
 };

@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_K_MEYER        57 /* Meyer,  Wang, and Young */
 
-#include "maple2c/gga_exc/gga_k_meyer.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_k_meyer = {
+#include "maple2c/gga_exc/gga_k_meyer.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_k_meyer = {
   XC_GGA_K_MEYER,
   XC_KINETIC,
   "Meyer,  Wang, and Young",
   XC_FAMILY_GGA,
-  {&xc_ref_Meyer1976_898, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Meyer1976_898, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   5e-14,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

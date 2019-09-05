@@ -7,21 +7,27 @@
 */
 
 #include "util.h"
+#include "dvc_util.h"
 
 #define XC_GGA_X_2D_PBE          129 /* Perdew, Burke & Ernzerhof exchange in 2D          */
 
-#include "maple2c/gga_exc/gga_x_2d_pbe.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_x_2d_pbe = {
+#include "maple2c/gga_exc/gga_x_2d_pbe.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_x_2d_pbe = {
   XC_GGA_X_2D_PBE,
   XC_EXCHANGE,
   "Perdew, Burke & Ernzerhof in 2D",
   XC_FAMILY_GGA,
-  {&xc_ref_Vilhena2014, NULL, NULL, NULL, NULL},
+  {&dvc_xc_ref_Vilhena2014, NULL, NULL, NULL, NULL},
   XC_FLAGS_2D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
+
+#pragma omp end declare target

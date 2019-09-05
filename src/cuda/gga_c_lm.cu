@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "dvc_util.h"
 
 /************************************************************************
   This functional is provided for historical reasons.
@@ -16,19 +17,23 @@
 
 #define XC_GGA_C_LM          137 /* Langreth and Mehl correlation          */
 
-#include "maple2c/gga_exc/gga_c_lm.c"
-#include "work_gga_new.c"
+#pragma omp declare target
 
-const xc_func_info_type xc_func_info_gga_c_lm = {
+#include "maple2c/gga_exc/gga_c_lm.c"
+#include "work_gga_new.cu"
+
+DEVICE
+const xc_func_info_type dvc_xc_func_info_gga_c_lm = {
   XC_GGA_C_LM,
   XC_CORRELATION,
   "Langreth & Mehl",
   XC_FAMILY_GGA,
-  {&xc_ref_Langreth1981_446, &xc_ref_Hu1985_391, NULL, NULL, NULL},
+  {&dvc_xc_ref_Langreth1981_446, &dvc_xc_ref_Hu1985_391, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-12,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, dvc_work_gga, NULL
 };
 
+#pragma omp end declare target
