@@ -80,7 +80,7 @@ print OUT <<EOF
 #include "util.h"
 #include "dvc_util.h"
 
-DEVICE xc_functional_key_t xc_functional_keys[] = {
+DEVICE xc_functional_key_t dvc_xc_functional_keys[] = {
 $s4,
 {"", -1}
 };
