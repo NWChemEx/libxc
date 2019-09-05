@@ -13,7 +13,7 @@
 
 #define maple2c_order 3
 
-static inline void
+DEVICE static inline void
 func_unpol(const xc_func_type *p, int order, const double *rho, double *zk, double *vrho, double *v2rho2, double *v3rho3)
 {
   double t1, t2, t3, t4, t5, t6, t7, t8;
@@ -1415,7 +1415,7 @@ func_unpol(const xc_func_type *p, int order, const double *rho, double *zk, doub
 }
 
 
-static inline void
+DEVICE static inline void
 func_ferr(const xc_func_type *p, int order, const double *rho, double *zk, double *vrho, double *v2rho2, double *v3rho3)
 {
   double t1, t2, t3, t4, t5, t6, t7, t8;
@@ -2688,7 +2688,7 @@ func_ferr(const xc_func_type *p, int order, const double *rho, double *zk, doubl
 }
 
 
-static inline void
+DEVICE static inline void
 func_pol(const xc_func_type *p, int order, const double *rho, double *zk, double *vrho, double *v2rho2, double *v3rho3)
 {
   double t1, t2, t3, t4, t5, t6, t7, t8;
