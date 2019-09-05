@@ -54,7 +54,7 @@ foreach $func (@funcs){
       $deflist_f{$key}, $key, $deflist_c{$key};
     }
 
-    $s1 .= "extern DEVICE xc_func_info_type dvc_xc_func_info_$t\n";
+    $s1 .= "extern DEVICE xc_func_info_type dvc_xc_func_info_$t;\n";
     $s2 .= "  &dvc_xc_func_info_$t,\n";
   }
 
