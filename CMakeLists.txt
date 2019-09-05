@@ -879,6 +879,10 @@ if(${BUILD_SHARED_LIBS})
     endif()
 endif()
 
+if(CUDA_FOUND)
+    set_property(TARGET xc PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+endif()
+
 if(ENABLE_FORTRAN OR ENABLE_FORTRAN03)
     enable_language(Fortran)
     include(FortranCInterface)
@@ -917,6 +921,10 @@ execute_process(
     COMMAND ${PERL_EXECUTABLE} scripts/get_funcs.pl ${src_prefix} ${gen_dir}
     TIMEOUT 60
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+execute_process(
+    COMMAND ${PERL_EXECUTABLE} scripts/cuda/get_funcs.pl ${src_prefix} ${gen_dir}
+    TIMEOUT 60
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/cuda)
 
 add_executable(xc-info "${src_prefix}/xc-info.c")
 target_link_libraries(xc-info xc)
