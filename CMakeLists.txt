@@ -136,7 +136,7 @@ message(STATUS "Libxc SO Full ${${PROJECT_NAME}_SOVERSION} Major ${${PROJECT_NAM
 # Always include the CUDA sources. If the language CUDA is not enabled (see enable_language
 # above) then CMake will simply check the CUDA files exist and subsequently ignore them.
 if (CUDA_FOUND)
-set(raw_sources_list
+set(raw_sources_list_device
 cuda/bessel.cu
 cuda/expint_e1.cu
 cuda/func_info.cu
@@ -370,7 +370,8 @@ cuda/mgga_xc_b98.cu
 cuda/mix_func.cu
 cuda/references.cu
 cuda/special_functions.cu
-cuda/util.cu
+cuda/util.cu)
+set(raw_sources_list
 bessel.c
 expint_e1.c
 func_info.c
@@ -850,7 +851,8 @@ endif()
 
 set(src_prefix "src/")
 set(src_prefix_cuda "src/cuda")
-string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list "${raw_sources_list}")
+string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list        "${raw_sources_list}")
+string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list_device "${raw_sources_list_device}")
 
 set(raw_sources_list_f90
     src/xc_f.c
@@ -881,7 +883,17 @@ if(${BUILD_SHARED_LIBS})
 endif()
 
 if(CUDA_FOUND)
-    set_property(TARGET xc PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+    add_library(xc_device ${sources_list_device})
+    target_link_libraries(xc_device INTERFACE ${STANDARD_MATH_LIBRARY})
+    set_target_properties(xc_device PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
+                                               SOVERSION ${${PROJECT_NAME}_SOMAJOR})
+    if(${BUILD_SHARED_LIBS})
+        target_link_libraries(xc_device PRIVATE ${LIBC_INTERJECT})
+        if(APPLE)
+            set_target_properties(xc_device PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+        endif()
+    endif()
+    set_property(TARGET xc_device PROPERTY CUDA_SEPARABLE_COMPILATION ON)
 endif()
 
 if(ENABLE_FORTRAN OR ENABLE_FORTRAN03)
@@ -915,15 +927,18 @@ endif()
 find_package(Perl REQUIRED)
 set(gen_dir      "${PROJECT_BINARY_DIR}/gen_funcidx")
 set(gen_dir_cuda "${PROJECT_BINARY_DIR}/gen_funcidx/cuda")
-file(MAKE_DIRECTORY ${gen_dir_cuda})
+file(MAKE_DIRECTORY ${gen_dir})
 execute_process(
     COMMAND ${PERL_EXECUTABLE} scripts/get_funcs.pl ${src_prefix} ${gen_dir}
     TIMEOUT 60
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-execute_process(
-    COMMAND ${PERL_EXECUTABLE} scripts/cuda/get_funcs.pl ${src_prefix_cuda} ${gen_dir_cuda}
-    TIMEOUT 60
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+if (CUDA_FOUND)
+    file(MAKE_DIRECTORY ${gen_dir_cuda})
+    execute_process(
+        COMMAND ${PERL_EXECUTABLE} scripts/cuda/get_funcs.pl ${src_prefix_cuda} ${gen_dir_cuda}
+        TIMEOUT 60
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+endif()
 
 add_executable(xc-info "${src_prefix}/xc-info.c")
 target_link_libraries(xc-info xc)
