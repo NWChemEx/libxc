@@ -78,6 +78,7 @@ DEVICE double dvc_LambertW(double z)
 	  "Should never happen: execution aborted");
   exit(1);
   #endif
+  return 1.0e300;
 }
 
 /*
