@@ -77,9 +77,10 @@ close DOCS;
 
 open(OUT, ">$builddir/funcs_key.cu") or die("Could not open '$builddir/funcs_key.cu'.\n");
 print OUT <<EOF
-#include "util.cuh"
+#include "util.h"
+#include "dvc_util.h"
 
-xc_functional_key_t xc_functional_keys[] = {
+DEVICE xc_functional_key_t xc_functional_keys[] = {
 $s4,
 {"", -1}
 };
