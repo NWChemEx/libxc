@@ -915,14 +915,7 @@ endif()
 find_package(Perl REQUIRED)
 set(gen_dir      "${PROJECT_BINARY_DIR}/gen_funcidx")
 set(gen_dir_cuda "${PROJECT_BINARY_DIR}/gen_funcidx/cuda")
-execute_process(
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${gen_dir}
-    TIMEOUT 5
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-execute_process(
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${gen_dir_cuda}
-    TIMEOUT 5
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/cuda)
+file(MAKE_DIRECTORY ${gen_dir_cuda})
 execute_process(
     COMMAND ${PERL_EXECUTABLE} scripts/get_funcs.pl ${src_prefix} ${gen_dir}
     TIMEOUT 60
@@ -930,7 +923,7 @@ execute_process(
 execute_process(
     COMMAND ${PERL_EXECUTABLE} scripts/cuda/get_funcs.pl ${src_prefix_cuda} ${gen_dir_cuda}
     TIMEOUT 60
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/cuda)
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 add_executable(xc-info "${src_prefix}/xc-info.c")
 target_link_libraries(xc-info xc)
