@@ -58,7 +58,7 @@ dvc_gga_x_pw86_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_x_pw86.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_pw86 = {
   XC_GGA_X_PW86,
   XC_EXCHANGE,
@@ -72,7 +72,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_pw86 = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_rpw86 = {
   XC_GGA_X_RPW86,
   XC_EXCHANGE,

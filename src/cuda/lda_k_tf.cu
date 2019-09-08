@@ -49,7 +49,7 @@ dvc_lda_k_tf_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_k_tf.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_k_tf = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_k_tf = {
   XC_LDA_K_TF,
   XC_KINETIC,
   "Thomas-Fermi kinetic energy",
@@ -62,7 +62,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_k_tf = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_k_lp = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_k_lp = {
   XC_LDA_K_LP,
   XC_KINETIC,
   "Lee and Parr Gaussian ansatz for the kinetic energy",

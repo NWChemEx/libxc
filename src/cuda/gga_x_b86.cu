@@ -82,16 +82,16 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
   assert(p != NULL && p->params != NULL);
   params = (gga_x_b86_params *) (p->params);
 
-  params->beta  = get_ext_param(p->info->ext_params, ext_params, 0);
-  params->gamma = get_ext_param(p->info->ext_params, ext_params, 1);
-  params->omega = get_ext_param(p->info->ext_params, ext_params, 2);
+  params->beta  = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
+  params->gamma = dvc_get_ext_param(p->info->ext_params, ext_params, 1);
+  params->omega = dvc_get_ext_param(p->info->ext_params, ext_params, 2);
 }
 
 
 #include "maple2c/gga_exc/gga_x_b86.c"
 #include "work_gga_new.cu"
 
-const xc_func_info_type dvc_xc_func_info_gga_x_b86 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_b86 = {
   XC_GGA_X_B86,
   XC_EXCHANGE,
   "Becke 86",
@@ -104,7 +104,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_b86 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_x_b86_mgc = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_b86_mgc = {
   XC_GGA_X_B86_MGC,
   XC_EXCHANGE,
   "Becke 86 with modified gradient correction",
@@ -117,7 +117,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_b86_mgc = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_x_b86_r = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_b86_r = {
   XC_GGA_X_B86_R,
   XC_EXCHANGE,
   "Revised Becke 86 with modified gradient correction",
@@ -131,7 +131,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_b86_r = {
 
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_x_optb86b_vdw = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_optb86b_vdw = {
   XC_GGA_X_OPTB86B_VDW,
   XC_EXCHANGE,
   "Becke 86 reoptimized for use with vdW functional of Dion et al",

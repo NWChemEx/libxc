@@ -20,7 +20,7 @@
 #include "maple2c/lda_exc/lda_c_gk72.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_gk72 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_gk72 = {
   XC_LDA_C_GK72,
   XC_CORRELATION,
   "Gordon and Kim 1972",

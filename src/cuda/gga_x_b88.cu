@@ -54,8 +54,11 @@ dvc_gga_x_b88_init(xc_func_type *p)
     params->gamma = 6.0;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_x_b88\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
@@ -74,15 +77,15 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
   assert(p != NULL && p->params != NULL);
   params = (gga_x_b88_params *) (p->params);
 
-  params->beta  = get_ext_param(p->info->ext_params, ext_params, 0);
-  params->gamma = get_ext_param(p->info->ext_params, ext_params, 1);
+  params->beta  = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
+  params->gamma = dvc_get_ext_param(p->info->ext_params, ext_params, 1);
 }
 
 
 #include "maple2c/gga_exc/gga_x_b88.c"
 #include "work_gga_new.cu"
 
-const xc_func_info_type dvc_xc_func_info_gga_x_b88 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_b88 = {
   XC_GGA_X_B88,
   XC_EXCHANGE,
   "Becke 88",
@@ -95,7 +98,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_b88 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_x_optb88_vdw = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_optb88_vdw = {
   XC_GGA_X_OPTB88_VDW,
   XC_EXCHANGE,
   "opt-Becke 88 for vdW",
@@ -108,7 +111,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_optb88_vdw = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_x_mb88 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_mb88 = {
   XC_GGA_X_MB88,
   XC_EXCHANGE,
   "Modified Becke 88 for proton transfer",
@@ -121,7 +124,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_mb88 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_x_eb88 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_eb88 = {
   XC_GGA_X_EB88,
   XC_EXCHANGE,
   "Non-empirical (excogitated) B88 functional of Becke and Elliott",
@@ -134,7 +137,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_eb88 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_x_b88m = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_b88m = {
   XC_GGA_X_B88M,
   XC_EXCHANGE,
   "Becke 88 reoptimized to be used with tau1",

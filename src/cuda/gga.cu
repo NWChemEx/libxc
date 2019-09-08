@@ -9,8 +9,6 @@
 
 #include "util.h"
 #include "dvc_util.h"
-#include "funcs_gga.cu"
-#include "funcs_hyb_gga.cu"
 
 /* Some useful formulas:
 

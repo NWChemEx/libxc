@@ -89,7 +89,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/mgga_exc/mgga_c_m05.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m05 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m05 = {
   XC_MGGA_C_M05,
   XC_CORRELATION,
   "Minnesota M05 correlation functional",
@@ -103,7 +103,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m05 = {
 };
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m05_2x = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m05_2x = {
   XC_MGGA_C_M05_2X,
   XC_CORRELATION,
   "Minnesota M05-2X correlation functional",
@@ -116,7 +116,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m05_2x = {
   NULL, NULL, dvc_work_mgga
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_dldf = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_dldf = {
   XC_MGGA_C_DLDF,
   XC_CORRELATION,
   "Dispersionless Density Functional",

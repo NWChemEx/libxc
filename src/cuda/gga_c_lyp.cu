@@ -74,7 +74,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/gga_exc/gga_c_lyp.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_lyp = {
   XC_GGA_C_LYP,
   XC_CORRELATION,
@@ -88,7 +88,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_lyp = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_tm_lyp = {
   XC_GGA_C_TM_LYP,
   XC_CORRELATION,

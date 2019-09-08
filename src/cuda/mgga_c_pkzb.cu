@@ -17,7 +17,7 @@
 #include "maple2c/mgga_exc/mgga_c_pkzb.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_pkzb = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_pkzb = {
   XC_MGGA_C_PKZB,
   XC_CORRELATION,
   "Perdew, Kurth, Zupan, and Blaha",

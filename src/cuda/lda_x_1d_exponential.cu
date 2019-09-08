@@ -65,7 +65,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
   params->beta = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_1d_exponential = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_1d_exponential = {
   XC_LDA_X_1D_EXPONENTIAL,
   XC_EXCHANGE,
   "Exchange in 1D for an exponentially screened interaction",

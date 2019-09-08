@@ -28,7 +28,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/lda_exc/lda_c_pmgb06.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pmgb06 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pmgb06 = {
   XC_LDA_C_PMGB06,
   XC_EXCHANGE,
   "Long-range LDA correlation functional",

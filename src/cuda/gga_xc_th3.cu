@@ -67,7 +67,7 @@ dvc_gga_xc_th3_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_xc_th3.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_th3 = {
   XC_GGA_XC_TH3,
   XC_EXCHANGE_CORRELATION,
@@ -81,7 +81,7 @@ const xc_func_info_type dvc_xc_func_info_gga_xc_th3 = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_th4 = {
   XC_GGA_XC_TH4,
   XC_EXCHANGE_CORRELATION,

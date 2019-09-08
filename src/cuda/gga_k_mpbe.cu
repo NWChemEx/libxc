@@ -56,7 +56,7 @@ dvc_gga_k_mpbe_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_k_mpbe.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_k_pbe3 = {
   XC_GGA_K_PBE3,
   XC_KINETIC,
@@ -70,7 +70,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_pbe3 = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_k_pbe4 = {
   XC_GGA_K_PBE4,
   XC_KINETIC,

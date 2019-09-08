@@ -52,7 +52,7 @@ dvc_gga_x_vmt_init(xc_func_type *p)
 #include "work_gga_new.cu"
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_vmt_pbe = {
   XC_GGA_X_VMT_PBE,
   XC_EXCHANGE,
@@ -66,7 +66,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_vmt_pbe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_vmt_ge = {
   XC_GGA_X_VMT_GE,
   XC_EXCHANGE,

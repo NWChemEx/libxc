@@ -22,7 +22,7 @@ dvc_mgga_xc_hle17_init(xc_func_type *p)
   dvc_xc_mix_init(p, 2, funcs_id, funcs_coef);
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_xc_hle17 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_xc_hle17 = {
   XC_MGGA_XC_HLE17,
   XC_EXCHANGE_CORRELATION,
   "high local exchange 2017",

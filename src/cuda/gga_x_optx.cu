@@ -50,7 +50,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/gga_exc/gga_x_optx.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_optx = {
   XC_GGA_X_OPTX,
   XC_EXCHANGE,

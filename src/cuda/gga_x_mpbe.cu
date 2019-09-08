@@ -49,7 +49,7 @@ dvc_gga_x_mpbe_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_x_mpbe.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_mpbe = {
   XC_GGA_X_MPBE,
   XC_EXCHANGE,

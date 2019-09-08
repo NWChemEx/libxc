@@ -17,7 +17,7 @@
 #include "maple2c/lda_exc/lda_c_rc04.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_rc04 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_rc04 = {
   XC_LDA_C_RC04,
   XC_CORRELATION,
   "Ragot-Cortona",

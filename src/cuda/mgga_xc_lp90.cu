@@ -17,7 +17,7 @@
 #include "maple2c/mgga_exc/mgga_xc_lp90.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_xc_lp90 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_xc_lp90 = {
   XC_MGGA_XC_LP90,
   XC_EXCHANGE_CORRELATION,
   "Lee & Parr, Eq. (56)",

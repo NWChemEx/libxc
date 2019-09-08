@@ -58,7 +58,7 @@ dvc_gga_c_wi_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_c_wi.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_wi0 = {
   XC_GGA_C_WI0,
   XC_CORRELATION,
@@ -72,7 +72,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_wi0 = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_wi = {
   XC_GGA_C_WI,
   XC_CORRELATION,

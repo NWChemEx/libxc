@@ -111,7 +111,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
   if(params->T < 1e-8) params->T = 1e-8;
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_ksdt = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_ksdt = {
   XC_LDA_XC_KSDT,
   XC_EXCHANGE_CORRELATION,
   "Karasiev, Sjostrom, Dufty & Trickey",
@@ -124,7 +124,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_ksdt = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_gdsmfb = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_gdsmfb = {
   XC_LDA_XC_GDSMFB,
   XC_EXCHANGE_CORRELATION,
   "Groth, Dornheim, Sjostrom, Malone, Foulkes, Bonitz",

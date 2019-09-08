@@ -37,8 +37,11 @@ dvc_gga_x_fd_lb94_init(xc_func_type *p)
     params->beta = 0.004;
     break;
    default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_x_fd_lb94\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
@@ -73,10 +76,10 @@ static void func1(double *x, int n, void *dummy)
     x[ii] = dvc_FT_inter(1, x[ii]);
 }
 
-#include "maple2c/gga_exc/gga_x_fd_lb94.c"
+#include "maple2c/gga_exc/gga_x_fd_lb94.cu"
 #include "work_gga_new.cu"
 
-const xc_func_info_type dvc_xc_func_info_gga_x_fd_lb94 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_fd_lb94 = {
   XC_GGA_X_FD_LB94,
   XC_EXCHANGE,
   "Functional derivative recovered from the stray LB94 potential",
@@ -89,7 +92,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_fd_lb94 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_x_fd_revlb94 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_x_fd_revlb94 = {
   XC_GGA_X_FD_REVLB94,
   XC_EXCHANGE,
   "Revised FD_LB94",

@@ -16,7 +16,7 @@
 #include "maple2c/lda_exc/lda_c_1d_loos.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_1d_loos = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_1d_loos = {
   XC_LDA_C_1D_LOOS,
   XC_CORRELATION,
   "P-F Loos correlation LDA",

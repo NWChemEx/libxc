@@ -136,7 +136,7 @@ dvc_set_ext_params_PBE(xc_func_type *p, const double *ext_params)
 #include "work_gga_new.cu"
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_pbe = {
   XC_GGA_X_PBE,
   XC_EXCHANGE,
@@ -150,7 +150,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_pbe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_pbe_r = {
   XC_GGA_X_PBE_R,
   XC_EXCHANGE,
@@ -164,7 +164,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_pbe_r = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_pbe_sol = {
   XC_GGA_X_PBE_SOL,
   XC_EXCHANGE,
@@ -178,7 +178,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_pbe_sol = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_xpbe = {
   XC_GGA_X_XPBE,
   XC_EXCHANGE,
@@ -192,7 +192,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_xpbe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_pbe_jsjr = {
   XC_GGA_X_PBE_JSJR,
   XC_EXCHANGE,
@@ -206,7 +206,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_pbe_jsjr = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_pbek1_vdw = {
   XC_GGA_X_PBEK1_VDW,
   XC_EXCHANGE,
@@ -220,7 +220,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_pbek1_vdw = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_apbe = {
   XC_GGA_X_APBE,
   XC_EXCHANGE,
@@ -234,7 +234,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_apbe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_pbe_tca = {
   XC_GGA_X_PBE_TCA,
   XC_EXCHANGE,
@@ -272,7 +272,7 @@ dvc_set_ext_params_N(xc_func_type *p, const double *ext_params)
 }
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_lambda_lo_n = {
   XC_GGA_X_LAMBDA_LO_N,
   XC_EXCHANGE,
@@ -286,7 +286,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_lambda_lo_n = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_lambda_ch_n = {
   XC_GGA_X_LAMBDA_CH_N,
   XC_EXCHANGE,
@@ -300,7 +300,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_lambda_ch_n = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_lambda_oc2_n = {
   XC_GGA_X_LAMBDA_OC2_N,
   XC_EXCHANGE,
@@ -314,7 +314,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_lambda_oc2_n = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_pbe_mol = {
   XC_GGA_X_PBE_MOL,
   XC_EXCHANGE,
@@ -328,7 +328,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_pbe_mol = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_bcgp = {
   XC_GGA_X_BCGP,
   XC_EXCHANGE,
@@ -342,7 +342,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_bcgp = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_pbefe = {
   XC_GGA_X_PBEFE,
   XC_EXCHANGE,

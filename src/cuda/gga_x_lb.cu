@@ -179,7 +179,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 }
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_lb = {
   XC_GGA_X_LB,
   XC_EXCHANGE,
@@ -194,7 +194,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_lb = {
 };
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_lbm = {
   XC_GGA_X_LBM,
   XC_EXCHANGE,

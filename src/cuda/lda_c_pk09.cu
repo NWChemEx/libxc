@@ -16,7 +16,7 @@
 #include "maple2c/lda_exc/lda_c_pk09.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pk09 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pk09 = {
   XC_LDA_C_PK09,
   XC_CORRELATION,
   "Proynov and Kong 2009",

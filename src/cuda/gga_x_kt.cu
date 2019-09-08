@@ -50,7 +50,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/gga_exc/gga_x_kt.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_kt1 = {
   XC_GGA_X_KT1,
   XC_EXCHANGE,
@@ -75,7 +75,7 @@ dvc_gga_xc_kt1_init(xc_func_type *p)
   dvc_xc_mix_init(p, 2, funcs_id, funcs_coef);  
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_kt1 = {
   XC_GGA_XC_KT1,
   XC_EXCHANGE_CORRELATION,
@@ -100,7 +100,7 @@ dvc_gga_xc_kt2_init(xc_func_type *p)
   dvc_xc_mix_init(p, 3, funcs_id, funcs_coef);  
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_kt2 = {
   XC_GGA_XC_KT2,
   XC_EXCHANGE_CORRELATION,
@@ -140,7 +140,7 @@ dvc_gga_xc_kt3_init(xc_func_type *p)
   dvc_set_ext_params(p->func_aux[2], par_kt);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_kt3 = {
   XC_GGA_XC_KT3,
   XC_EXCHANGE_CORRELATION,

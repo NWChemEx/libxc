@@ -58,8 +58,11 @@ foreach $func (@funcs){
     $s2 .= "  &dvc_xc_func_info_$t,\n";
   }
 
-  open(OUT, ">$builddir/funcs_$func.cu") or die("Could not open '$builddir/funcs_$func.cu'.\n");
+  open(OUT, ">$builddir/funcs_$func.h") or die("Could not open '$builddir/funcs_$func.h'.\n");
   print OUT <<EOF
+#ifndef FUNCS_${func}_H
+#define FUNCS_${func}_H
+
 #include "util.h"
 #include "dvc_util.h"
 
@@ -68,6 +71,8 @@ $s1
 DEVICE const xc_func_info_type *dvc_xc_${func}_known_funct[] = {
 $s2  NULL
 };
+
+#endif
 EOF
     ;
   close OUT;
@@ -75,8 +80,11 @@ EOF
 
 close DOCS;
 
-open(OUT, ">$builddir/funcs_key.cu") or die("Could not open '$builddir/funcs_key.cu'.\n");
+open(OUT, ">$builddir/funcs_key.h") or die("Could not open '$builddir/funcs_key.h'.\n");
 print OUT <<EOF
+#ifndef FUNCS_KEY_H
+#define FUNCS_KEY_H
+
 #include "util.h"
 #include "dvc_util.h"
 
@@ -84,6 +92,8 @@ DEVICE xc_functional_key_t dvc_xc_functional_keys[] = {
 $s4,
 {"", -1}
 };
+
+#endif
 EOF
 ;
 

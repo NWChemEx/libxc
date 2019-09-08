@@ -16,7 +16,7 @@
 #include "maple2c/gga_exc/gga_c_gaploc.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_gaploc = {
   XC_GGA_C_GAPLOC,
   XC_CORRELATION,

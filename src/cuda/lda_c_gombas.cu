@@ -20,7 +20,7 @@
 #include "maple2c/lda_exc/lda_c_gombas.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_gombas = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_gombas = {
   XC_LDA_C_GOMBAS,
   XC_CORRELATION,
   "Gombas",

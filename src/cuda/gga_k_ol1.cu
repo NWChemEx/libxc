@@ -16,7 +16,7 @@
 #include "maple2c/gga_exc/gga_k_ol1.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_k_ol1 = {
   XC_GGA_K_OL1,
   XC_KINETIC,

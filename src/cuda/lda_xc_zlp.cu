@@ -17,7 +17,7 @@
 #include "maple2c/lda_exc/lda_xc_zlp.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_zlp = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_zlp = {
   XC_LDA_XC_ZLP,
   XC_EXCHANGE_CORRELATION,
   "Zhao, Levy & Parr, Eq. (20)",

@@ -18,7 +18,7 @@
 #include "maple2c/gga_exc/gga_c_zvpbeloc.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_zvpbeloc = {
   XC_GGA_C_ZVPBELOC,
   XC_CORRELATION,
@@ -44,7 +44,7 @@ dvc_xc_hyb_gga_xc_apbe0_init(xc_func_type *p)
 }
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_apbe0 = {
   XC_HYB_GGA_XC_APBE0,
   XC_EXCHANGE_CORRELATION,
@@ -70,7 +70,7 @@ dvc_xc_hyb_gga_xc_hapbe_init(xc_func_type *p)
 }
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_hapbe = {
   XC_HYB_GGA_XC_HAPBE,
   XC_EXCHANGE_CORRELATION,

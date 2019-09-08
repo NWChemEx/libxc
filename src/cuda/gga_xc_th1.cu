@@ -100,7 +100,7 @@ dvc_gga_xc_th1_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_xc_th1.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_th_fl = {
   XC_GGA_XC_TH_FL,
   XC_EXCHANGE_CORRELATION,
@@ -114,7 +114,7 @@ const xc_func_info_type dvc_xc_func_info_gga_xc_th_fl = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_th_fc = {
   XC_GGA_XC_TH_FC,
   XC_EXCHANGE_CORRELATION,
@@ -128,7 +128,7 @@ const xc_func_info_type dvc_xc_func_info_gga_xc_th_fc = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_th_fcfo = {
   XC_GGA_XC_TH_FCFO,
   XC_EXCHANGE_CORRELATION,
@@ -142,7 +142,7 @@ const xc_func_info_type dvc_xc_func_info_gga_xc_th_fcfo = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_th_fco = {
   XC_GGA_XC_TH_FCO,
   XC_EXCHANGE_CORRELATION,
@@ -156,7 +156,7 @@ const xc_func_info_type dvc_xc_func_info_gga_xc_th_fco = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_th1 = {
   XC_GGA_XC_TH1,
   XC_EXCHANGE_CORRELATION,

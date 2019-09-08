@@ -19,7 +19,7 @@
 #include "maple2c/mgga_exc/mgga_x_mk00.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mk00 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mk00 = {
   XC_MGGA_X_MK00,
   XC_EXCHANGE,
   "Exchange for accurate virtual orbital energies",
@@ -46,7 +46,7 @@ dvc_mgga_x_mk00b_init(xc_func_type *p)
   dvc_xc_func_set_ext_params(p->func_aux[1], par_x_b88);
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mk00b = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mk00b = {
   XC_MGGA_X_MK00B,
   XC_EXCHANGE,
   "Exchange for accurate virtual orbital energies (v. B)",

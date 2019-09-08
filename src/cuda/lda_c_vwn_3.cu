@@ -16,7 +16,7 @@
 #include "maple2c/lda_exc/lda_c_vwn_3.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_vwn_3 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_vwn_3 = {
   XC_LDA_C_VWN_3,
   XC_CORRELATION,
   "Vosko, Wilk & Nusair (VWN3)",

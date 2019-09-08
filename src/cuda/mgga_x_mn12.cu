@@ -126,7 +126,7 @@ dvc_mgga_x_mn12_init(xc_func_type *p)
 #include "work_mgga_new.cu"
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mn12_l = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mn12_l = {
   XC_MGGA_X_MN12_L,
   XC_EXCHANGE,
   "Minnesota MN12-L exchange functional",
@@ -139,7 +139,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mn12_l = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_mn12_sx = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_mn12_sx = {
   XC_HYB_MGGA_X_MN12_SX,
   XC_EXCHANGE,
   "Minnesota MN12-SX hybrid exchange functional",
@@ -152,7 +152,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_mn12_sx = {
   NULL, NULL, dvc_work_mgga
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mn15_l = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mn15_l = {
   XC_MGGA_X_MN15_L,
   XC_EXCHANGE,
   "Minnesota MN15-L exchange functional",
@@ -165,7 +165,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mn15_l = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_mn15 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_mn15 = {
   XC_HYB_MGGA_X_MN15,
   XC_EXCHANGE,
   "Minnesota MN15 hybrid exchange functional",

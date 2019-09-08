@@ -21,7 +21,7 @@ dvc_mgga_x_dldf_init(xc_func_type *p)
 #include "maple2c/mgga_exc/hyb_mgga_x_dldf.c"
 #include "work_mgga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_dldf = {
   XC_HYB_MGGA_X_DLDF,
   XC_EXCHANGE,

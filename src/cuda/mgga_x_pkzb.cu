@@ -18,7 +18,7 @@
 #include "work_mgga_new.cu"
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_pkzb = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_pkzb = {
   XC_MGGA_X_PKZB,
   XC_EXCHANGE,
   "Perdew, Kurth, Zupan, and Blaha",

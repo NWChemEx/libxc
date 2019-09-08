@@ -72,7 +72,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/mgga_exc/mgga_x_mvsb.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mvsb = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mvsb = {
   XC_MGGA_X_MVSB,
   XC_EXCHANGE,
   "MVSbeta exchange by Furness and Sun",
@@ -85,7 +85,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mvsb = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mvsbs = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mvsbs = {
   XC_MGGA_X_MVSBS,
   XC_EXCHANGE,
   "MVSbeta* exchange by Furness and Sun",

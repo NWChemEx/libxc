@@ -16,7 +16,7 @@
 #include "maple2c/lda_exc/lda_xc_bn05.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_bn05 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_bn05 = {
   XC_LDA_XC_BN05,
   XC_EXCHANGE_CORRELATION,
   "Baer and Neuhauser, gamma=1",

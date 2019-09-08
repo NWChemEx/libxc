@@ -19,7 +19,7 @@
 #include "work_gga_new.cu"
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_beefvdw = {
   XC_GGA_X_BEEFVDW,
   XC_EXCHANGE,
@@ -44,7 +44,7 @@ dvc_gga_xc_beefvdw_init(xc_func_type *p)
   dvc_xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_beefvdw = {
   XC_GGA_XC_BEEFVDW,
   XC_EXCHANGE_CORRELATION,

@@ -27,7 +27,7 @@ dvc_mgga_xc_otpss_d_init(xc_func_type *p)
   dvc_xc_func_set_ext_params(p->func_aux[1], par_c_tpss);
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_xc_otpss_d = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_xc_otpss_d = {
   XC_MGGA_XC_OTPSS_D,
   XC_EXCHANGE_CORRELATION,
   "oTPSS-D functional of Goerigk and Grimme",

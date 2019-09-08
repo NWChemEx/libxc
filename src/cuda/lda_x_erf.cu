@@ -29,7 +29,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/lda_exc/lda_x_erf.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_erf = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_erf = {
   XC_LDA_X_ERF,
   XC_EXCHANGE,
   "Attenuated exchange LDA (erf)",

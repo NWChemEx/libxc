@@ -168,7 +168,7 @@ dvc_mgga_c_m08_init(xc_func_type *p)
 #include "work_mgga_new.cu"
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m08_hx = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m08_hx = {
   XC_MGGA_C_M08_HX,
   XC_CORRELATION,
   "Minnesota M08 correlation functional",
@@ -181,7 +181,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m08_hx = {
   NULL, NULL, dvc_work_mgga
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m08_so = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m08_so = {
   XC_MGGA_C_M08_SO,
   XC_CORRELATION,
   "Minnesota M08-SO correlation functional",
@@ -194,7 +194,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m08_so = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m11 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m11 = {
   XC_MGGA_C_M11,
   XC_CORRELATION,
   "Minnesota M11 correlation functional",
@@ -207,7 +207,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m11 = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m11_l = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m11_l = {
   XC_MGGA_C_M11_L,
   XC_CORRELATION,
   "Minnesota M11-L correlation functional",
@@ -220,7 +220,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_m11_l = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn12_l = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn12_l = {
   XC_MGGA_C_MN12_L,
   XC_CORRELATION,
   "Minnesota MN12-L correlation functional",
@@ -233,7 +233,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn12_l = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn12_sx = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn12_sx = {
   XC_MGGA_C_MN12_SX,
   XC_CORRELATION,
   "Minnesota MN12-SX correlation functional",
@@ -246,7 +246,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn12_sx = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn15_l = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn15_l = {
   XC_MGGA_C_MN15_L,
   XC_CORRELATION,
   "Minnesota MN15-L correlation functional",
@@ -259,7 +259,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn15_l = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn15 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn15 = {
   XC_MGGA_C_MN15,
   XC_CORRELATION,
   "Minnesota MN15 correlation functional",
@@ -272,7 +272,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_mn15 = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revm11 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revm11 = {
   XC_MGGA_C_REVM11,
   XC_CORRELATION,
   "Revised Minnesota M11 correlation functional",

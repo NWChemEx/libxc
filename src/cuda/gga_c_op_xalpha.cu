@@ -17,7 +17,7 @@
 #include "maple2c/gga_exc/gga_c_op_xalpha.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_op_xalpha = {
   XC_GGA_C_OP_XALPHA,
   XC_CORRELATION,

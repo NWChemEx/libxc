@@ -52,7 +52,7 @@ dvc_mgga_x_msb_init(xc_func_type *p)
 #include "maple2c/mgga_exc/mgga_x_msb.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms2b = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms2b = {
   XC_MGGA_X_MS2B,
   XC_EXCHANGE,
   "MS2beta exchange of Furness and Sun",
@@ -65,7 +65,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms2b = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms2bs = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms2bs = {
   XC_MGGA_X_MS2BS,
   XC_EXCHANGE,
   "MS2beta* exchange of Furness and Sun",

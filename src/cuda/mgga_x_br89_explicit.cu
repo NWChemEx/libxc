@@ -64,7 +64,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/mgga_exc/mgga_x_br89_explicit.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89_explicit = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89_explicit = {
   XC_MGGA_X_BR89_EXPLICIT,
   XC_EXCHANGE,
   "Becke-Roussel 89 with an explicit inversion of x(y), gamma = 0.8",
@@ -77,7 +77,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89_explicit = {
   NULL, NULL, dvc_work_mgga
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89_explicit_1 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89_explicit_1 = {
   XC_MGGA_X_BR89_EXPLICIT_1,
   XC_EXCHANGE,
   "Becke-Roussel 89 with an explicit inversion of x(y), gamma = 1.0",

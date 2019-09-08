@@ -62,15 +62,18 @@ dvc_gga_k_apbe_init(xc_func_type *p)
     params->mu    = 0.23889;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_k_apbe\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/gga_exc/gga_k_apbe.c"
 #include "work_gga_new.cu"
 
-const xc_func_info_type dvc_xc_func_info_gga_k_apbe = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_apbe = {
   XC_GGA_K_APBE,
   XC_KINETIC,
   "mu fixed from the semiclassical neutral atom",
@@ -83,7 +86,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_apbe = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_revapbe = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_revapbe = {
   XC_GGA_K_REVAPBE,
   XC_KINETIC,
   "revised APBE",
@@ -96,7 +99,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_revapbe = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_tw1 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_tw1 = {
   XC_GGA_K_TW1,
   XC_KINETIC,
   "Tran and Wesolowski set 1 (Table II)",
@@ -109,7 +112,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_tw1 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_tw2 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_tw2 = {
   XC_GGA_K_TW2,
   XC_KINETIC,
   "Tran and Wesolowski set 2 (Table II)",
@@ -122,7 +125,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_tw2 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_tw3 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_tw3 = {
   XC_GGA_K_TW3,
   XC_KINETIC,
   "Tran and Wesolowski set 3 (Table II)",
@@ -135,7 +138,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_tw3 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_tw4 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_tw4 = {
   XC_GGA_K_TW4,
   XC_KINETIC,
   "Tran and Wesolowski set 4 (Table II)",

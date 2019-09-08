@@ -112,7 +112,7 @@ dvc_lda_c_pw_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_c_pw.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw = {
   XC_LDA_C_PW,
   XC_CORRELATION,
   "Perdew & Wang",
@@ -128,7 +128,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw = {
   NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw_mod = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw_mod = {
   XC_LDA_C_PW_MOD,
   XC_CORRELATION,
   "Perdew & Wang (modified)",
@@ -144,7 +144,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw_mod = {
   NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ob_pw = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ob_pw = {
   XC_LDA_C_OB_PW,
   XC_CORRELATION,
   "Ortiz & Ballone (PW parametrization)",
@@ -160,7 +160,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ob_pw = {
   NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw_rpa = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pw_rpa = {
   XC_LDA_C_PW_RPA,
   XC_CORRELATION,
   "Perdew & Wang (fit to the RPA energy)",

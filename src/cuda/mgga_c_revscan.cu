@@ -18,7 +18,7 @@
 #include "maple2c/mgga_exc/mgga_c_revscan.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revscan = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revscan = {
   XC_MGGA_C_REVSCAN,
   XC_CORRELATION,
   "revised SCAN",
@@ -43,7 +43,7 @@ dvc_mgga_c_revscan_vv10_init(xc_func_type *p)
   p->nlc_C = 0.0093;
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revscan_vv10 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revscan_vv10 = {
   XC_MGGA_C_REVSCAN_VV10,
   XC_CORRELATION,
   "REVSCAN + VV10 correlation",

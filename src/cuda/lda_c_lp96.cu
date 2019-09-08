@@ -49,7 +49,7 @@ dvc_lda_c_lp96_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_c_lp96.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_lp96 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_lp96 = {
   XC_LDA_C_LP96,
   XC_CORRELATION,
   "Liu-Parr correlation",
@@ -62,7 +62,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_lp96 = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_k_lp96 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_k_lp96 = {
   XC_LDA_K_LP96,
   XC_KINETIC,
   "Liu-Parr kinetic",

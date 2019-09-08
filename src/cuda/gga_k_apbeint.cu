@@ -43,15 +43,18 @@ dvc_gga_k_apbe_init(xc_func_type *p)
     params->muGE  = 5.0/27.0;
     break;
   default:
+    #ifndef __CUDACC__
     fprintf(stderr, "Internal error in gga_k_apbeint\n");
     exit(1);
+    #endif
+    break;
   }
 }
 
 #include "maple2c/gga_exc/gga_k_apbeint.c"
 #include "work_gga_new.cu"
 
-const xc_func_info_type dvc_xc_func_info_gga_k_apbeint = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_apbeint = {
   XC_GGA_K_APBEINT,
   XC_KINETIC,
   "interpolated version of APBE",
@@ -64,7 +67,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_apbeint = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_revapbeint = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_revapbeint = {
   XC_GGA_K_REVAPBEINT,
   XC_KINETIC,
   "interpolated version of revAPBE",

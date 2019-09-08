@@ -92,7 +92,7 @@ dvc_lda_c_pz_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_c_pz.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pz = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pz = {
   XC_LDA_C_PZ,
   XC_CORRELATION,
   "Perdew & Zunger",
@@ -105,7 +105,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pz = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pz_mod = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pz_mod = {
   XC_LDA_C_PZ_MOD,
   XC_CORRELATION,
   "Perdew & Zunger (Modified)",
@@ -118,7 +118,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_pz_mod = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ob_pz = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ob_pz = {
   XC_LDA_C_OB_PZ,
   XC_CORRELATION,
   "Ortiz & Ballone (PZ parametrization)",

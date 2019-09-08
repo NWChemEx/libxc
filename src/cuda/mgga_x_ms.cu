@@ -77,7 +77,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "work_mgga_new.cu"
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms0 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms0 = {
   XC_MGGA_X_MS0,
   XC_EXCHANGE,
   "MS exchange of Sun, Xiao, and Ruzsinszky",
@@ -90,7 +90,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms0 = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms1 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms1 = {
   XC_MGGA_X_MS1,
   XC_EXCHANGE,
   "MS1 exchange of Sun, et al",
@@ -103,7 +103,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms1 = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms2 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_ms2 = {
   XC_MGGA_X_MS2,
   XC_EXCHANGE,
   "MS2 exchange of Sun, et al",
@@ -126,7 +126,7 @@ dvc_hyb_mgga_x_ms2h_init(xc_func_type *p)
   p->cam_alpha = 0.09;
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_ms2h = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_ms2h = {
   XC_HYB_MGGA_X_MS2H,
   XC_EXCHANGE,
   "MS2 hybrid exchange of Sun, et al",

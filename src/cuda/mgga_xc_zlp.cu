@@ -17,7 +17,7 @@
 #include "maple2c/mgga_exc/mgga_xc_zlp.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_xc_zlp = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_xc_zlp = {
   XC_MGGA_XC_ZLP,
   XC_EXCHANGE_CORRELATION,
   "Zhao, Levy & Parr, Eq. (21)",

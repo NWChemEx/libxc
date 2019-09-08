@@ -62,7 +62,7 @@ dvc_lda_c_hl_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_c_hl.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_hl = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_hl = {
   XC_LDA_C_HL,
   XC_CORRELATION,
   "Hedin & Lundqvist",
@@ -75,7 +75,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_hl = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_gl = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_gl = {
   XC_LDA_C_GL,
   XC_CORRELATION,
   "Gunnarson & Lundqvist",
@@ -88,7 +88,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_gl = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_vbh = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_vbh = {
   XC_LDA_C_vBH,
   XC_CORRELATION,
   "von Barth & Hedin",

@@ -17,7 +17,7 @@
 #include "maple2c/mgga_exc/mgga_x_vt84.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_vt84 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_vt84 = {
   XC_MGGA_X_VT84,
   XC_EXCHANGE,
   "meta-GGA version of VT{8,4} GGA",

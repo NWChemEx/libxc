@@ -52,7 +52,7 @@ dvc_lda_c_chachiyo_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_c_chachiyo.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_chachiyo = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_chachiyo = {
   XC_LDA_C_CHACHIYO,
   XC_CORRELATION,
   "Chachiyo simple 2 parameter correlation",
@@ -65,7 +65,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_chachiyo = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_karasiev = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_karasiev = {
   XC_LDA_C_KARASIEV,
   XC_CORRELATION,
   "Karasiev reparameterization of Chachiyo",

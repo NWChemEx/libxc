@@ -17,7 +17,7 @@
 #include "maple2c/lda_exc/lda_xc_teter93.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_teter93 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_teter93 = {
   XC_LDA_XC_TETER93,
   XC_EXCHANGE_CORRELATION,
   "Teter 93",

@@ -49,7 +49,7 @@ dvc_gga_c_zpbeint_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_c_zpbeint.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_zpbeint = {
   XC_GGA_C_ZPBEINT,
   XC_CORRELATION,
@@ -63,7 +63,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_zpbeint = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_zpbesol = {
   XC_GGA_C_ZPBESOL,
   XC_CORRELATION,

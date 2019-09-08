@@ -94,7 +94,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/mgga_exc/mgga_x_tpss.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_tpss = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_tpss = {
   XC_MGGA_X_TPSS,
   XC_EXCHANGE,
   "Tao, Perdew, Staroverov & Scuseria",
@@ -107,7 +107,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_tpss = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_modtpss = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_modtpss = {
   XC_MGGA_X_MODTPSS,
   XC_EXCHANGE,
   "Modified Tao, Perdew, Staroverov & Scuseria",
@@ -120,7 +120,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_modtpss = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_revtpss = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_revtpss = {
   XC_MGGA_X_REVTPSS,
   XC_EXCHANGE,
   "revised Tao, Perdew, Staroverov & Scuseria",
@@ -133,7 +133,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_revtpss = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_bloc = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_bloc = {
   XC_MGGA_X_BLOC,
   XC_EXCHANGE,
   "functional with balanced localization",

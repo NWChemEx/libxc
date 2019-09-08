@@ -17,7 +17,7 @@
 #include "maple2c/mgga_exc/mgga_c_kcis.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_kcis = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_kcis = {
   XC_MGGA_C_KCIS,
   XC_CORRELATION,
   "Krieger, Chen, Iafrate, and Savin",
@@ -41,7 +41,7 @@ dvc_xc_hyb_mgga_xc_b0kcis_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_b0kcis = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_b0kcis = {
   XC_HYB_MGGA_XC_B0KCIS,
   XC_EXCHANGE_CORRELATION,
   "Hybrid based on KCIS",

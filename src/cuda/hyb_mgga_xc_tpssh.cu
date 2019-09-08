@@ -22,7 +22,7 @@ dvc_hyb_mgga_xc_tpssh_init(xc_func_type *p)
   p->cam_alpha = 0.10;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_tpssh = {
   XC_HYB_MGGA_XC_TPSSH,
   XC_EXCHANGE_CORRELATION,
@@ -47,7 +47,7 @@ dvc_hyb_mgga_xc_revtpssh_init(xc_func_type *p)
   p->cam_alpha = 0.10;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_revtpssh = {
   XC_HYB_MGGA_XC_REVTPSSH,
   XC_EXCHANGE_CORRELATION,

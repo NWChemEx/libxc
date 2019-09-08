@@ -49,7 +49,7 @@ dvc_lda_c_ml1_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_c_ml1.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ml1 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ml1 = {
   XC_LDA_C_ML1,
   XC_CORRELATION,
   "Modified LSD (version 1) of Proynov and Salahub",
@@ -62,7 +62,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ml1 = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ml2 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ml2 = {
   XC_LDA_C_ML2,
   XC_CORRELATION,
   "Modified LSD (version 2) of Proynov and Salahub",

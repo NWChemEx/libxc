@@ -113,7 +113,7 @@ dvc_gga_k_dk_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_k_dk.c"
 #include "work_gga_new.cu"
 
-const xc_func_info_type dvc_xc_func_info_gga_k_dk = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_dk = {
   XC_GGA_K_DK,
   XC_KINETIC,
   "DePristo and Kress",
@@ -126,7 +126,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_dk = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_perdew = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_perdew = {
   XC_GGA_K_PERDEW,
   XC_KINETIC,
   "Perdew",
@@ -139,7 +139,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_perdew = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_vsk = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_vsk = {
   XC_GGA_K_VSK,
   XC_KINETIC,
   "Vitos, Skriver, and Kollar",
@@ -152,7 +152,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_vsk = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_vjks = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_vjks = {
   XC_GGA_K_VJKS,
   XC_KINETIC,
   "Vitos, Johansson, Kollar, and Skriver",
@@ -165,7 +165,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_vjks = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_ernzerhof = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_ernzerhof = {
   XC_GGA_K_ERNZERHOF,
   XC_KINETIC,
   "Ernzerhof",

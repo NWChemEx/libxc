@@ -107,7 +107,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 }
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_1d_csc = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_1d_csc = {
   XC_LDA_C_1D_CSC,
   XC_CORRELATION,
   "Casula, Sorella & Senatore",

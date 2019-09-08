@@ -50,7 +50,7 @@ dvc_lda_x_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_x.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_x = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_x = {
   XC_LDA_X,
   XC_EXCHANGE,
   "Slater exchange",
@@ -78,7 +78,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
   params->alpha = 1.5*dvc_get_ext_param(p->info->ext_params, ext_params, 0) - 1.0;
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_xalpha = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_xalpha = {
   XC_LDA_C_XALPHA,
   XC_CORRELATION,
   "Slater's Xalpha",
@@ -112,7 +112,7 @@ dvc_N_set_ext_params(xc_func_type *p, const double *ext_params)
   params->alpha = 1.0 - 8.0/3.0*dx + 2.0*dx2 - dx2*dx2/3.0;
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_rae = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_rae = {
   XC_LDA_X_RAE,
   XC_EXCHANGE,
   "Rae self-energy corrected exchange",

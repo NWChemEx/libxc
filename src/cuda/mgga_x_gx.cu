@@ -17,7 +17,7 @@
 #include "maple2c/mgga_exc/mgga_x_gx.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_gx = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_gx = {
   XC_MGGA_X_GX,
   XC_EXCHANGE,
   "GX functional of Loos",

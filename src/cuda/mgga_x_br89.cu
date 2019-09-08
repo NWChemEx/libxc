@@ -291,7 +291,7 @@ func(const xc_func_type *pt, xc_mgga_work_x_t *r)
 
 #include "work_mgga_x.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89 = {
   XC_MGGA_X_BR89,
   XC_EXCHANGE,
   "Becke-Roussel 89, gamma = 0.8",
@@ -305,7 +305,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89 = {
   dvc_work_mgga_x,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89_1 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89_1 = {
   XC_MGGA_X_BR89_1,
   XC_EXCHANGE,
   "Becke-Roussel 89, gamma = 1.0",
@@ -319,7 +319,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_br89_1 = {
   dvc_work_mgga_x,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_bj06 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_bj06 = {
   XC_MGGA_X_BJ06,
   XC_EXCHANGE,
   "Becke & Johnson 06",
@@ -347,7 +347,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
   params->c = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_tb09 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_tb09 = {
   XC_MGGA_X_TB09,
   XC_EXCHANGE,
   "Tran & Blaha 09",
@@ -360,7 +360,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_tb09 = {
   NULL, NULL, dvc_work_mgga_x,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_rpp09 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_rpp09 = {
   XC_MGGA_X_RPP09,
   XC_EXCHANGE,
   "Rasanen, Pittalis & Proetto 09",
@@ -373,7 +373,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_rpp09 = {
   NULL, NULL, dvc_work_mgga_x,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_b00 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_b00 = {
   XC_MGGA_X_B00,
   XC_EXCHANGE,
   "Becke 2000",

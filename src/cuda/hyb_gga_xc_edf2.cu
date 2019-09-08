@@ -27,7 +27,7 @@ dvc_hyb_gga_xc_edf2_init(xc_func_type *p)
   p->cam_alpha = 0.1695;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_edf2 = {
   XC_HYB_GGA_XC_EDF2,
   XC_EXCHANGE_CORRELATION,

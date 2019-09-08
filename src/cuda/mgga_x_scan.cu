@@ -52,7 +52,7 @@ dvc_mgga_x_scan_init(xc_func_type *p)
 #include "maple2c/mgga_exc/mgga_x_scan.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_scan = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_scan = {
   XC_MGGA_X_SCAN,
   XC_EXCHANGE,
   "SCAN exchange of Sun, Ruzsinszky, and Perdew",
@@ -65,7 +65,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_scan = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_revscan = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_revscan = {
   XC_MGGA_X_REVSCAN,
   XC_EXCHANGE,
   "revised SCAN",
@@ -89,7 +89,7 @@ dvc_hyb_mgga_x_scan0_init(xc_func_type *p)
 }
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_scan0 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_scan0 = {
   XC_HYB_MGGA_X_SCAN0,
   XC_EXCHANGE,
   "SCAN hybrid exchange (SCAN0)",
@@ -114,7 +114,7 @@ dvc_hyb_mgga_x_revscan0_init(xc_func_type *p)
 }
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_revscan0 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_revscan0 = {
   XC_HYB_MGGA_X_REVSCAN0,
   XC_EXCHANGE,
   "revised SCAN hybrid exchange (SCAN0)",

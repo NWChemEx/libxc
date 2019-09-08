@@ -17,7 +17,7 @@
 #include "maple2c/gga_exc/gga_x_cap.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_cap = {
   XC_GGA_X_CAP,
   XC_EXCHANGE,
@@ -46,7 +46,7 @@ dvc_xc_hyb_gga_xc_cap0_init(xc_func_type *p)
   p->cam_alpha = 0.75;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_cap0 = {
   XC_HYB_GGA_XC_CAP0,
   XC_EXCHANGE_CORRELATION,

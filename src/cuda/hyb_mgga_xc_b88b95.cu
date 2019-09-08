@@ -32,7 +32,7 @@ dvc_xc_hyb_mgga_xc_b88b95_init(xc_func_type *p)
   p->cam_alpha = 0.28;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_b88b95 = {
   XC_HYB_MGGA_XC_B88B95,
   XC_EXCHANGE_CORRELATION,
@@ -58,7 +58,7 @@ dvc_xc_hyb_mgga_xc_b86b95_init(xc_func_type *p)
   p->cam_alpha = 0.28;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_b86b95 = {
   XC_HYB_MGGA_XC_B86B95,
   XC_EXCHANGE_CORRELATION,
@@ -84,7 +84,7 @@ dvc_xc_hyb_mgga_xc_pw86b95_init(xc_func_type *p)
   p->cam_alpha = 0.29;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_pw86b95 = {
   XC_HYB_MGGA_XC_PW86B95,
   XC_EXCHANGE_CORRELATION,
@@ -110,7 +110,7 @@ dvc_xc_hyb_mgga_xc_bb1k_init(xc_func_type *p)
   p->cam_alpha = 0.42;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_bb1k = {
   XC_HYB_MGGA_XC_BB1K,
   XC_EXCHANGE_CORRELATION,
@@ -136,7 +136,7 @@ dvc_xc_hyb_mgga_xc_mpw1b95_init(xc_func_type *p)
   p->cam_alpha = 0.31;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_mpw1b95 = {
   XC_HYB_MGGA_XC_MPW1B95,
   XC_EXCHANGE_CORRELATION,
@@ -162,7 +162,7 @@ dvc_xc_hyb_mgga_xc_mpwb1k_init(xc_func_type *p)
   p->cam_alpha = 0.44;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_mpwb1k = {
   XC_HYB_MGGA_XC_MPWB1K,
   XC_EXCHANGE_CORRELATION,
@@ -194,7 +194,7 @@ dvc_xc_hyb_mgga_xc_x1b95_init(xc_func_type *p)
   p->cam_alpha = a0;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_x1b95 = {
   XC_HYB_MGGA_XC_X1B95,
   XC_EXCHANGE_CORRELATION,
@@ -226,7 +226,7 @@ dvc_xc_hyb_mgga_xc_xb1k_init(xc_func_type *p)
   p->cam_alpha = a0;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_xb1k = {
   XC_HYB_MGGA_XC_XB1K,
   XC_EXCHANGE_CORRELATION,
@@ -257,7 +257,7 @@ dvc_xc_hyb_mgga_xc_pw6b95_init(xc_func_type *p)
   p->cam_alpha = 0.28;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_pw6b95 = {
   XC_HYB_MGGA_XC_PW6B95,
   XC_EXCHANGE_CORRELATION,
@@ -288,7 +288,7 @@ dvc_xc_hyb_mgga_xc_pwb6k_init(xc_func_type *p)
   p->cam_alpha = 0.46;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_pwb6k = {
   XC_HYB_MGGA_XC_PWB6K,
   XC_EXCHANGE_CORRELATION,
@@ -313,7 +313,7 @@ dvc_mgga_xc_tpsslyp1w_init(xc_func_type *p)
   dvc_xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_mgga_xc_tpsslyp1w = {
   XC_MGGA_XC_TPSSLYP1W,
   XC_EXCHANGE_CORRELATION,

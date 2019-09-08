@@ -17,7 +17,7 @@
 #define XC_NO_EXC
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_tih = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_tih = {
   XC_LDA_XC_TIH,
   XC_EXCHANGE_CORRELATION,
   "Neural network LDA from Tozer et al",

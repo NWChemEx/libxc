@@ -21,7 +21,7 @@ dvc_hyb_mgga_x_mvsh_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_mvsh = {
   XC_HYB_MGGA_X_MVSH,
   XC_EXCHANGE,

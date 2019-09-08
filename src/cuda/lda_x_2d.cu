@@ -17,7 +17,7 @@
 #include "maple2c/lda_exc/lda_x_2d.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_2d = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_2d = {
   XC_LDA_X_2D,
   XC_EXCHANGE,
   "Slater exchange",

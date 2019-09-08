@@ -16,7 +16,7 @@
 #include "maple2c/gga_exc/gga_x_2d_pbe.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_2d_pbe = {
   XC_GGA_X_2D_PBE,
   XC_EXCHANGE,

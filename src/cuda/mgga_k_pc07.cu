@@ -16,7 +16,7 @@
 #include "maple2c/mgga_exc/mgga_k_pc07.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_k_pc07 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_k_pc07 = {
   XC_MGGA_K_PC07,
   XC_KINETIC,
   "Perdew and Constantin 2007",

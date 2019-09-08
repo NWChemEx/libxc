@@ -119,7 +119,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/gga_exc/gga_c_pbe.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_pbe = {
   XC_GGA_C_PBE,
   XC_CORRELATION,
@@ -133,7 +133,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_pbe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_pbe_sol = {
   XC_GGA_C_PBE_SOL,
   XC_CORRELATION,
@@ -147,7 +147,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_pbe_sol = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_xpbe = {
   XC_GGA_C_XPBE,
   XC_CORRELATION,
@@ -161,7 +161,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_xpbe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_pbe_jrgx = {
   XC_GGA_C_PBE_JRGX,
   XC_CORRELATION,
@@ -175,7 +175,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_pbe_jrgx = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_rge2 = {
   XC_GGA_C_RGE2,
   XC_CORRELATION,
@@ -189,7 +189,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_rge2 = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_apbe = {
   XC_GGA_C_APBE,
   XC_CORRELATION,
@@ -203,7 +203,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_apbe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_spbe = {
   XC_GGA_C_SPBE,
   XC_CORRELATION,
@@ -217,7 +217,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_spbe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_pbeint = {
   XC_GGA_C_PBEINT,
   XC_CORRELATION,
@@ -231,7 +231,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_pbeint = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_pbefe = {
   XC_GGA_C_PBEFE,
   XC_CORRELATION,
@@ -245,7 +245,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_pbefe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_pbe_mol = {
   XC_GGA_C_PBE_MOL,
   XC_CORRELATION,
@@ -259,7 +259,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_pbe_mol = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_tm_pbe = {
   XC_GGA_C_TM_PBE,
   XC_CORRELATION,

@@ -63,7 +63,7 @@ dvc_xc_hyb_gga_xc_cam_b3lyp_init(xc_func_type *p)
   p->cam_beta  = beta;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_cam_b3lyp = {
   XC_HYB_GGA_XC_CAM_B3LYP,
   XC_EXCHANGE_CORRELATION,
@@ -77,7 +77,7 @@ const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_cam_b3lyp = {
   NULL, NULL, NULL, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_tuned_cam_b3lyp = {
   XC_HYB_GGA_XC_TUNED_CAM_B3LYP,
   XC_EXCHANGE_CORRELATION,

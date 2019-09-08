@@ -19,7 +19,7 @@
 #include "maple2c/mgga_exc/mgga_c_scan.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_scan = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_scan = {
   XC_MGGA_C_SCAN,
   XC_CORRELATION,
   "SCAN correlation of Sun, Ruzsinszky, and Perdew",
@@ -45,7 +45,7 @@ dvc_mgga_c_scan_rvv10_init(xc_func_type *p)
   p->nlc_C = 0.0093;
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_scan_rvv10 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_scan_rvv10 = {
   XC_MGGA_C_SCAN_RVV10,
   XC_CORRELATION,
   "SCAN + rVV10 correlation",
@@ -70,7 +70,7 @@ dvc_mgga_c_scan_vv10_init(xc_func_type *p)
   p->nlc_C = 0.0093;
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_scan_vv10 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_scan_vv10 = {
   XC_MGGA_C_SCAN_VV10,
   XC_CORRELATION,
   "SCAN + VV10 correlation",

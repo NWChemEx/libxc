@@ -26,7 +26,7 @@ dvc_gga_xc_xlyp_init(xc_func_type *p)
   dvc_xc_mix_init(p, 4, funcs_id, funcs_coef);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_xlyp = {
   XC_GGA_XC_XLYP,
   XC_EXCHANGE_CORRELATION,
@@ -51,7 +51,7 @@ dvc_gga_xc_pbe1w_init(xc_func_type *p)
   dvc_xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_pbe1w = {
   XC_GGA_XC_PBE1W,
   XC_EXCHANGE_CORRELATION,
@@ -76,7 +76,7 @@ dvc_gga_xc_mpwlyp1w_init(xc_func_type *p)
   dvc_xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_mpwlyp1w = {
   XC_GGA_XC_MPWLYP1W,
   XC_EXCHANGE_CORRELATION,
@@ -101,7 +101,7 @@ dvc_gga_xc_pbelyp1w_init(xc_func_type *p)
   dvc_xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_pbelyp1w = {
   XC_GGA_XC_PBELYP1W,
   XC_EXCHANGE_CORRELATION,

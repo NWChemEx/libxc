@@ -56,7 +56,7 @@ dvc_lda_xc_1d_ehwlrg_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_xc_1d_ehwlrg.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_1 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_1 = {
   XC_LDA_XC_1D_EHWLRG_1,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 1 electron",
@@ -69,7 +69,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_1 = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_2 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_2 = {
   XC_LDA_XC_1D_EHWLRG_2,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 2 electrons",
@@ -83,7 +83,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_2 = {
 };
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_3 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_1d_ehwlrg_3 = {
   XC_LDA_XC_1D_EHWLRG_3,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 3 electrons",

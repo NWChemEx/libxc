@@ -119,7 +119,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/gga_exc/gga_x_hjs.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_hjs_pbe = {
   XC_GGA_X_HJS_PBE,
   XC_EXCHANGE,
@@ -133,7 +133,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_hjs_pbe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_hjs_pbe_sol = {
   XC_GGA_X_HJS_PBE_SOL,
   XC_EXCHANGE,
@@ -147,7 +147,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_hjs_pbe_sol = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_hjs_b88 = {
   XC_GGA_X_HJS_B88,
   XC_EXCHANGE,
@@ -161,7 +161,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_hjs_b88 = {
   NULL,  dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_hjs_b97x = {
   XC_GGA_X_HJS_B97X,
   XC_EXCHANGE,

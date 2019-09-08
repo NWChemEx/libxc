@@ -1,5 +1,5 @@
 if (CUDA_FOUND)
-    link_libraries(xc_device)
+    link_libraries(xc xc_device)
     add_executable(xc-regression xc-regression.cu)
     set_property(TARGET xc_device PROPERTY CUDA_SEPARABLE_COMPILATION ON)
     set_property(TARGET xc-regression PROPERTY CUDA_SEPARABLE_COMPILATION ON)

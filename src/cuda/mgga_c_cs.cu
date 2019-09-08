@@ -27,7 +27,7 @@
 #include "maple2c/mgga_exc/mgga_c_cs.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_cs = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_cs = {
   XC_MGGA_C_CS,
   XC_CORRELATION,
   "Colle and Salvetti",

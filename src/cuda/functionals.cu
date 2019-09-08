@@ -26,11 +26,22 @@
 #endif
 
 #pragma omp declare target
-extern DEVICE xc_func_info_type **dvc_xc_lda_known_funct;      // *xc_lda_known_funct[]; 
-extern DEVICE xc_func_info_type **dvc_xc_gga_known_funct;      // *xc_gga_known_funct[];
-extern DEVICE xc_func_info_type **dvc_xc_hyb_gga_known_funct;  // *xc_hyb_gga_known_funct[];
-extern DEVICE xc_func_info_type **dvc_xc_mgga_known_funct;     // *xc_mgga_known_funct[];
-extern DEVICE xc_func_info_type **dvc_xc_hyb_mgga_known_funct; // *xc_hyb_mgga_known_funct[];
+/* This does not work in C++ as the language insists that the
+ * size of the arrays be known. It does not let you to just
+ * get a pointer to an array. Hence we replace this code 
+ * with the code that actually defines the arrays.
+
+extern DEVICE xc_func_info_type *xc_lda_known_funct[]; 
+extern DEVICE xc_func_info_type *xc_gga_known_funct[];
+extern DEVICE xc_func_info_type *xc_hyb_gga_known_funct[];
+extern DEVICE xc_func_info_type *xc_mgga_known_funct[];
+extern DEVICE xc_func_info_type *xc_hyb_mgga_known_funct[];
+*/
+#include "funcs_lda.h"
+#include "funcs_gga.h"
+#include "funcs_hyb_gga.h"
+#include "funcs_mgga.h"
+#include "funcs_hyb_mgga.h"
 
 
 /*------------------------------------------------------*/

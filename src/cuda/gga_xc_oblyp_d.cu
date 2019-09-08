@@ -30,7 +30,7 @@ dvc_gga_xc_oblyp_d_init(xc_func_type *p)
   dvc_xc_func_set_ext_params(p->func_aux[1], par_c_lyp);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_oblyp_d = {
   XC_GGA_XC_OBLYP_D,
   XC_EXCHANGE_CORRELATION,
@@ -60,7 +60,7 @@ dvc_gga_xc_opwlyp_d_init(xc_func_type *p)
   dvc_xc_func_set_ext_params(p->func_aux[1], par_c_lyp);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_opwlyp_d = {
   XC_GGA_XC_OPWLYP_D,
   XC_EXCHANGE_CORRELATION,
@@ -90,7 +90,7 @@ dvc_gga_xc_opbe_d_init(xc_func_type *p)
   dvc_xc_func_set_ext_params(p->func_aux[1], par_c_pbe);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_xc_opbe_d = {
   XC_GGA_XC_OPBE_D,
   XC_EXCHANGE_CORRELATION,

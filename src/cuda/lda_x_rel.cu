@@ -16,7 +16,7 @@
 #include "maple2c/lda_exc/lda_x_rel.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_rel = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_x_rel = {
   XC_LDA_X_REL,
   XC_EXCHANGE,
   "Slater exchange with relativistic corrections",

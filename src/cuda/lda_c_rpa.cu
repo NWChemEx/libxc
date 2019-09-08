@@ -20,7 +20,7 @@
 #include "maple2c/lda_exc/lda_c_rpa.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_rpa = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_rpa = {
   XC_LDA_C_RPA,
   XC_CORRELATION,
   "Random Phase Approximation (RPA)",

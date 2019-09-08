@@ -101,7 +101,7 @@ dvc_gga_c_bmk_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_c_bmk.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_n12 = {
   XC_GGA_C_N12,
   XC_CORRELATION,
@@ -115,7 +115,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_n12 = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_n12_sx = {
   XC_GGA_C_N12_SX,
   XC_CORRELATION,
@@ -129,7 +129,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_n12_sx = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_gam = {
   XC_GGA_C_GAM,
   XC_CORRELATION,
@@ -143,7 +143,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_gam = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_bmk = {
   XC_GGA_C_BMK,
   XC_CORRELATION,
@@ -157,7 +157,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_bmk = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_tau_hcth = {
   XC_GGA_C_TAU_HCTH,
   XC_CORRELATION,
@@ -171,7 +171,7 @@ const xc_func_info_type dvc_xc_func_info_gga_c_tau_hcth = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_hyb_tau_hcth = {
   XC_GGA_C_HYB_TAU_HCTH,
   XC_CORRELATION,

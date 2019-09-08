@@ -12,9 +12,6 @@
 
 #pragma omp declare target
 
-#include "funcs_mgga.c"
-#include "funcs_hyb_mgga.c"
-
 DEVICE void 
 dvc_xc_mgga(const xc_func_type *func, int np,
         const double *rho, const double *sigma, const double *lapl, const double *tau,

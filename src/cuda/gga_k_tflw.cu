@@ -144,13 +144,13 @@ dvc_tfvw_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   double lambda, gamma;
 
-  lambda = get_ext_param(p->info->ext_params, ext_params, 0);
-  gamma  = get_ext_param(p->info->ext_params, ext_params, 1);
+  lambda = dvc_get_ext_param(p->info->ext_params, ext_params, 0);
+  gamma  = dvc_get_ext_param(p->info->ext_params, ext_params, 1);
 
   dvc_gga_k_tflw_set_params(p, gamma, lambda, 1.0);
 }
 
-const xc_func_info_type dvc_xc_func_info_gga_k_tfvw = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_tfvw = {
   XC_GGA_K_TFVW,
   XC_KINETIC,
   "Thomas-Fermi plus von Weiszaecker correction",
@@ -163,7 +163,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_tfvw = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_vw = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_vw = {
   XC_GGA_K_VW,
   XC_KINETIC,
   "von Weiszaecker correction to Thomas-Fermi",
@@ -176,7 +176,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_vw = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_ge2 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_ge2 = {
   XC_GGA_K_GE2,
   XC_KINETIC,
   "Second-order gradient expansion of the kinetic energy density",
@@ -189,7 +189,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_ge2 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_golden = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_golden = {
   XC_GGA_K_GOLDEN,
   XC_KINETIC,
   "TF-lambda-vW form by Golden (l = 13/45)",
@@ -202,7 +202,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_golden = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_yt65 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_yt65 = {
   XC_GGA_K_YT65,
   XC_KINETIC,
   "TF-lambda-vW form by Yonei and Tomishima (l = 1/5)",
@@ -215,7 +215,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_yt65 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_baltin = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_baltin = {
   XC_GGA_K_BALTIN,
   XC_KINETIC,
   "TF-lambda-vW form by Baltin (l = 5/9)",
@@ -228,7 +228,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_baltin = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_lieb = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_lieb = {
   XC_GGA_K_LIEB,
   XC_KINETIC,
   "TF-lambda-vW form by Lieb (l = 0.185909191)",
@@ -257,7 +257,7 @@ dvc_N_set_ext_params(xc_func_type *p, const double *ext_params)
 }
 
 
-const xc_func_info_type dvc_xc_func_info_gga_k_absp1 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_absp1 = {
   XC_GGA_K_ABSP1,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = 1 - 1.412/N^(1/3)]",
@@ -270,7 +270,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_absp1 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_absp2 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_absp2 = {
   XC_GGA_K_ABSP2,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = 1 - 1.332/N^(1/3)]",
@@ -283,7 +283,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_absp2 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_absp3 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_absp3 = {
   XC_GGA_K_ABSP3,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = 1 - 1.513/N^0.35]",
@@ -296,7 +296,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_absp3 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_absp4 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_absp4 = {
   XC_GGA_K_ABSP4,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = l = 1/(1 + 1.332/N^(1/3))]",
@@ -309,7 +309,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_absp4 = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_gr = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_gr = {
   XC_GGA_K_GR,
   XC_KINETIC,
   "gamma-TFvW form by Gazquez and Robles",
@@ -322,7 +322,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_gr = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_ludena = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_ludena = {
   XC_GGA_K_LUDENA,
   XC_KINETIC,
   "gamma-TFvW form by Ludena",
@@ -335,7 +335,7 @@ const xc_func_info_type dvc_xc_func_info_gga_k_ludena = {
   NULL, dvc_work_gga, NULL
 };
 
-const xc_func_info_type dvc_xc_func_info_gga_k_gp85 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_gga_k_gp85 = {
   XC_GGA_K_GP85,
   XC_KINETIC,
   "gamma-TFvW form by Ghosh and Parr",

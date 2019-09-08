@@ -73,7 +73,7 @@ dvc_lda_c_wigner_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_c_wigner.c"
 #include "work_lda_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_wigner = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_wigner = {
   XC_LDA_C_WIGNER,
   XC_CORRELATION,
   "Wigner",
@@ -86,7 +86,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_wigner = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_lp_a = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_lp_a = {
   XC_LDA_XC_LP_A,
   XC_EXCHANGE_CORRELATION,
   "Lee-Parr reparametrization A",
@@ -99,7 +99,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_lp_a = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_lp_b = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_lp_b = {
   XC_LDA_XC_LP_B,
   XC_EXCHANGE_CORRELATION,
   "Lee-Parr reparametrization B",
@@ -112,7 +112,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_xc_lp_b = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_mcweeny = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_mcweeny = {
   XC_LDA_C_MCWEENY,
   XC_CORRELATION,
   "McWeeny 76",
@@ -125,7 +125,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_mcweeny = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_br78 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_br78 = {
   XC_LDA_C_BR78,
   XC_CORRELATION,
   "Brual & Rothstein 78",
@@ -138,7 +138,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_br78 = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ow_lyp = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ow_lyp = {
   XC_LDA_C_OW_LYP,
   XC_CORRELATION,
   "Wigner with corresponding LYP parameters",
@@ -151,7 +151,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ow_lyp = {
   dvc_work_lda, NULL, NULL
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ow = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_ow = {
   XC_LDA_C_OW,
   XC_CORRELATION,
   "Optimized Wigner",

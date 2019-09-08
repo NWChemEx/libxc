@@ -31,7 +31,7 @@ dvc_xc_hyb_gga_xc_lcy_blyp_init(xc_func_type *p)
   p->cam_beta  = -1.0;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_lcy_blyp = {
   XC_HYB_GGA_XC_LCY_BLYP,
   XC_EXCHANGE_CORRELATION,

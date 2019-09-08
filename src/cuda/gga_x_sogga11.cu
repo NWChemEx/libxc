@@ -64,7 +64,7 @@ dvc_gga_x_sogga11_init(xc_func_type *p)
 #include "work_gga_new.cu"
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_sogga11 = {
   XC_GGA_X_SOGGA11,
   XC_EXCHANGE,
@@ -78,7 +78,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_sogga11 = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_x_sogga11_x = {
   XC_HYB_GGA_X_SOGGA11_X,
   XC_EXCHANGE,

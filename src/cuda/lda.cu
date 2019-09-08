@@ -12,8 +12,6 @@
 
 #pragma omp declare target
 
-#include "funcs_lda.cu"
-
 /* get the lda functional */
 DEVICE void 
 dvc_xc_lda(const xc_func_type *func, int np, const double *rho, 

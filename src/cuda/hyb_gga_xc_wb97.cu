@@ -94,7 +94,7 @@ dvc_gga_xc_wb97_init(xc_func_type *p)
 #include "maple2c/gga_exc/hyb_gga_xc_wb97.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_wb97 = {
   XC_HYB_GGA_XC_WB97,
   XC_EXCHANGE_CORRELATION,
@@ -108,7 +108,7 @@ const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_wb97 = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_wb97x = {
   XC_HYB_GGA_XC_WB97X,
   XC_EXCHANGE_CORRELATION,
@@ -122,7 +122,7 @@ const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_wb97x = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_wb97x_v = {
   XC_HYB_GGA_XC_WB97X_V,
   XC_EXCHANGE_CORRELATION,
@@ -136,7 +136,7 @@ const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_wb97x_v = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_wb97x_d = {
   XC_HYB_GGA_XC_WB97X_D,
   XC_EXCHANGE_CORRELATION,

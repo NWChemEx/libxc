@@ -71,7 +71,7 @@ dvc_mgga_x_m08_init(xc_func_type *p)
 #include "work_mgga_new.cu"
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m08_hx = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m08_hx = {
   XC_HYB_MGGA_X_M08_HX,
   XC_EXCHANGE,
   "Minnesota M08-HX hybrid exchange functional",
@@ -84,7 +84,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m08_hx = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m08_so = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m08_so = {
   XC_HYB_MGGA_X_M08_SO,
   XC_EXCHANGE,
   "Minnesota M08-SO hybrid exchange functional",

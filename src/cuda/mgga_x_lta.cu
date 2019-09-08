@@ -18,7 +18,7 @@
 #include "maple2c/mgga_exc/mgga_x_lta.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_lta = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_lta = {
   XC_MGGA_X_LTA,
   XC_EXCHANGE,
   "Local tau approximation",

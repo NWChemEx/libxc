@@ -16,7 +16,7 @@
 #include "maple2c/gga_exc/gga_x_wc.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_wc = {
   XC_GGA_X_WC,
   XC_EXCHANGE,

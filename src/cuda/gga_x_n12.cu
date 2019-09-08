@@ -85,7 +85,7 @@ dvc_gga_x_n12_init(xc_func_type *p)
 #include "work_gga_new.cu"
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_n12 = {
   XC_GGA_X_N12,
   XC_EXCHANGE,
@@ -99,7 +99,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_n12 = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_x_n12_sx = {
   XC_HYB_GGA_X_N12_SX,
   XC_EXCHANGE,
@@ -113,7 +113,7 @@ const xc_func_info_type dvc_xc_func_info_hyb_gga_x_n12_sx = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_gam = {
   XC_GGA_X_GAM,
   XC_EXCHANGE,

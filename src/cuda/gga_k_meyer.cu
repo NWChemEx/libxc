@@ -16,7 +16,7 @@
 #include "maple2c/gga_exc/gga_k_meyer.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_k_meyer = {
   XC_GGA_K_MEYER,
   XC_KINETIC,

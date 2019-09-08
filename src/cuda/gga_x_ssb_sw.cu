@@ -56,7 +56,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "maple2c/gga_exc/gga_x_ssb_sw.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_ssb_sw = {
   XC_GGA_X_SSB_SW,
   XC_EXCHANGE,
@@ -90,7 +90,7 @@ dvc_gga_x_ssb_init(xc_func_type *p)
 }
 
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_ssb = {
   XC_GGA_X_SSB,
   XC_EXCHANGE,
@@ -124,7 +124,7 @@ dvc_gga_x_ssb_d_init(xc_func_type *p)
   dvc_xc_func_set_ext_params(p->func_aux[2], par_x_kt);
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_ssb_d = {
   XC_GGA_X_SSB_D,
   XC_EXCHANGE,

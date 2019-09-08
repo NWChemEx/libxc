@@ -168,7 +168,7 @@ func(const xc_func_type *p, xc_mgga_work_x_t *r)
 #define XC_DIMENSIONS 2
 #include "work_mgga_x.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_2d_prhg07 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_2d_prhg07 = {
   XC_MGGA_X_2D_PRHG07,
   XC_EXCHANGE,
   "Pittalis-Rasanen-Helbig-Gross 2007",
@@ -182,7 +182,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_2d_prhg07 = {
   dvc_work_mgga_x,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_2d_prhg07_prp10 = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_2d_prhg07_prp10 = {
   XC_MGGA_X_2D_PRHG07_PRP10,
   XC_EXCHANGE,
   "PRHG07 with Pittalis-Rasanen-Proetto 2010 correction",

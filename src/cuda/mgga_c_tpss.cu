@@ -76,7 +76,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
 #include "work_mgga_new.cu"
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_tpss = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_tpss = {
   XC_MGGA_C_TPSS,
   XC_CORRELATION,
   "Tao, Perdew, Staroverov & Scuseria",
@@ -89,7 +89,7 @@ DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_tpss = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_tm = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_tm = {
   XC_MGGA_C_TM,
   XC_CORRELATION,
   "Tao and Mo 2016 correlation",

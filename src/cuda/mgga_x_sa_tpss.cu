@@ -17,7 +17,7 @@
 #include "maple2c/mgga_exc/mgga_x_sa_tpss.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_sa_tpss = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_sa_tpss = {
   XC_MGGA_X_SA_TPSS,
   XC_EXCHANGE,
   "TPSS with correct surface asymptotics",

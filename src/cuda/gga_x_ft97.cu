@@ -60,7 +60,7 @@ dvc_gga_x_ft97_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_x_ft97.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_ft97_a = {
   XC_GGA_X_FT97_A,
   XC_EXCHANGE,
@@ -74,7 +74,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_ft97_a = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_ft97_b = {
   XC_GGA_X_FT97_B,
   XC_EXCHANGE,

@@ -38,7 +38,7 @@ dvc_gga_xc_o3lyp_init(xc_func_type *p)
   p->cam_alpha = a;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_o3lyp = {
   XC_HYB_GGA_XC_O3LYP,
   XC_EXCHANGE_CORRELATION,
@@ -73,7 +73,7 @@ dvc_gga_xc_x3lyp_init(xc_func_type *p)
   p->cam_alpha = a0;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_x3lyp = {
   XC_HYB_GGA_XC_X3LYP,
   XC_EXCHANGE_CORRELATION,

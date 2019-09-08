@@ -50,7 +50,7 @@ dvc_gga_x_vmt84_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_x_vmt84.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_vmt84_pbe = {
   XC_GGA_X_VMT84_PBE,
   XC_EXCHANGE,
@@ -64,7 +64,7 @@ const xc_func_info_type dvc_xc_func_info_gga_x_vmt84_pbe = {
   NULL, dvc_work_gga, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_x_vmt84_ge = {
   XC_GGA_X_VMT84_GE,
   XC_EXCHANGE,

@@ -16,7 +16,7 @@
 #include "maple2c/gga_exc/gga_c_acgga.c"
 #include "work_gga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_gga_c_acgga = {
   XC_GGA_C_ACGGA,
   XC_CORRELATION,

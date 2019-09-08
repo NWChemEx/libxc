@@ -17,7 +17,7 @@
 #include "maple2c/mgga_exc/mgga_x_mbeefvdw.c"
 #include "work_mgga_new.cu"
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mbeefvdw = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_x_mbeefvdw = {
   XC_MGGA_X_MBEEFVDW,
   XC_EXCHANGE,
   "mBEEF-vdW exchange",

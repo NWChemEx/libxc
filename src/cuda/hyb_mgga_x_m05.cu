@@ -72,7 +72,7 @@ dvc_mgga_x_m05_init(xc_func_type *p)
 #include "maple2c/mgga_exc/hyb_mgga_x_m05.c"
 #include "work_mgga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m05 = {
   XC_HYB_MGGA_X_M05,
   XC_EXCHANGE,
@@ -86,7 +86,7 @@ const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m05 = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m05_2x = {
   XC_HYB_MGGA_X_M05_2X,
   XC_EXCHANGE,
@@ -100,7 +100,7 @@ const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m05_2x = {
   NULL, NULL, dvc_work_mgga,
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_x_m06_2x = {
   XC_HYB_MGGA_X_M06_2X,
   XC_EXCHANGE,

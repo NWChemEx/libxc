@@ -25,7 +25,7 @@ dvc_hyb_mgga_xc_wb97mv_init(xc_func_type *p)
 #include "maple2c/mgga_exc/hyb_mgga_xc_wb97mv.c"
 #include "work_mgga_new.cu"
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_mgga_xc_wb97m_v = {
   XC_HYB_MGGA_XC_WB97M_V,
   XC_EXCHANGE_CORRELATION,

@@ -63,7 +63,7 @@ dvc_set_ext_params(xc_func_type *p, const double *ext_params)
   params->c = M_PI/(2.0*(params->N - 1.0)*prm_q*prm_q); /* Eq. (13) */
 }
 
-DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_2d_prm = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_lda_c_2d_prm = {
   XC_LDA_C_2D_PRM,
   XC_CORRELATION,
   "PRM (for 2D systems)",

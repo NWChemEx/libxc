@@ -30,7 +30,7 @@ dvc_xc_hyb_gga_xc_b1wc_init(xc_func_type *p)
   p->cam_alpha = 0.16;
 }
 
-DEVICE 
+extern DEVICE 
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_b1wc = {
   XC_HYB_GGA_XC_B1WC,
   XC_EXCHANGE_CORRELATION,
@@ -55,7 +55,7 @@ dvc_xc_hyb_gga_xc_b1lyp_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-DEVICE 
+extern DEVICE 
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_b1lyp = {
   XC_HYB_GGA_XC_B1LYP,
   XC_EXCHANGE_CORRELATION,
@@ -80,6 +80,7 @@ dvc_xc_hyb_gga_xc_b1pw91_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_b1pw91 = {
   XC_HYB_GGA_XC_B1PW91,
   XC_EXCHANGE_CORRELATION,
@@ -123,7 +124,7 @@ dvc_xc_hyb_gga_xc_mpw1pw_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_mpw1lyp = {
   XC_HYB_GGA_XC_MPW1LYP,
   XC_EXCHANGE_CORRELATION,
@@ -137,7 +138,7 @@ const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_mpw1lyp = {
   NULL, NULL, NULL, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_mpw1pbe = {
   XC_HYB_GGA_XC_MPW1PBE,
   XC_EXCHANGE_CORRELATION,
@@ -151,7 +152,7 @@ const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_mpw1pbe = {
   NULL, NULL, NULL, NULL
 };
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_mpw1pw = {
   XC_HYB_GGA_XC_MPW1PW,
   XC_EXCHANGE_CORRELATION,
@@ -177,7 +178,7 @@ dvc_xc_hyb_gga_xc_mpw1k_init(xc_func_type *p)
   p->cam_alpha = 0.428;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_mpw1k = {
   XC_HYB_GGA_XC_MPW1K,
   XC_EXCHANGE_CORRELATION,
@@ -203,7 +204,7 @@ dvc_xc_hyb_gga_xc_bhandh_init(xc_func_type *p)
   p->cam_alpha = 0.5;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_bhandh = {
   XC_HYB_GGA_XC_BHANDH,
   XC_EXCHANGE_CORRELATION,
@@ -229,7 +230,7 @@ dvc_xc_hyb_gga_xc_bhandhlyp_init(xc_func_type *p)
   p->cam_alpha = 0.5;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_bhandhlyp = {
   XC_HYB_GGA_XC_BHANDHLYP,
   XC_EXCHANGE_CORRELATION,
@@ -255,7 +256,7 @@ dvc_xc_hyb_gga_xc_mpwlyp1m_init(xc_func_type *p)
   p->cam_alpha = 0.05;
 }
 
-DEVICE
+extern DEVICE
 const xc_func_info_type dvc_xc_func_info_hyb_gga_xc_mpwlyp1m = {
   XC_HYB_GGA_XC_MPWLYP1M,
   XC_EXCHANGE_CORRELATION,

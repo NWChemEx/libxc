@@ -18,7 +18,7 @@
 #include "work_mgga_new.cu"
 
 
-DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revtpss = {
+extern DEVICE const xc_func_info_type dvc_xc_func_info_mgga_c_revtpss = {
   XC_MGGA_C_REVTPSS,
   XC_CORRELATION,
   "revised TPSS correlation",
