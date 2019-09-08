@@ -9,7 +9,7 @@
 #include "xc.h"
 #include "util.h"
 #include "dvc_util.h"
-#include "funcs_key.cu"
+#include "funcs_key.h"
 //ifdef __CUDACC__
 //undef max
 //undef min
