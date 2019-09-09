@@ -72,12 +72,26 @@ if (CUDA_FOUND)
     #list(APPEND CMAKE_CUDA_FLAGS_RELWITHDEBINFO "--relocatable-device-code true")
 else()
     # Check for OpenMP to support GPU offloading
-    find_package(OpenMP)
-    if (OPENMP_FOUND)
-        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-        set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-    endif()
+    #
+    # At present this does not work. For OpenMP we would like the whole library to
+    # be one big offload kernel (ideally the whole libxc library would just be one
+    # function call in a much bigger Kohn-Sham matrix offload kernel). However, I am
+    # not sure how to generate a multi file implementation of a single target region.
+    #
+    # Also, as libxc relies on inlining functions into a template to generate functions
+    # that do a particular thing, we cannot even pull all the code into a single file.
+    # That would cause conflicts between all the inline functions with the same name.
+    # Instead you would have to have the compiler do the inlining on a per functional 
+    # basis first and store the inline generated code. Then these codes could be pulled
+    # into a single file for compilation. Trying to set something like this up to work
+    # portably with different compilers sounds like a total nightmare.
+    # 
+    #find_package(OpenMP)
+    #if (OPENMP_FOUND)
+    #    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    #    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    #    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+    #endif()
 endif()
 
 set(PN ${PROJECT_NAME})
