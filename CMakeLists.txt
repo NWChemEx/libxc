@@ -645,7 +645,7 @@ if(CUDA_FOUND)
     set_property(TARGET xc_device PROPERTY CUDA_SEPARABLE_COMPILATION ON)
 endif()
 
-list(APPEND CMAKE_C_FLAGS "-std=c99")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 add_library(xc ${sources_list})
 target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY})
 set_target_properties(xc PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
