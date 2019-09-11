@@ -749,7 +749,7 @@ endif()
 
 # by default, headers NOT namespace protected
 install(FILES ${PROJECT_BINARY_DIR}/${src_prefix}/xc.h
-              ${PROJECT_BINARY_DIR}/${src_prefix}/cuda.h
+              ${PROJECT_SOURCE_DIR}/${src_prefix}/cuda.h
               ${gen_dir}/xc_funcs.h
               ${gen_dir}/xc_funcs_worker.h
               ${PROJECT_BINARY_DIR}/xc_version.h
