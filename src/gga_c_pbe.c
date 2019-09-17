@@ -90,7 +90,7 @@ static void gga_c_pbe_init(xc_func_type *p)
   }
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[3] = {
   {"_beta",  0.06672455060314922,     "beta constant"},
   {"_gamma", 0.031090690869654895034, "(1 - ln(2))/Pi^2 in the PBE"},
   {"_B",     1.0, "Multiplies the A t^2 term. Used in the SPBE functional"},

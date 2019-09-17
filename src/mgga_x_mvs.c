@@ -36,7 +36,7 @@ mgga_x_mvs_init(xc_func_type *p)
   }
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[4] = {
   {"_e1", -1.6665, "e1 parameter"},
   {"_c1", 0.7438, "c1 parameter"},
   {"_k0", 0.174, "k0 parameter"},

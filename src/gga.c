@@ -8,6 +8,9 @@
 
 
 #include "util.h"
+
+#pragma omp declare target
+
 #include "funcs_gga.c"
 #include "funcs_hyb_gga.c"
 
@@ -166,3 +169,5 @@ xc_gga_kxc(const xc_func_type *p, int np, const double *rho, const double *sigma
 {
   xc_gga(p, np, rho, sigma, NULL, NULL, NULL, NULL, NULL, NULL, v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
 }
+
+#pragma omp end declare target

@@ -58,13 +58,17 @@ foreach $func (@funcs){
     $s2 .= "  &xc_func_info_$t,\n";
   }
 
+  @func_array = split(/\n/, $s2);
+  $numfuncs = @func_array;
+  $numfuncs++;
+
   open(OUT, ">$builddir/funcs_$func.c") or die("Could not open '$builddir/funcs_$func.c'.\n");
   print OUT <<EOF
 #include "util.h"
 
 $s1
 
-const xc_func_info_type *xc_${func}_known_funct[] = {
+const xc_func_info_type *xc_${func}_known_funct[${numfuncs}] = {
 $s2  NULL
 };
 EOF
@@ -74,14 +78,22 @@ EOF
 
 close DOCS;
 
+@func_array = split(/\n/, $s4);
+$numfuncs = @func_array;
+$numfuncs++;
+
 open(OUT, ">$builddir/funcs_key.c") or die("Could not open '$builddir/funcs_key.c'.\n");
 print OUT <<EOF
 #include "util.h"
 
-xc_functional_key_t xc_functional_keys[] = {
+#pragma omp declare target
+
+xc_functional_key_t xc_functional_keys[${numfuncs}] = {
 $s4,
 {"", -1}
 };
+
+#pragma omp end declare target
 EOF
 ;
 

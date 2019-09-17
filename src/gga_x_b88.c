@@ -57,7 +57,7 @@ gga_x_b88_init(xc_func_type *p)
   }
 }
 
-static func_params_type ext_params[] = {
+static func_params_type ext_params[2] = {
   {"_beta", 0.0042, "beta/X_FACTOR_C is the coefficient of the gradient expansion"},
   {"_gamma", 6.0, "gamma should be 6 to get the right asymptotics of Ex"},
 };

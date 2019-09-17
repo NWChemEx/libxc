@@ -35,8 +35,8 @@ xc_hyb_gga_xc_cap0_init(xc_func_type *p)
   static int    funcs_id  [2] = {XC_GGA_X_CAP, XC_GGA_C_PBE};
   static double funcs_coef[2] = {0.75, 1.0};
   /* C functional is PBE C with β = (3/4)β PBE */
-  static double par_c_pbe[] = {0.75*0.06672455060314922,
-                               XC_EXT_PARAMS_DEFAULT, XC_EXT_PARAMS_DEFAULT};
+  static double par_c_pbe [3] = {0.75*0.06672455060314922,
+                                 XC_EXT_PARAMS_DEFAULT, XC_EXT_PARAMS_DEFAULT};
   
   xc_mix_init(p, 2, funcs_id, funcs_coef);
   xc_func_set_ext_params(p->func_aux[1], par_c_pbe);

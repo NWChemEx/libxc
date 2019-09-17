@@ -23,7 +23,7 @@ gga_x_hjs_init(xc_func_type *p)
   p->params = malloc(sizeof(gga_x_hjs_b88_v2_params));
 }
 
-static func_params_type ext_params[] = {
+static func_params_type ext_params[1] = {
   {"_omega", 0.11, "Screening parameter for HF"},
 };
 

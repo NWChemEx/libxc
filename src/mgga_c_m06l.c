@@ -107,7 +107,7 @@ mgga_c_m06l_init(xc_func_type *p)
   }  
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[1] = {
     {"Fermi_D_cnst", 1e-10, "Constant for the correction term similar to 10.1063/1.2800011"},
 };
 

@@ -26,7 +26,7 @@ gga_x_ssb_sw_init(xc_func_type *p)
   p->params = malloc(sizeof(gga_x_ssb_sw_params));
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[5] = {
   {"_A", 1.0515,   "Constant s limit"},
   {"_B", 0.191458, "B s^2/(1 + C s^2)"},
   {"_C", 0.254443, "B s^2/(1 + C s^2)"},
@@ -73,8 +73,8 @@ gga_x_ssb_init(xc_func_type *p)
   static int   funcs_id  [3] = {XC_LDA_X, XC_GGA_X_SSB_SW, XC_GGA_X_KT1};
   static double funcs_coef[3] = {-1.0, 1.0, 1.0};
 
-  static double par_x_ssb_sw[] = {1.071769, 0.137574, 0.187883, 0.137574*(1.0 + 1.205643), 6.635315};
-  static double par_x_kt[] = {-1, 0.1};
+  static double par_x_ssb_sw[5] = {1.071769, 0.137574, 0.187883, 0.137574*(1.0 + 1.205643), 6.635315};
+  static double par_x_kt[2] = {-1, 0.1};
   par_x_kt[0] = u*F*X_FACTOR_C*B*(X2S*X2S);
   
   xc_mix_init(p, 3, funcs_id, funcs_coef);  
@@ -106,8 +106,8 @@ gga_x_ssb_d_init(xc_func_type *p)
   static int    funcs_id  [3] = {XC_LDA_X, XC_GGA_X_SSB_SW, XC_GGA_X_KT1};
   static double funcs_coef[3] = {-1.0, 1.0, 1.0};
 
-  static double par_x_ssb_sw[] = {1.079966, 0.197465, 0.272729, 0.197465*(1.0 + 0.749940), 5.873645};
-  static double par_x_kt[] = {-1, 0.1};
+  static double par_x_ssb_sw[5] = {1.079966, 0.197465, 0.272729, 0.197465*(1.0 + 0.749940), 5.873645};
+  static double par_x_kt[2] = {-1, 0.1};
   par_x_kt[0] = u*F*X_FACTOR_C*B*(X2S*X2S);
   
   xc_mix_init(p, 3, funcs_id, funcs_coef);  

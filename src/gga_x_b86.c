@@ -61,7 +61,7 @@ gga_x_b86_init(xc_func_type *p)
   }
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[3] = {
   {"_beta", 0.0036/X_FACTOR_C, "Small x limit"},
   {"_gamma", 0.004, "Parameter in the denominator"},
   {"_omega", 1.0, "Exponent of denominator"},

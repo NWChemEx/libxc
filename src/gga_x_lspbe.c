@@ -39,7 +39,7 @@ gga_x_lspbe_init(xc_func_type *p)
 }
 
 /* PBE: mu = beta*pi^2/3, beta = 0.06672455060314922 */
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[3] = {
   {"_kappa", 0.8040, "Asymptotic value of the enhancement function"},
   {"_mu",    MU_PBE, "Coefficient of the 2nd order expansion of the full Lspbe functional"},
   {"_alpha", 0.00145165, "Exponent that should satisfy the PW91 criterion"}

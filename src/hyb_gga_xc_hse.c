@@ -46,25 +46,25 @@
    PBEh
 */
 
-static func_params_type ext_params_hse03[] = {
+static func_params_type ext_params_hse03[3] = {
   {"_beta", 0.25, "Mixing parameter"},
   {"_omega_HF", 0.106066017177982128660126654316, "Screening parameter for HF"},  /* 0.15/sqrt(2.0) */
   {"_omega_PBE", 0.188988157484230974715081591092, "Screening parameter for PBE"}, /* 0.15*cbrt(2.0) */
 };
 
-static func_params_type ext_params_hse06[] = {
+static func_params_type ext_params_hse06[3] = {
   {"_beta", 0.25, "Mixing parameter"},
   {"_omega_HF", 0.11, "Screening parameter for HF"},
   {"_omega_PBE", 0.11, "Screening parameter for PBE"},
 };
 
-static func_params_type ext_params_hse12[] = {
+static func_params_type ext_params_hse12[3] = {
   {"_beta", 0.313, "Mixing parameter"},
   {"_omega_HF", 0.185, "Screening parameter for HF"},
   {"_omega_PBE", 0.185, "Screening parameter for PBE"},
 };
 
-static func_params_type ext_params_hse12s[] = {
+static func_params_type ext_params_hse12s[3] = {
   {"_beta", 0.425, "Mixing parameter"},
   {"_omega_HF", 0.408, "Screening parameter for HF"},
   {"_omega_PBE", 0.408, "Screening parameter for PBE"},

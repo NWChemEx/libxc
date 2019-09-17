@@ -42,7 +42,7 @@ mgga_x_br89_init(xc_func_type *p)
   }
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[1] = {
   {"_gamma", 0.8, "gamma"},
 };
 

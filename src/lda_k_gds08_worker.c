@@ -24,7 +24,7 @@ lda_k_gds08_init(xc_func_type *p)
   p->params = malloc(sizeof(lda_k_gds08_params));
 }
 
-static func_params_type ext_params[] = {
+static func_params_type ext_params[3] = {
   {"_A", 0.860, "linear term"},
   {"_B", 0.224, "term proportional to the logarithm of the density"},
   {"_C", 0.0,   "term proportional to the square of the logarithm"},

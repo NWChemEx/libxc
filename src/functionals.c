@@ -17,12 +17,40 @@
 #endif
 
 #pragma omp declare target
+// The following lines do not work with OpenMP. The compiler
+// complains these data structures are not mappable. Presumably 
+// the problem is that the compiler cannot check how large these
+// arrays are.
+/*
 extern xc_func_info_type 
   *xc_lda_known_funct[], 
   *xc_gga_known_funct[],
   *xc_hyb_gga_known_funct[],
   *xc_mgga_known_funct[],
   *xc_hyb_mgga_known_funct[];
+*/
+// The lines below are accepted by an OpenMP compiler. These lines
+// do pose a maintenance problem as they needed to be updated whenever
+// new functionals are added. 
+/*
+extern xc_func_info_type 
+  *xc_lda_known_funct[61], 
+  *xc_gga_known_funct[226],
+  *xc_hyb_gga_known_funct[82],
+  *xc_mgga_known_funct[85],
+  *xc_hyb_mgga_known_funct[38];
+*/
+// The following lines are accepted by an OpenMP compiler. In
+// principle this should work as the arrays are also declared in a
+// target region. Assuring that the data is actually made mappable
+// should be taken care of at that point. Hence the code should not
+// only compile it should also work.
+extern xc_func_info_type 
+  **xc_lda_known_funct, 
+  **xc_gga_known_funct,
+  **xc_hyb_gga_known_funct,
+  **xc_mgga_known_funct,
+  **xc_hyb_mgga_known_funct;
 
 
 /*------------------------------------------------------*/

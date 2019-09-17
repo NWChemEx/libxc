@@ -21,29 +21,29 @@ typedef struct{
   const double *a, *b; /* pointers to the a and b parameters */
 } gga_x_hjs_params;
 
-static const double a_PBE[] = 
+static const double a_PBE[6] = 
   {0.0159941, 0.0852995, -0.160368, 0.152645, -0.0971263, 0.0422061};
-static const double b_PBE[] = 
+static const double b_PBE[9] = 
   {5.33319, -12.4780, 11.0988, -5.11013, 1.71468, -0.610380, 0.307555, -0.0770547, 0.0334840};
 
-static const double a_PBE_sol[] = 
+static const double a_PBE_sol[6] = 
   {0.0047333, 0.0403304, -0.0574615, 0.0435395, -0.0216251, 0.0063721};
-static const double b_PBE_sol[] = 
+static const double b_PBE_sol[9] = 
   {8.52056, -13.9885, 9.28583, -3.27287, 0.843499, -0.235543, 0.0847074, -0.0171561, 0.0050552};
 
-static const double a_B88[] =
+static const double a_B88[6] =
   {0.00968615, -0.0242498, 0.0259009, -0.0136606, 0.00309606, -7.32583e-5};
-static const double b_B88[] =
+static const double b_B88[9] =
   {-2.50356, 2.79656, -1.79401, 0.714888, -0.165924, 0.0118379, 0.0037806, -1.57905e-4, 1.45323e-6};
 
-static const double a_B97x[] =
+static const double a_B97x[6] =
   {0.0027355, 0.0432970, -0.0669379, 0.0699060, -0.0474635, 0.0153092};
-static const double b_B97x[] =
+static const double b_B97x[9] =
   {15.8279, -26.8145, 17.8127, -5.98246, 1.25408, -0.270783, 0.0919536, -0.0140960, 0.0045466};
 
-static const double a_B88_V2[] =
+static const double a_B88_V2[6] =
   {0.0253933, -0.0673075, 0.0891476, -0.0454168, -0.00765813, 0.0142506};
-static const double b_B88_V2[] =
+static const double b_B88_V2[9] =
   {-2.6506, 3.91108, -3.31509, 1.54485, -0.198386, -0.136112, 0.0647862, 0.0159586, -0.000245066};
 
 static void
@@ -83,7 +83,7 @@ gga_x_hjs_init(xc_func_type *p)
   }
 }
 
-static func_params_type ext_params[] = {
+static func_params_type ext_params[1] = {
   {"_omega", 0.11, "Screening parameter for HF"},
 };
 

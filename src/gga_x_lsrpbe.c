@@ -26,7 +26,7 @@ gga_x_lsrpbe_init(xc_func_type *p)
   p->params = malloc(sizeof(gga_x_lsrpbe_params));
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[3] = {
   {"_kappa", 0.8040, "Asymptotic value of the enhancement function"},
   {"_mu",    MU_PBE, "Coefficient of the 2nd order expansion of the full Lsrpbe functional"},
   {"_alpha", 0.00680892, "Exponent that should satisfy the PW91 criterion"}

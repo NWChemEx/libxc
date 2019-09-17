@@ -26,7 +26,7 @@ gga_x_kt_init(xc_func_type *p)
   p->params = malloc(sizeof(gga_x_kt_params));
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[2] = {
   {"_gamma", -0.006, "gamma"},
   {"_delta",    0.1, "delta"},
 };

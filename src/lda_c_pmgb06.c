@@ -12,7 +12,7 @@
 
 #pragma omp declare target
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[1] = {
   {"omega",  0.3, "screening parameter"},
 };
 

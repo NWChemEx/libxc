@@ -36,7 +36,7 @@ gga_x_pbe_init(xc_func_type *p)
   }
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[4] = {
   {"_kappa", 0.8040, "Asymptotic value of the enhancement function"},
   {"_alpha", 0.197, "defines the width of the interpolation"},
   {"_muPBE", MU_PBE, "Limiting value for large s"},

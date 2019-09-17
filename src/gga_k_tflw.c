@@ -129,7 +129,7 @@ gga_k_tflw_init(xc_func_type *p)
 #include "maple2c/gga_exc/gga_k_tflw.c"
 #include "work_gga_new.c"
 
-static const func_params_type tfvw_ext_params[] = {
+static const func_params_type tfvw_ext_params[2] = {
   {"Lambda", 1.0, "Lambda"},
   {"Gamma", 1.0, "Gamma"},
 };
@@ -236,7 +236,7 @@ const xc_func_info_type xc_func_info_gga_k_lieb = {
   NULL, work_gga, NULL
 };
 
-static const func_params_type N_ext_params[] = {
+static const func_params_type N_ext_params[1] = {
   {"N", 1.0, "Number of electrons"},
 };
 

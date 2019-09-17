@@ -18,7 +18,7 @@ typedef struct{
   const double *para, *ferro;
 } lda_c_1d_csc_params;
 
-static const double par_para[][10] = { /* paramagnetic */
+static const double par_para[9][10] = { /* paramagnetic */
   /* 0:A    1:B   2:C    3:D    4:E  5:n1   6:n2  7:alpha  8:beta  9:m */
   {  4.66,  0.0,  2.092, 3.735, 0.0, 1.379, 2.0, 23.63,  109.9,    1.837}, /* exponentially screened interaction */
   {  9.5,   0.0,  1.85,  5.64,  0.0, 0.882, 2.0,  5.346,   6.69,   3.110},
@@ -31,7 +31,7 @@ static const double par_para[][10] = { /* paramagnetic */
   {18.40, 0.0,   7.501, 0.10185, 0.012827, 2.0, 3.0, 1.511, 0.258,  4.424}
 };
 
-static const double par_ferro[][10] = { /* ferromagnetic */
+static const double par_ferro[1][10] = { /* ferromagnetic */
   { 5.24, 0.0,   1.568, 0.12856, 0.003201, 2.0, 3.0, 0.0538, 1.56e-5, 2.958}
 };
 
@@ -45,7 +45,7 @@ lda_c_1d_csc_init(xc_func_type *p)
 #include "maple2c/lda_exc/lda_c_1d_csc.c"
 #include "work_lda_new.c"
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[2] = {
   {"interaction",  1, "0 (exponentially screened) | 1 (soft-Coulomb)"},
   {"beta", 1.0, "Screening parameter"}
 };

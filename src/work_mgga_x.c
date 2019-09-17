@@ -21,7 +21,6 @@
 #  define XC_DIMENSIONS 3
 #endif
 
-#pragma omp declare target
 static void
 #ifdef XC_KINETIC_FUNCTIONAL
 work_mgga_k
@@ -179,4 +178,3 @@ internal_counters_mgga_next(&(p->dim), 0, &rho, &sigma, &lapl, &tau,
                                 &v3tau3);
   }
 }
-#pragma omp end declare target

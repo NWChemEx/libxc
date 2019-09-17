@@ -43,7 +43,7 @@ void xc_gga_c_lyp_init(xc_func_type *p)
   }
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[4] = {
   {"_A", 0.04918, "Parameter A of LYP"},
   {"_B", 0.132,   "Parameter B of LYP"},
   {"_c", 0.2533,  "Parameter c of LYP"},

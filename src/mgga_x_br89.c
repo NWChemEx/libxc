@@ -329,7 +329,7 @@ const xc_func_info_type xc_func_info_mgga_x_bj06 = {
   NULL, NULL, work_mgga_x,
 };
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[1] = {
   {"c", 1.0, "This parameter involves an average over the unit cell and must be calculated by the calling program."},
 };
 

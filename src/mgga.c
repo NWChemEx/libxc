@@ -8,6 +8,9 @@
 
 
 #include "util.h"
+
+#pragma omp declare target
+
 #include "funcs_mgga.c"
 #include "funcs_hyb_mgga.c"
 
@@ -254,3 +257,5 @@ void xc_mgga_kxc(const xc_func_type *p, int np,
           v3lapltau2,
           v3tau3);
 }
+
+#pragma omp end declare target

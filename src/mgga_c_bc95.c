@@ -25,7 +25,7 @@ mgga_c_bc95_init(xc_func_type *p)
   p->params = malloc(sizeof(mgga_c_bc95_params));
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[2] = {
   {"_css",  0.038,  "Parallel spin"},
   {"_copp", 0.0031, "Opposite spin"},
 };

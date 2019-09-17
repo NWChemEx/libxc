@@ -24,7 +24,7 @@ gga_x_optx_init(xc_func_type *p)
   p->params = malloc(sizeof(gga_x_optx_params));
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[3] = {
   {"_a", 1.05151, "a"},
   {"_b", 1.43169/X_FACTOR_C, "b"},
   {"_gamma", 0.006, "gamma"},

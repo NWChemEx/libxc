@@ -48,7 +48,7 @@ gga_x_pw91_init(xc_func_type *p)
   b_mPW91 is 0.00426 instead of 0.0046
   also the power seems to be 3.72 and not 3.73
 */
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[3] = {
   {"_bt",    0.00426, "a = 6 bt/X2S"},
   {"_alpha", 100.0,   "parameter of the exponential term"},
   {"_expo",  3.72,    "exponent of the power in the numerator"},

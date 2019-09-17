@@ -24,7 +24,7 @@ gga_x_rpbe_init(xc_func_type *p)
   p->params = malloc(sizeof(gga_x_rpbe_params));
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[2] = {
   {"_kappa", 0.8040, "Asymptotic value of the enhancement function"},
   {"_mu",    MU_PBE, "Coefficient of the 2nd order expansion"},
 };

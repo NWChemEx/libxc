@@ -60,7 +60,7 @@ mgga_x_tpss_init(xc_func_type *p)
   }
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[7] = {
   {"_b",      0.40,    "b"},
   {"_c",      1.59096, "c"},
   {"_e",      1.537,   "e"},

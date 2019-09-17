@@ -24,7 +24,7 @@ gga_x_wpbeh_init(xc_func_type *p)
 }
 
 /* The default value is actually PBEh */
-static func_params_type ext_params[] = {
+static func_params_type ext_params[1] = {
   {"_omega", 0.0, "Screening parameter for HF"},
 };
 

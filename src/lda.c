@@ -8,6 +8,9 @@
 
 
 #include "util.h"
+
+#pragma omp declare target
+
 #include "funcs_lda.c"
 
 /* get the lda functional */
@@ -94,3 +97,4 @@ xc_lda_kxc(const xc_func_type *p, int np, const double *rho, double *v3rho3)
   xc_lda(p, np, rho, NULL, NULL, NULL, v3rho3);
 }
 
+#pragma omp end declare target

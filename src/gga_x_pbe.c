@@ -108,7 +108,7 @@ gga_x_pbe_init(xc_func_type *p)
 }
 
 /* PBE: mu = beta*pi^2/3, beta = 0.06672455060314922 */
-static const func_params_type ext_params_PBE[] = {
+static const func_params_type ext_params_PBE[2] = {
   {"_kappa", 0.8040, "Asymptotic value of the enhancement function"},
   {"_mu",    MU_PBE, "Coefficient of the 2nd order expansion"},
 };
@@ -233,7 +233,7 @@ const xc_func_info_type xc_func_info_gga_x_pbe_tca = {
   NULL, work_gga, NULL
 };
 
-static const func_params_type ext_params_N[] = {
+static const func_params_type ext_params_N[1] = {
   {"N", 1e23, "Number of electrons"},
 };
 

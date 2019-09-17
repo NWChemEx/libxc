@@ -49,7 +49,7 @@ mgga_x_ms_init(xc_func_type *p)
   }
 }
 
-static const func_params_type ext_params[] = {
+static const func_params_type ext_params[3] = {
   {"_kappa",  0.29, "kappa parameter"},
   {"_c",  0.28771, "c parameter"},
   {"_b",  1.0, "exponent b"},
