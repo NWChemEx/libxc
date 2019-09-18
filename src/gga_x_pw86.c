@@ -43,7 +43,7 @@ gga_x_pw86_init(xc_func_type *p)
     memcpy(params, &par_rpw86, sizeof(gga_x_pw86_params));
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_pw86\n");
+    printf("Internal error in gga_x_pw86\n");
     exit(1);
   }
 }

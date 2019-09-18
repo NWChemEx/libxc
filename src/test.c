@@ -113,8 +113,8 @@ void test_ak13()
     xc_gga_exc_vxc(&gga,  1, rho, sigma, &zk, vrho, vsigma);
 
     tmp2 = 1.74959015598863046792081721182*beta*x/3.0- 1.62613336586517367779736042170*log(x);
-    fprintf(stderr, "%16.10lf\t%16.10lf\t%16.10lf\t%16.10lf\n", x, vrho[0], vsigma[0]*sqrt(sigma[0]), 
-	    -X_FACTOR_C*X2S*tmp2/2.0);
+    printf("%16.10lf\t%16.10lf\t%16.10lf\t%16.10lf\n", x, vrho[0], vsigma[0]*sqrt(sigma[0]), 
+	   -X_FACTOR_C*X2S*tmp2/2.0);
   }
   
 }
@@ -185,7 +185,7 @@ void test_gga()
 
      xc_gga(&gga, 1, rho, sigma, zk, vrho, vsigma, v2rho2, v2rhosigma, v2sigma2, NULL, v3rho2sigma, v3rhosigma2, v3sigma3);
 
-     fprintf(stderr, "%16.10le\t%16.10le\t%16.10le\n", sigma[2], vsigma[2], v2sigma2[5]);
+     printf("%16.10le\t%16.10le\t%16.10le\n", sigma[2], vsigma[2], v2sigma2[5]);
    }
 
   /*
@@ -200,7 +200,7 @@ void test_gga()
   xc_gga(&gga,  npoints, rho, sigma, zk,  vrho,  vsigma,  v2rho2,  v2rhosigma,  v2sigma2, v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
 
   for(i=0; i<npoints; i++){    
-    fprintf(stderr, "%16.10lf\t%16.10lf\t%16.10lf\n", rho[2*i + 0], vrho[2*i + 0], v2rho2[3*i + 0]);
+    printf("%16.10lf\t%16.10lf\t%16.10lf\n", rho[2*i + 0], vrho[2*i + 0], v2rho2[3*i + 0]);
   }
   */
 
@@ -255,7 +255,7 @@ void test_mgga()
     xc_mgga_exc_vxc(&mgga2, 1, rho, sigma, lapl, tau, 
 		     &zk2,  vrho2, vsigma2, vlapl2, vtau2);
 
-    fprintf(stderr, "%16.10lf\t%16.10lf\t%16.10lf\n", sigma[2], zk2*(rho[0]+rho[1]), vsigma2[2]);
+    printf("%16.10lf\t%16.10lf\t%16.10lf\n", sigma[2], zk2*(rho[0]+rho[1]), vsigma2[2]);
   }
 
   xc_func_end(&mgga1);

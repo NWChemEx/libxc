@@ -32,7 +32,7 @@ mgga_x_rtpss_init(xc_func_type *p)
     /* default set by set_ext_params */
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_x_rtpss\n");
+    printf("Internal error in mgga_x_rtpss\n");
     exit(1);
   }
 }

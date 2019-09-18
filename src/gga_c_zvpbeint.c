@@ -38,7 +38,7 @@ gga_c_zvpbeint_init(xc_func_type *p)
     params->omega = 4.5;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_c_zvpbeint\n");
+    printf("Internal error in gga_c_zvpbeint\n");
     exit(1);
   }
 }

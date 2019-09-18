@@ -37,7 +37,7 @@ lda_c_lp96_init(xc_func_type *p)
     memcpy(params, &k_lp96, sizeof(lda_c_lp96_params));
     break;
   default:
-    fprintf(stderr, "Internal error in lda_c_lp96\n");
+    printf("Internal error in lda_c_lp96\n");
     exit(1);
   }
 }

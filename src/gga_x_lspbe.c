@@ -33,7 +33,7 @@ gga_x_lspbe_init(xc_func_type *p)
     /* default set by set_ext_params */
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_lspbe\n");
+    printf("Internal error in gga_x_lspbe\n");
     exit(1);
   }
 }

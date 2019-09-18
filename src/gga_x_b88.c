@@ -52,7 +52,7 @@ gga_x_b88_init(xc_func_type *p)
     params->gamma = 6.0;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_b88\n");
+    printf("Internal error in gga_x_b88\n");
     exit(1);
   }
 }

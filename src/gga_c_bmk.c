@@ -82,7 +82,7 @@ gga_c_bmk_init(xc_func_type *p)
     memcpy(params, &par_hyb_tau_hcth, sizeof(gga_c_bmk_params));
     break;
   default:
-    fprintf(stderr, "Internal error in gga_c_bmk\n");
+    printf("Internal error in gga_c_bmk\n");
     exit(1);
     break;
   }

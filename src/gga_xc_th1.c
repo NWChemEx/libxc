@@ -82,7 +82,7 @@ gga_xc_th1_init(xc_func_type *p)
     break;
 
   default:
-    fprintf(stderr, "Internal error in gga_xc_th1\n");
+    printf("Internal error in gga_xc_th1\n");
     exit(1);
   }
 }

@@ -37,7 +37,7 @@ lda_c_ml1_init(xc_func_type *p)
     params->q  = 0.5;
     break;
   default:
-    fprintf(stderr, "Internal error in lda_c_ml1\n");
+    printf("Internal error in lda_c_ml1\n");
     exit(1);
   }
 }

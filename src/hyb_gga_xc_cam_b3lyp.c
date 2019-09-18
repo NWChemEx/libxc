@@ -41,7 +41,7 @@ xc_hyb_gga_xc_cam_b3lyp_init(xc_func_type *p)
     beta  =-0.9201;
     break;
   default:
-    fprintf(stderr,"Internal error in hyb_gga_xc_cam_b3lyp_init.\n");
+    printf("Internal error in hyb_gga_xc_cam_b3lyp_init.\n");
     exit(1);
   }
 

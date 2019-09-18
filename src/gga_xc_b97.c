@@ -259,7 +259,7 @@ gga_xc_b97_init(xc_func_type *p)
     memcpy(params, &par_hle16, sizeof(gga_xc_b97_params));
     break;
   default:
-    fprintf(stderr, "Internal error in gga_xc_b97\n");
+    printf("Internal error in gga_xc_b97\n");
     exit(1);
     break;
   }

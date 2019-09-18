@@ -31,7 +31,7 @@ gga_x_pbe_init(xc_func_type *p)
     /* default set by set_ext_params */
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_pbeint\n");
+    printf("Internal error in gga_x_pbeint\n");
     exit(1);
   }
 }

@@ -36,7 +36,7 @@ gga_c_zpbeint_init(xc_func_type *p)
     params->alpha = 4.8;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_c_zpbeint\n");
+    printf("Internal error in gga_c_zpbeint\n");
     exit(1);
   }
 }

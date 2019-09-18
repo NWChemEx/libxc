@@ -102,7 +102,7 @@ mgga_c_m06l_init(xc_func_type *p)
     memcpy(params, &par_revm06l, sizeof(mgga_c_m06l_params));
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_c_m06l\n");
+    printf("Internal error in mgga_c_m06l\n");
     exit(1);
   }  
 }

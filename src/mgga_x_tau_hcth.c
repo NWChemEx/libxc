@@ -57,7 +57,7 @@ mgga_x_tau_hcth_init(xc_func_type *p)
     params->cx_nlocal = hyb_tHCTH_cx_nlocal;
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_tau_hcth\n");
+    printf("Internal error in mgga_tau_hcth\n");
     exit(1);
     break;
   }

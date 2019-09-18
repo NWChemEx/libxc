@@ -38,7 +38,7 @@ lda_c_chachiyo_init(xc_func_type *p)
     memcpy(params, &par_karasiev, sizeof(lda_c_chachiyo_params));
     break;
   default:
-    fprintf(stderr, "Internal error in lda_c_chachiyo\n");
+    printf("Internal error in lda_c_chachiyo\n");
     exit(1);
   }
 }

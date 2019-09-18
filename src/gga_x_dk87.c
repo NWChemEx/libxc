@@ -42,7 +42,7 @@ gga_x_dk87_init(xc_func_type *p)
     memcpy(params, &par_dk87_r2, sizeof(gga_x_dk87_params));
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_dk87\n");
+    printf("Internal error in gga_x_dk87\n");
     exit(1);
   }
 }

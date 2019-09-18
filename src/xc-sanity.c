@@ -66,7 +66,7 @@ int main(void) {
       break;
 
     default:
-      fprintf(stderr,"Kind %i not handled.\n",func.info->kind);
+      printf("Kind %i not handled.\n",func.info->kind);
       return 2;
     }
     p=strstr(fname,kind);
@@ -96,7 +96,7 @@ int main(void) {
       break;
 
     default:
-      fprintf(stderr,"Family %i not handled.\n",func.info->family);
+      printf("Family %i not handled.\n",func.info->family);
       return 2;
     }
     p=strstr(fname,family);
@@ -149,7 +149,7 @@ int main(void) {
           break;
 
         default:
-          fprintf(stderr,"Functional %i '%s' has conflicting range separation flags set.\n",func_id,fname);
+          printf("Functional %i '%s' has conflicting range separation flags set.\n",func_id,fname);
           return 3;
         }
       }

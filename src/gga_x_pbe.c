@@ -102,7 +102,7 @@ gga_x_pbe_init(xc_func_type *p)
     params->mu    = 0.346;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_pbe\n");
+    printf("Internal error in gga_x_pbe\n");
     exit(1);
   }
 }

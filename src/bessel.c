@@ -71,7 +71,7 @@ double xc_bessel_I0(const double x)
   else if(y < LOG_DBL_MAX - 1.0)
     r = exp(y) * xc_bessel_I0_scaled(x);
   else
-    fprintf(stderr, "Overflow in bessel_I0\n");
+    printf("Overflow in bessel_I0\n");
 
   return r;
 }
@@ -109,7 +109,7 @@ double xc_bessel_I1_scaled(const double x)
   if(y == 0.0)
     r = 0.0;
   else if(y < xmin)
-    fprintf(stderr, "Underflow error in bessel_I1_scaled\n");
+    printf("Underflow error in bessel_I1_scaled\n");
   else if(y < x_small)
     r = 0.5*x*exp(-y);
   else if(y <= 3.0)
@@ -136,7 +136,7 @@ double xc_bessel_I1(const double x)
   if(y == 0.0)
     r = 0.0;
   else if(y < xmin)
-    fprintf(stderr, "Underflow error in bessel_I1\n");
+    printf("Underflow error in bessel_I1\n");
   else if(y < x_small)
     r = 0.5*x;
   else if(y <= 3.0)
@@ -172,7 +172,7 @@ double xc_bessel_K0_scaled(const double x)
   double r = 0.0;
 
   if(x <= 0.0)
-    fprintf(stderr, "Domain error in bessel_K0_scaled\n");
+    printf("Domain error in bessel_K0_scaled\n");
   else if(x <= 2.0)
     r = exp(x)*(-log(0.5*x)*xc_bessel_I0(x) - 0.25 + xc_cheb_eval(0.5*x*x - 1.0, bk0_data, 11));
   else if(x <= 8.0)
@@ -188,7 +188,7 @@ double xc_bessel_K0(const double x)
   double r = 0.0;
 
   if(x <= 0.0)
-    fprintf(stderr, "Domain error in bessel_K0\n");
+    printf("Domain error in bessel_K0\n");
   else if(x <= 2.0)
     r = -log(0.5*x)*xc_bessel_I0(x) - 0.25 + xc_cheb_eval(0.5*x*x - 1.0, bk0_data, 11);
   else
@@ -222,7 +222,7 @@ double xc_bessel_K1_scaled(const double x)
   double r = 0.0;
 
   if(x <= 0.0)
-    fprintf(stderr, "Domain error in bessel_K1_scaled\n");
+    printf("Domain error in bessel_K1_scaled\n");
   else if(x <= 2.0)
     r =  exp(x)*(log(0.5*x)*xc_bessel_I1(x) +
 		 (0.75 + xc_cheb_eval(.5*x*x - 1.0, bk1_data, 11))/x);
@@ -240,9 +240,9 @@ double xc_bessel_K1(const double x)
   double r = 0.0;
 
   if(x <= 0.0)
-    fprintf(stderr, "Domain error in bessel_K1\n");
+    printf("Domain error in bessel_K1\n");
   else if(x<2.0*DBL_MIN)
-    fprintf(stderr, "Overflow error in bessel_K1\n");
+    printf("Overflow error in bessel_K1\n");
   else if(x <= 2.0)
     r = log(0.5*x)*xc_bessel_I1(x) + (0.75 + xc_cheb_eval(0.5*x*x - 1.0, bk1_data, 11))/x;
   else

@@ -35,7 +35,7 @@ gga_x_mpbe_init(xc_func_type *p)
     params->c3 =  0.0;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_mpbe\n");
+    printf("Internal error in gga_x_mpbe\n");
     exit(1);
   }
 }

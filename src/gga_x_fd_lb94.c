@@ -35,7 +35,7 @@ gga_x_fd_lb94_init(xc_func_type *p)
     params->beta = 0.004;
     break;
    default:
-    fprintf(stderr, "Internal error in gga_x_fd_lb94\n");
+    printf("Internal error in gga_x_fd_lb94\n");
     exit(1);
   }
 }

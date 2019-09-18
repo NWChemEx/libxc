@@ -41,7 +41,7 @@ gga_k_apbe_init(xc_func_type *p)
     params->muGE  = 5.0/27.0;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_k_apbeint\n");
+    printf("Internal error in gga_k_apbeint\n");
     exit(1);
   }
 }

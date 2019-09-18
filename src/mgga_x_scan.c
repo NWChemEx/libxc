@@ -40,7 +40,7 @@ mgga_x_scan_init(xc_func_type *p)
     memcpy(params, &par_revscan, sizeof(mgga_x_scan_params));
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_x_scan\n");
+    printf("Internal error in mgga_x_scan\n");
     exit(1);
   }  
 }

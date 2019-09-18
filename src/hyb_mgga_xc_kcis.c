@@ -42,7 +42,7 @@ hyb_mgga_xc_kcis_init(xc_func_type *p)
     exx=0.13;
     break;
   default:
-    fprintf(stderr, "Internal error in hyb_mgga_xc_kcis\n");
+    printf("Internal error in hyb_mgga_xc_kcis\n");
     exit(1);
   }
 

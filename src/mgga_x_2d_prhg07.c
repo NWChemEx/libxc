@@ -93,9 +93,8 @@ double xc_mgga_x_2d_prhg_get_y(double C)
 
   y = prhg_newt(rhs, tol, &res, &ierr);
   if(ierr == 0){
-    fprintf(stderr, 
-	    "Warning: Convergence not reached in PRHG functional\n"
-	    "For c = %e (residual = %e)\n", C, res);
+    printf("Warning: Convergence not reached in PRHG functional\n"
+	   "For c = %e (residual = %e)\n", C, res);
   }
 
   return y;

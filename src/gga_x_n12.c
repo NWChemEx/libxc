@@ -68,7 +68,7 @@ gga_x_n12_init(xc_func_type *p)
     params->CC = CC_GAM;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_n12\n");
+    printf("Internal error in gga_x_n12\n");
     exit(1);
   }
 }

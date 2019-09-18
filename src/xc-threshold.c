@@ -345,7 +345,7 @@ int main(int argc, char *argv[])
       printf("# Test case: %s", "HEG, spin-polarized, one empty spin-channel");
       break;
     default:
-      fprintf(stderr, "Testcase %i not supported by xc-threshold.\nEnding program.\n", testcase);
+      printf("Testcase %i not supported by xc-threshold.\nEnding program.\n", testcase);
       exit(1);
   }
   printf("\n");
@@ -356,7 +356,7 @@ int main(int argc, char *argv[])
   /* Initialize functional */
   nspin = testcase == 1 || testcase == 4 ? 1 : 2;
   if (xc_func_init(&func, id, nspin) != 0) {
-    fprintf(stderr, "Functional '%d' not found\n", id);
+    printf("Functional '%d' not found\n", id);
     exit(1);
   }
   default_threshold = func.dens_threshold;

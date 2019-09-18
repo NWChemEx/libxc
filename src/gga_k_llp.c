@@ -38,7 +38,7 @@ gga_k_llp_init(xc_func_type *p)
     params->gamma = 0.02774/(X_FACTOR_C*0.004596);
     break;
   default:
-    fprintf(stderr, "Internal error in gga_k_llp\n");
+    printf("Internal error in gga_k_llp\n");
     exit(1);
   }
 }

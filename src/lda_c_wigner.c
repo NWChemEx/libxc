@@ -61,7 +61,7 @@ lda_c_wigner_init(xc_func_type *p)
     params->b = RS_FACTOR/0.349;
     break;
   default:
-    fprintf(stderr, "Internal error in lda_c_wigner\n");
+    printf("Internal error in lda_c_wigner\n");
     exit(1);
   }
 }

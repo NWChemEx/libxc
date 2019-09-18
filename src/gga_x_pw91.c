@@ -37,7 +37,7 @@ gga_x_pw91_init(xc_func_type *p)
     /* default set by set_ext_params */
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_pw91\n");
+    printf("Internal error in gga_x_pw91\n");
     exit(1);
   } 
 }

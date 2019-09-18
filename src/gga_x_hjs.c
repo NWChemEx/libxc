@@ -78,7 +78,7 @@ gga_x_hjs_init(xc_func_type *p)
     params->b = b_B88_V2;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_hjs_init\n");
+    printf("Internal error in gga_x_hjs_init\n");
     exit(1);
   }
 }

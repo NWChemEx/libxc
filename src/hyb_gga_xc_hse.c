@@ -391,7 +391,7 @@ hyb_gga_xc_hjs_init(xc_func_type *p)
     funcs_id[0] = funcs_id[1] = XC_GGA_X_HJS_B97X;
     break;
   default:
-    fprintf(stderr, "Internal error in hyb_gga_xc_hjs\n");
+    printf("Internal error in hyb_gga_xc_hjs\n");
     exit(1);
   }
 

@@ -60,7 +60,7 @@ gga_k_apbe_init(xc_func_type *p)
     params->mu    = 0.23889;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_k_apbe\n");
+    printf("Internal error in gga_k_apbe\n");
     exit(1);
   }
 }

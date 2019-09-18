@@ -155,9 +155,8 @@ double xc_mgga_x_br89_get_x(double Q)
   if(ierr == 0){
     br_x = br_bisect(rhs, tol, &ierr);
     if(ierr == 0){
-      fprintf(stderr,
-	      "Warning: Convergence not reached in Becke-Roussel functional\n"
-	      "For rhs = %e (residual = %e)\n", rhs, res);
+      printf("Warning: Convergence not reached in Becke-Roussel functional\n"
+	     "For rhs = %e (residual = %e)\n", rhs, res);
     }
   }
 

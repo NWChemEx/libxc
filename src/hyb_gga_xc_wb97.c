@@ -78,7 +78,7 @@ gga_xc_wb97_init(xc_func_type *p)
     memcpy(params, &par_wb97x_d, sizeof(gga_xc_wb97_params));
     break;
   default:
-    fprintf(stderr, "Internal error in gga_wb97\n");
+    printf("Internal error in gga_wb97\n");
     exit(1);
     break;
   }

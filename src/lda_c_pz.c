@@ -80,7 +80,7 @@ lda_c_pz_init(xc_func_type *p)
     memcpy(params, &pz_ob, sizeof(lda_c_pz_params));
     break;
   default:
-    fprintf(stderr, "Internal error in lda_c_pz\n");
+    printf("Internal error in lda_c_pz\n");
     exit(1);
   }
 }

@@ -33,7 +33,7 @@ gga_k_lc94_init(xc_func_type *p)
     memcpy(params, &par_k_lc94, sizeof(gga_k_lc94_params));
     break;
   default:
-    fprintf(stderr, "Internal error in gga_k_lc94\n");
+    printf("Internal error in gga_k_lc94\n");
     exit(1);
   } 
 }

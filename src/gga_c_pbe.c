@@ -85,7 +85,7 @@ static void gga_c_pbe_init(xc_func_type *p)
     params->beta  = 3.38*params->gamma;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_c_pbe\n");
+    printf("Internal error in gga_c_pbe\n");
     exit(1);
   }
 }

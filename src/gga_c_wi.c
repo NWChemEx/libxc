@@ -43,7 +43,7 @@ gga_c_wi_init(xc_func_type *p)
     memcpy(params, &wi_params, sizeof(gga_c_wi_params));
     break;
   default:
-    fprintf(stderr, "Internal error in gga_c_wi\n");
+    printf("Internal error in gga_c_wi\n");
     exit(1);
   }
 }

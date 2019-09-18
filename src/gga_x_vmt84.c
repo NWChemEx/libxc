@@ -37,7 +37,7 @@ gga_x_vmt84_init(xc_func_type *p)
     params->alpha = 0.000023;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_vmt84\n");
+    printf("Internal error in gga_x_vmt84\n");
     exit(1);
   }
 }

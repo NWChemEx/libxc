@@ -23,7 +23,7 @@ double LambertW(double z)
 
   /* Sanity check - function is only defined for z >= -1/e */
   if(z + 1.0/M_E < -10*DBL_EPSILON) {
-    fprintf(stderr,"Error - Lambert function called with argument z = %e.\n",z);
+    printf("Error - Lambert function called with argument z = %e.\n",z);
     exit(1);
   } else if(z < -1.0/M_E)
     /* Value of W(x) at x=-1/e is -1 */
@@ -70,7 +70,7 @@ double LambertW(double z)
   }
 
   /* This should never happen! */
-  fprintf(stderr, "%s\n%s\n", "lambert_w: iteration limit reached",
+  printf("%s\n%s\n", "lambert_w: iteration limit reached",
 	  "Should never happen: execution aborted");
   exit(1);
 }

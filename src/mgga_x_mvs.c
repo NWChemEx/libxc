@@ -31,7 +31,7 @@ mgga_x_mvs_init(xc_func_type *p)
     /* set by set_ext_params */
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_x_mvs\n");
+    printf("Internal error in mgga_x_mvs\n");
     exit(1);
   }
 }

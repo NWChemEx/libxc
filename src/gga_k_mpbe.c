@@ -42,7 +42,7 @@ gga_k_mpbe_init(xc_func_type *p)
     params->c3 = -93.683;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_k_mpbe\n");
+    printf("Internal error in gga_k_mpbe\n");
     exit(1);
   }
 }

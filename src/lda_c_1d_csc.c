@@ -97,8 +97,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   }
 
   if(params->para == NULL){
-    fprintf(stderr, "Invalid value of parameters (inter,b) = (%d,%f) in lda_c_1d_csc_set_params", 
-	    params->interaction, params->bb);
+    printf("Invalid value of parameters (inter,b) = (%d,%f) in lda_c_1d_csc_set_params", 
+	   params->interaction, params->bb);
     exit(1);
   }
 }

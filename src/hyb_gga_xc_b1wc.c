@@ -108,8 +108,8 @@ xc_hyb_gga_xc_mpw1pw_init(xc_func_type *p)
     funcs_id[1]=XC_GGA_C_PW91;
     break;
   default:
-    fprintf(stderr,"Error in hyb_gga_xc_mpw1pw_init\n");
-    fflush(stderr);
+    printf("Error in hyb_gga_xc_mpw1pw_init\n");
+    fflush(stdout);
     exit(1);
   }
 

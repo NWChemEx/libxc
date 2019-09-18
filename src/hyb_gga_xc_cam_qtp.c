@@ -53,7 +53,7 @@ xc_hyb_gga_xc_cam_qtp_init(xc_func_type *p)
     flyp = 1.0;
     break;
   default:
-    fprintf(stderr,"Internal error in hyb_gga_xc_cam_qtp_init.\n");
+    printf("Internal error in hyb_gga_xc_cam_qtp_init.\n");
     exit(1);
   }
 

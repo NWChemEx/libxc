@@ -45,7 +45,7 @@ gga_c_sogga11_init(xc_func_type *p)
     memcpy(params, &par_sogga11_x, sizeof(gga_c_sogga11_params));
     break;
   default:
-    fprintf(stderr, "Internal error in gga_c_sogga11\n");
+    printf("Internal error in gga_c_sogga11\n");
     exit(1);
   } 
 }

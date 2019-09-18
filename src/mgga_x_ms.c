@@ -44,7 +44,7 @@ mgga_x_ms_init(xc_func_type *p)
     params->b     = 4.0;
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_x_ms\n");
+    printf("Internal error in mgga_x_ms\n");
     exit(1);
   }
 }

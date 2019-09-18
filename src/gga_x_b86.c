@@ -56,7 +56,7 @@ gga_x_b86_init(xc_func_type *p)
     params->omega = 4.0/5.0;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_b86\n");
+    printf("Internal error in gga_x_b86\n");
     exit(1);
   }
 }

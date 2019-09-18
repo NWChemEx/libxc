@@ -74,7 +74,7 @@ mgga_x_m06l_init(xc_func_type *p)
     params->d = d_revm06l;
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_x_m06l\n");
+    printf("Internal error in mgga_x_m06l\n");
     exit(1);
   }
 }

@@ -37,7 +37,7 @@ mgga_x_br89_init(xc_func_type *p)
     memcpy(params, &par_one, sizeof(mgga_x_br89_params));
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_x_br89_explicit\n");
+    printf("Internal error in mgga_x_br89_explicit\n");
     exit(1);
   }
 }

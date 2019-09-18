@@ -53,7 +53,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   params->N = get_ext_param(p->info->ext_params, ext_params, 0);
 
   if(params->N <= 1.0){
-    fprintf(stderr, "PRM functional cannot be used for N_electrons <= 1\n");
+    printf("PRM functional cannot be used for N_electrons <= 1\n");
     exit(1);
   }
 

@@ -154,7 +154,7 @@ mgga_c_m08_init(xc_func_type *p)
     memcpy(params, &par_revm11, sizeof(mgga_c_m08_params));
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_c_m08\n");
+    printf("Internal error in mgga_c_m08\n");
     exit(1);
   }
 }

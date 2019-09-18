@@ -50,7 +50,7 @@ lda_c_hl_init(xc_func_type *p)
     memcpy(params, &par_vbh, sizeof(lda_c_hl_params));
     break;
   default:
-    fprintf(stderr, "Internal error in lda_c_hl\n");
+    printf("Internal error in lda_c_hl\n");
     exit(1);
   }
 }

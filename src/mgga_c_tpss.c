@@ -38,7 +38,7 @@ mgga_c_tpss_init(xc_func_type *p)
     memcpy(params, &par_tm, sizeof(mgga_c_tpss_params));
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_c_tpss\n");
+    printf("Internal error in mgga_c_tpss\n");
     exit(1);
   }
 }

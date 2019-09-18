@@ -58,7 +58,7 @@ mgga_x_m08_init(xc_func_type *p)
     p->cam_alpha = 0.5679;
   break;
   default:
-    fprintf(stderr, "Internal error in mgga_x_m08\n");
+    printf("Internal error in mgga_x_m08\n");
     exit(1);
   }
 }

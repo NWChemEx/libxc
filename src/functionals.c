@@ -163,7 +163,7 @@ int xc_number_of_functionals()
       return num;
   }
 
-  fprintf(stderr, "Internal error in functionals.c\n");
+  printf("Internal error in functionals.c\n");
   exit(1);
 }
 

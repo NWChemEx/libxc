@@ -100,7 +100,7 @@ lda_c_pw_init(xc_func_type *p)
     memcpy(params, &par_pw_rpa, sizeof(lda_c_pw_params));
     break;
   default:
-    fprintf(stderr, "Internal error in lda_c_pw\n");
+    printf("Internal error in lda_c_pw\n");
     exit(1);
   }
 }

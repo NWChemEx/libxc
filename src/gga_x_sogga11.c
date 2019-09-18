@@ -48,7 +48,7 @@ gga_x_sogga11_init(xc_func_type *p)
     p->cam_alpha = 0.4015;
     break;
   default:
-    fprintf(stderr, "Internal error in gga_x_sogga11\n");
+    printf("Internal error in gga_x_sogga11\n");
     exit(1);
   }
 }

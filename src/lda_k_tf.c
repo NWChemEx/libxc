@@ -37,7 +37,7 @@ lda_k_tf_init(xc_func_type *p)
     params->ax = 1.142427709758666675644309251677891925671;
     break;
   default:
-    fprintf(stderr, "Internal error in lda_k_tf\n");
+    printf("Internal error in lda_k_tf\n");
     exit(1);
   }
 }

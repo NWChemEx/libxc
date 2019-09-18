@@ -62,7 +62,7 @@ mgga_c_vsxc_init(xc_func_type *p)
     memcpy(params, &par_dldf, sizeof(mgga_c_m05_params));
     break;
   default:
-    fprintf(stderr, "Internal error in mgga_c_m05\n");
+    printf("Internal error in mgga_c_m05\n");
     exit(1);
   }  
 }

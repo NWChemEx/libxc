@@ -82,7 +82,7 @@ lda_xc_ksdt_init(xc_func_type *p)
     memcpy(params, &par_gdsmfb, sizeof(lda_xc_ksdt_params));
     break;
   default:
-    fprintf(stderr, "Internal error in lda_xc_ksdt\n");
+    printf("Internal error in lda_xc_ksdt\n");
     exit(1);
   }
 }
