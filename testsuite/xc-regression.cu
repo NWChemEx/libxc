@@ -54,6 +54,8 @@ typedef struct {
 
 void allocate_memory(values_t *data, int nspin, int order)
 {
+  cudaError_t cError = cudaSuccess;
+  printf("enter: allocate_memory\n");
   data->zk = NULL;
   data->vrho = NULL;
   data->vsigma = NULL;
@@ -106,6 +108,9 @@ void allocate_memory(values_t *data, int nspin, int order)
           fprintf(stderr, "order = %i not recognized.\n", order);
           exit(2);
       }
+      if ((cError=cudaGetLastError())!=cudaSuccess) {
+          fprintf(stderr,"allocate memory: %s\n",cudaGetErrorString(cError));
+      }
       break;
 
     case (XC_POLARIZED):
@@ -142,17 +147,23 @@ void allocate_memory(values_t *data, int nspin, int order)
           fprintf(stderr, "order = %i not recognized.\n", order);
           exit(2);
       }
+      if ((cError=cudaGetLastError())!=cudaSuccess) {
+          fprintf(stderr,"allocate memory: %s\n",cudaGetErrorString(cError));
+      }
       break;
 
     default:
       fprintf(stderr, "nspin = %i not recognized.\n", nspin);
       exit(2);
   }
+  printf("leave: allocate_memory\n");
 
 }
 
 void free_memory(values_t val)
 {
+  cudaError_t cError = cudaSuccess;
+  printf("enter: free_memory\n");
   cudaFree(val.rho);
   cudaFree(val.sigma);
   cudaFree(val.lapl);
@@ -173,6 +184,10 @@ void free_memory(values_t val)
   cudaFree(val.v2sigmatau);
   cudaFree(val.v2sigmalapl);
   cudaFree(val.v3rho3);
+  if ((cError=cudaGetLastError())!=cudaSuccess) {
+      fprintf(stderr,"allocate memory: %s\n",cudaGetErrorString(cError));
+  }
+  printf("leave: free_memory\n");
 }
 
 values_t read_data(const char *file, int nspin, int order) {
@@ -197,6 +212,7 @@ values_t read_data(const char *file, int nspin, int order) {
   double lapla, laplb;
   double taua, taub;
 
+  printf("enter: read_data\n");
   /* Open file */
   in=fopen(file,"r");
   if(!in) {
@@ -260,6 +276,7 @@ values_t read_data(const char *file, int nspin, int order) {
 
   /* Close input file */
   fclose(in);
+  printf("leave: read_data\n");
 
   return data;
 }
@@ -283,6 +300,7 @@ __global__ void evaluate_functional(int &flags,int &family,int func_id,values_t 
   /* Helpers for properties that may not have been implemented */
   double *zk,  *vrho,  *v2rho2,  *v3rho3;
   double *zzk, *vvrho, *vv2rho2, *vv3rho3;
+  *error = 0;
   /* Initialize functional */
   if(dvc_xc_func_init(func, func_id, nspin)) {
     // fprintf(stderr, "Functional '%d' (%s) not found.\nPlease report a bug against functional_get_number.\n", func_id, argv[1]);
@@ -394,7 +412,6 @@ __global__ void evaluate_functional(int &flags,int &family,int func_id,values_t 
       }
   }
   dvc_xc_func_end(func);
-  *error = 0;
 }
 
 
@@ -461,11 +478,13 @@ int main(int argc, char *argv[])
   /* Read in data */
   d = read_data(argv[4], nspin, order);
 
+  printf("call: evaluate_functional\n");
   evaluate_functional<<<1,1>>>(flags,family,func_id,d,nspin,order,&error);
   if (error) {
     fprintf(stderr,"Error in functional evaluation %d.\n",error);
     exit(1);
   }
+  printf("pass: evaluate_functional\n");
 
   /* Open output file */
   fname = argv[5];
