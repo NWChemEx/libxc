@@ -6,6 +6,7 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+#include <stdlib.h>
 #include "xc.h"
 #include "funcs_key.c"
 #include <string.h>
@@ -66,6 +67,28 @@ char *xc_functional_get_name(int number)
       p=malloc(strlen(xc_functional_keys[ii].name)+1);
       strcpy(p,xc_functional_keys[ii].name);
       return p;
+    }
+  }
+}
+
+/*------------------------------------------------------*/
+/* Given the functional identifier find the rank of this
+ * functional in xc_functional_keys. We need this to be
+ * able to tell a GPU which parameters it is supposed to
+ * use with a functional kernel. 
+ *
+ * The function returns -1 if the functional was not found.
+ */
+int xc_functional_get_rank(int number)
+{
+  int ii;
+  char *p;
+
+  for(ii=0;;ii++){
+    if(xc_functional_keys[ii].number == -1)
+      return -1;
+    if(xc_functional_keys[ii].number == number) {
+      return ii;
     }
   }
 }
@@ -191,14 +214,17 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
   assert(nspin==XC_UNPOLARIZED || nspin==XC_POLARIZED);
 
   /* initialize structure */
-  func->nspin       = nspin;
+  func->func_rank  = xc_functional_get_rank(functional);
+  assert(func->func_rank >= 0);
+
+  func->nspin      = nspin;
 
   func->params     = NULL;
 
   func->n_func_aux = 0;
   func->func_aux   = NULL;
   func->mix_coef   = NULL;
-  func->cam_omega = func->cam_alpha = func->cam_beta = 0.0;
+  func->cam_omega  = func->cam_alpha = func->cam_beta = 0.0;
   func->nlc_b = func->nlc_C = 0.0;
 
   switch(xc_family_from_id(functional, NULL, &number)){

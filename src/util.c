@@ -8,11 +8,12 @@
 
 
 #include "util.h"
+#include "xc_device.h"
 
 
 /* this function converts the spin-density into total density and
 	 relative magnetization */
-/* inline */ void
+DEVICE /* inline */ void
 xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta)
 {
   if(nspin==XC_UNPOLARIZED){
@@ -196,7 +197,7 @@ internal_counters_set_mgga(int nspin, xc_dimensions *dim)
   }
 }
 
-void
+DEVICE void
 internal_counters_lda_next
   (
    const xc_dimensions *dim, int offset,
@@ -211,7 +212,7 @@ internal_counters_lda_next
   if(*v3rho3 != NULL) *v3rho3 += dim->v3rho3 + offset;
 }
 
-void
+DEVICE void
 internal_counters_lda_prev
   (
    const xc_dimensions *dim, int offset,

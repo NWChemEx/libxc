@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "xc_device.h"
 
 #define XC_LDA_X         1   /* Exchange                            */
 #define XC_LDA_C_XALPHA  6   /* Slater Xalpha                       */
@@ -38,7 +39,8 @@ lda_x_init(xc_func_type *p)
   lda_x_params *params;
 
   assert(p != NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_x_params));
+  p->sizeof_params = sizeof(lda_x_params);
+  p->params = malloc(p->sizeof_params);
   params = (lda_x_params *) (p->params);
 
   params->alpha = 1.0;

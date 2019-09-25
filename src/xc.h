@@ -131,6 +131,32 @@ typedef struct{
          double *v3lapl3, double *v3lapl2tau,
          double *v3lapltau2,
          double *v3tau3);
+  void (*lda_offload) (const struct xc_func_type *p, int np,
+	       const double *rho,
+	       double *zk, double *vrho, double *v2rho2, double *v3rho3);
+  void (*gga_offload) (const struct xc_func_type *p, int np,
+	       const double *rho, const double *sigma,
+	       double *zk, double *vrho, double *vsigma,
+	       double *v2rho2, double *v2rhosigma, double *v2sigma2,
+	       double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3);
+  void (*mgga_offload)(const struct xc_func_type *p, int np,
+         const double *rho, const double *sigma, const double *lapl_rho, const double *tau,
+         double *zk,
+         double *vrho, double *vsigma, double *vlapl, double *vtau,
+         double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, 
+         double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
+         double *v2lapl2, double *v2lapltau,
+         double *v2tau2,
+         double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, 
+         double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
+         double *v3rholapl2, double *v3rholapltau,
+         double *v3rhotau2,
+         double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
+         double *v3sigmalapl2, double *v3sigmalapltau,
+         double *v3sigmatau2,
+         double *v3lapl3, double *v3lapl2tau,
+         double *v3lapltau2,
+         double *v3tau3);
 } xc_func_info_type;
 
 /* for API compability with older versions of libxc */
@@ -182,6 +208,8 @@ struct xc_func_type{
   struct xc_func_type **func_aux;      /* most GGAs are based on a LDA or other GGAs  */
   double *mix_coef;                    /* coefficients for the mixing */
 
+  int func_rank;                       /* The rank of this functional in xc_functional_keys */
+
   /**
      Parameters for range-separated hybrids
      cam_omega: the range separation constant
@@ -203,6 +231,7 @@ struct xc_func_type{
   xc_dimensions dim;           /* the dimensions of all input and output arrays */
 
   void *params;                /* this allows us to fix parameters in the functional */
+  size_t sizeof_params;        /* this holds the size in bytes of whatever params points to */
   double dens_threshold;
 };
 
@@ -211,6 +240,7 @@ typedef struct xc_func_type xc_func_type;
 /* functionals */
 int   xc_functional_get_number(const char *name);
 char *xc_functional_get_name(int number);
+int   xc_functional_get_rank(int number);
 int   xc_family_from_id(int id, int *family, int *number);
 int   xc_number_of_functionals();
 int   xc_maximum_name_length();
