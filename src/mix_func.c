@@ -17,12 +17,13 @@ xc_mix_init(xc_func_type *p, int n_funcs, const int *funcs_id, const double *mix
   int ii;
 
   assert(p != NULL);
-  assert(p->func_aux == NULL && p->mix_coef == NULL);
+  assert(n_funcs <= XC_MAX_FUNC_TERMS);
+  //assert(p->func_aux == NULL && p->mix_coef == NULL);
 
   /* allocate structures needed for */
   p->n_func_aux = n_funcs;
-  p->mix_coef   = (double *) malloc(n_funcs*sizeof(double));
-  p->func_aux   = (xc_func_type **) malloc(n_funcs*sizeof(xc_func_type *));
+  //p->mix_coef   = (double *) malloc(n_funcs*sizeof(double));
+  //p->func_aux   = (xc_func_type **) malloc(n_funcs*sizeof(xc_func_type *));
 
   for(ii=0; ii<n_funcs; ii++){
     p->mix_coef[ii] = mix_coef[ii];
