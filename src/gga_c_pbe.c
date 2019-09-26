@@ -36,8 +36,9 @@ static void gga_c_pbe_init(xc_func_type *p)
 {
   gga_c_pbe_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_c_pbe_params));
+  assert(sizeof(gga_c_pbe_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p!=NULL && p->params == NULL);
+  //p->params = malloc(sizeof(gga_c_pbe_params));
   params = (gga_c_pbe_params *) (p->params);
 
   /* most functionals have the same gamma and B */
@@ -99,7 +100,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_c_pbe_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_c_pbe_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p != NULL && p->params != NULL);
   params = (gga_c_pbe_params *) (p->params);
 
   params->beta  = get_ext_param(p->info->ext_params, ext_params, 0);

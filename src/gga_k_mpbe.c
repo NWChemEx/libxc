@@ -22,8 +22,9 @@ gga_k_mpbe_init(xc_func_type *p)
 {
   gga_k_mpbe_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_k_mpbe_params));
+  assert(sizeof(gga_k_mpbe_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(gga_k_mpbe_params));
   params = (gga_k_mpbe_params *) (p->params);
  
   switch(p->info->number){

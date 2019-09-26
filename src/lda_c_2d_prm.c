@@ -28,7 +28,7 @@ lda_c_2d_prm_init(xc_func_type *p)
 {
   assert(p != NULL && p->params == NULL);
 
-  p->params = malloc(sizeof(lda_c_2d_prm_params));
+  //p->params = malloc(sizeof(lda_c_2d_prm_params));
 }
 
 #include "maple2c/lda_exc/lda_c_2d_prm.c"
@@ -45,7 +45,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   lda_c_2d_prm_params *params;
   double ff;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(lda_c_2d_prm_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (lda_c_2d_prm_params *) (p->params);
 
   params->N = get_ext_param(p->info->ext_params, ext_params, 0);

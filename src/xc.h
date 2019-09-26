@@ -64,7 +64,9 @@ extern "C" {
 #define XC_TAU_EXPLICIT         0
 #define XC_TAU_EXPANSION        1
 
-#define XC_MAX_REFERENCES       5
+#define XC_MAX_REFERENCES       5    /* the maximum number of references that can be associated with a functional */
+#define XC_MAX_FUNC_TERMS       8    /* the maximum number of functional terms in a functional */
+#define XC_MAX_FUNC_PARAMS      128  /* the maximum number of parameters in terms of doubles */
 
 void xc_version(int *major, int *minor, int *micro);
 const char *xc_version_string();
@@ -201,14 +203,14 @@ struct xc_dimensions{
 typedef struct xc_dimensions xc_dimensions;
   
 struct xc_func_type{
-  const xc_func_info_type *info;       /* all the information concerning this functional */
-  int nspin;                           /* XC_UNPOLARIZED or XC_POLARIZED  */
+  const xc_func_info_type *info;                    /* all the information concerning this functional */
+  int nspin;                                        /* XC_UNPOLARIZED or XC_POLARIZED  */
 
-  int n_func_aux;                      /* how many auxiliary functions we need */
-  struct xc_func_type **func_aux;      /* most GGAs are based on a LDA or other GGAs  */
-  double *mix_coef;                    /* coefficients for the mixing */
+  int n_func_aux;                                   /* how many auxiliary functions we need */
+  struct xc_func_type *func_aux[XC_MAX_FUNC_TERMS]; /* most GGAs are based on a LDA or other GGAs  */
+  double mix_coef[XC_MAX_FUNC_TERMS];               /* coefficients for the mixing */
 
-  int func_rank;                       /* The rank of this functional in xc_functional_keys */
+  int func_rank;                                    /* The rank of this functional in xc_functional_keys */
 
   /**
      Parameters for range-separated hybrids
@@ -225,13 +227,12 @@ struct xc_func_type{
   */
   double cam_omega, cam_alpha, cam_beta;
 
-  double nlc_b;                /* Non-local correlation, b parameter */
-  double nlc_C;                /* Non-local correlation, C parameter */
+  double nlc_b;                      /* Non-local correlation, b parameter */
+  double nlc_C;                      /* Non-local correlation, C parameter */
 
-  xc_dimensions dim;           /* the dimensions of all input and output arrays */
+  xc_dimensions dim;                 /* the dimensions of all input and output arrays */
 
-  void *params;                /* this allows us to fix parameters in the functional */
-  size_t sizeof_params;        /* this holds the size in bytes of whatever params points to */
+  double params[XC_MAX_FUNC_PARAMS]; /* this allows us to fix parameters in the functional */
   double dens_threshold;
 };
 

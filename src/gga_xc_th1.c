@@ -15,7 +15,7 @@
 #define XC_GGA_XC_TH1          154 /* Tozer and Handy v. 1 */
 
 typedef struct{
-  const double *omega;
+  double omega[21];
 } gga_xc_th1_params;
 
 static const double omega_TH_FL[] = 
@@ -54,29 +54,30 @@ gga_xc_th1_init(xc_func_type *p)
 {
   gga_xc_th1_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_xc_th1_params));
+  assert(sizeof(gga_x_th1_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_xc_th1_params));
   params = (gga_xc_th1_params *)p->params;
 
   switch(p->info->number){
   case XC_GGA_XC_TH_FL:
-    params->omega = omega_TH_FL;
+    memcpy(params->omega, omega_TH_FL, sizeof(omega_TH_FL));
     break;
 
   case XC_GGA_XC_TH_FC:
-    params->omega = omega_TH_FC;
+    memcpy(params->omega, omega_TH_FC, sizeof(omega_TH_FC));
     break;
 
   case XC_GGA_XC_TH_FCFO:
-    params->omega = omega_TH_FCFO;
+    memcpy(params->omega, omega_TH_FCFO, sizeof(omega_TH_FCFO));
     break;
 
   case XC_GGA_XC_TH_FCO:
-    params->omega = omega_TH_FCO; 
+    memcpy(params->omega, omega_TH_FCO, sizeof(omega_TH_FCO));
     break;
 
   case XC_GGA_XC_TH1:
-    params->omega = omega_TH1;
+    memcpy(params->omega, omega_TH1, sizeof(omega_TH1));
     break;
 
   default:

@@ -16,7 +16,7 @@
 typedef struct{
   double omega;
 
-  const double *a, *b; /* pointers to the a and b parameters */
+  double a[6], b[9]; /* pointers to the a and b parameters */
 } gga_x_hjs_params;
 
 static const double a_PBE[] = 
@@ -48,32 +48,33 @@ static void
 gga_x_hjs_init(xc_func_type *p)
 {
   gga_x_hjs_params *params;
-  
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_x_hjs_params));
+
+  assert(sizeof(gga_x_hjs_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));  
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_x_hjs_params));
   params = (gga_x_hjs_params *) (p->params);
   
   /* omega = 0.11 is set by ext_params */
   switch(p->info->number){
   case XC_GGA_X_HJS_PBE:
-    params->a = a_PBE;
-    params->b = b_PBE;
+    memcpy(params->a, a_PBE, sizeof(a_PBE));
+    memcpy(params->b, b_PBE, sizeof(b_PBE));
     break;
   case XC_GGA_X_HJS_PBE_SOL:
-    params->a = a_PBE_sol;
-    params->b = b_PBE_sol;
+    memcpy(params->a, a_PBE_sol, sizeof(a_PBE_sol));
+    memcpy(params->b, b_PBE_sol, sizeof(b_PBE_sol));
     break;
   case XC_GGA_X_HJS_B88:
-    params->a = a_B88;
-    params->b = b_B88;
+    memcpy(params->a, a_B88, sizeof(a_B88));
+    memcpy(params->b, b_B88, sizeof(b_B88));
     break;
   case XC_GGA_X_HJS_B97X:
-    params->a = a_B97x;
-    params->b = b_B97x;
+    memcpy(params->a, a_B97x, sizeof(a_B97x));
+    memcpy(params->b, b_B97x, sizeof(b_B97x));
     break;
   case XC_GGA_X_HJS_B88_V2:
-    params->a = a_B88_V2;
-    params->b = b_B88_V2;
+    memcpy(params->a, a_B88_V2, sizeof(a_B88_V2));
+    memcpy(params->b, b_B88_V2, sizeof(b_B88_V2));
     break;
   default:
     fprintf(stderr, "Internal error in gga_x_hjs_init\n");
@@ -90,7 +91,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_hjs_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_x_hjs_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (gga_x_hjs_params *) (p->params);
 
   params->omega = get_ext_param(p->info->ext_params, ext_params, 0);

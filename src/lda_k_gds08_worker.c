@@ -19,7 +19,7 @@ static void
 lda_k_gds08_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_k_gds08_params));
+  //p->params = malloc(sizeof(lda_k_gds08_params));
 }
 
 static func_params_type ext_params[] = {
@@ -33,7 +33,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_k_gds08_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(lda_k_gds08_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (lda_k_gds08_params *) (p->params);
 
   params->A = get_ext_param(p->info->ext_params, ext_params, 0);

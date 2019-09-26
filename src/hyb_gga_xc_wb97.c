@@ -46,8 +46,9 @@ gga_xc_wb97_init(xc_func_type *p)
 {
   gga_xc_wb97_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_xc_wb97_params));
+  assert(sizeof(gga_xc_wb97_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_xc_wb97_params));
   params = (gga_xc_wb97_params *)(p->params);
 
   switch(p->info->number){

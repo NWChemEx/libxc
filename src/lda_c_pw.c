@@ -80,8 +80,9 @@ lda_c_pw_init(xc_func_type *p)
 {  
   lda_c_pw_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_c_pw_params));
+  assert(sizeof(lda_c_pw_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(lda_c_pw_params));
   params = (lda_c_pw_params *) (p->params);
 
   switch(p->info->number){

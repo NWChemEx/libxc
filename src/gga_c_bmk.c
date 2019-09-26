@@ -54,30 +54,31 @@ static const gga_c_bmk_params par_hyb_tau_hcth = {
 static void 
 gga_c_bmk_init(xc_func_type *p)
 {
-  gga_c_bmk_params *params;
+  //gga_c_bmk_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_c_bmk_params));
-  params = (gga_c_bmk_params *)(p->params);
+  assert(sizeof(gga_c_bmk_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p->params == NULL);
+  //p->params = malloc(sizeof(gga_c_bmk_params));
+  //params = (gga_c_bmk_params *)(p->params);
 
   switch(p->info->number){
   case XC_GGA_C_N12:
-    memcpy(params, &par_n12, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_n12, sizeof(gga_c_bmk_params));
     break;
   case XC_GGA_C_N12_SX:
-    memcpy(params, &par_n12_sx, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_n12_sx, sizeof(gga_c_bmk_params));
     break;
   case XC_GGA_C_GAM:
-    memcpy(params, &par_gam, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_gam, sizeof(gga_c_bmk_params));
     break;
   case XC_GGA_C_BMK:
-    memcpy(params, &par_bmk, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_bmk, sizeof(gga_c_bmk_params));
     break;
   case XC_GGA_C_TAU_HCTH:
-    memcpy(params, &par_tau_hcth, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_tau_hcth, sizeof(gga_c_bmk_params));
     break;
   case XC_GGA_C_HYB_TAU_HCTH:
-    memcpy(params, &par_hyb_tau_hcth, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_hyb_tau_hcth, sizeof(gga_c_bmk_params));
     break;
   default:
     fprintf(stderr, "Internal error in gga_c_bmk\n");

@@ -24,8 +24,9 @@ gga_k_dk_init(xc_func_type *p)
   int i;
   double ff, *aa, *bb;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_k_dk_params));
+  assert(sizeof(gga_k_dk_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p->params == NULL);
+  //p->params = malloc(sizeof(gga_k_dk_params));
 
   /* shortcuts for a and b */
   aa  = ((gga_k_dk_params *) (p->params))->aa;

@@ -11,10 +11,9 @@
 #define XC_LDA_C_1D_CSC          18 /* Casula, Sorella, and Senatore 1D correlation     */
 
 typedef struct{
-  int interaction;  /* 0: exponentially screened; 1: soft-Coulomb */
   double bb;         /* screening parameter */
-
-  const double *para, *ferro;
+  double para[10], ferro[10];
+  int interaction;  /* 0: exponentially screened; 1: soft-Coulomb */
 } lda_c_1d_csc_params;
 
 static const double par_para[][10] = { /* paramagnetic */
@@ -38,7 +37,7 @@ static void
 lda_c_1d_csc_init(xc_func_type *p)
 {
   assert(p != NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_c_1d_csc_params));
+  //p->params = malloc(sizeof(lda_c_1d_csc_params));
 }
 
 #include "maple2c/lda_exc/lda_c_1d_csc.c"
@@ -54,44 +53,45 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_c_1d_csc_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(lda_c_1d_csc_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (lda_c_1d_csc_params *)(p->params);
 
   params->interaction = (int)round(get_ext_param(p->info->ext_params, ext_params, 0));
   params->bb = get_ext_param(p->info->ext_params, ext_params, 1);
 
-  params->para = params->ferro = NULL;
+  //params->para = params->ferro = NULL;
 
   if(params->interaction == 0){
     if      (params->bb == 0.1){
-      params->para  = par_para[0];
-      params->ferro = par_para[0];
+      memcpy(params->para , par_para[0], sizeof(par_para[0]));
+      memcpy(params->ferro, par_para[0], sizeof(par_para[0]));
     }else if(params->bb == 0.3){
-      params->para  = par_para[1];
-      params->ferro = par_para[1];
+      memcpy(params->para , par_para[1], sizeof(par_para[1]));
+      memcpy(params->ferro, par_para[1], sizeof(par_para[1]));
     }else if(params->bb == 0.5){
-      params->para  = par_para[2];
-      params->ferro = par_para[2];
+      memcpy(params->para , par_para[2], sizeof(par_para[2]));
+      memcpy(params->ferro, par_para[2], sizeof(par_para[2]));
     }else if(params->bb == 0.75){
-      params->para  = par_para[3];
-      params->ferro = par_para[3];
+      memcpy(params->para , par_para[3], sizeof(par_para[3]));
+      memcpy(params->ferro, par_para[3], sizeof(par_para[3]));
     }else if(params->bb == 1.0){
-      params->para  = par_para[4];
-      params->ferro = par_para[4];
+      memcpy(params->para , par_para[4], sizeof(par_para[4]));
+      memcpy(params->ferro, par_para[4], sizeof(par_para[4]));
     }else if(params->bb == 2.0){
-      params->para  = par_para[5];
-      params->ferro = par_para[5];
+      memcpy(params->para , par_para[5], sizeof(par_para[5]));
+      memcpy(params->ferro, par_para[5], sizeof(par_para[5]));
     }else if(params->bb == 4.0){
-      params->para  = par_para[6];
-      params->ferro = par_para[6];
+      memcpy(params->para , par_para[6], sizeof(par_para[6]));
+      memcpy(params->ferro, par_para[6], sizeof(par_para[6]));
     }
   }else if(params->interaction == 1){
     if     (params->bb == 0.5){
-      params->para  = par_para[7];
-      params->ferro = par_para[7];
+      memcpy(params->para , par_para[7], sizeof(par_para[7]));
+      memcpy(params->ferro, par_para[7], sizeof(par_para[7]));
     }else if(params->bb == 1.0){
-      params->para  = par_para[8];
-      params->ferro = par_ferro[0];
+      memcpy(params->para , par_para[8], sizeof(par_para[8]));
+      memcpy(params->ferro, par_ferro[0], sizeof(par_ferro[0]));
     }
   }
 

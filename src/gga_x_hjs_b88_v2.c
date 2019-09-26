@@ -17,8 +17,9 @@ typedef struct{
 static void
 gga_x_hjs_init(xc_func_type *p)
 {
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_x_hjs_b88_v2_params));
+  assert(sizeof(gga_x_hjs_b88_v2_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_x_hjs_b88_v2_params));
 }
 
 static func_params_type ext_params[] = {
@@ -30,7 +31,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_hjs_b88_v2_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_x_hjs_b88_v2_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (gga_x_hjs_b88_v2_params *) (p->params);
 
   params->omega = get_ext_param(p->info->ext_params, ext_params, 0);

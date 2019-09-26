@@ -41,8 +41,9 @@ gga_k_tflw_set_params(xc_func_type *p, double gamma, double lambda, double N)
   gga_k_tflw_params *params;
   double C0 = CBRT(M_PI/3.0);
   double C1 = CBRT(M_PI*M_PI/36.0)/6.0 - CBRT(M_PI*M_PI/9.0)/4.0;
-  
-  assert(p != NULL && p->params != NULL);
+
+  assert(sizeof(gga_k_tflw_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL );
   params = (gga_k_tflw_params *) (p->params);
 
   params->gamma = 1.0;
@@ -116,8 +117,8 @@ static void
 gga_k_tflw_init(xc_func_type *p)
 {
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_k_tflw_params));
+  //assert(p->params == NULL);
+  //p->params = malloc(sizeof(gga_k_tflw_params));
 
   /* This automatically sets gamma and lambda depending on the functional chosen.
      We put by default N = 1.0 */

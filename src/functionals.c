@@ -223,11 +223,11 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
 
   func->nspin      = nspin;
 
-  func->params     = NULL;
+  //func->params     = NULL;
 
   func->n_func_aux = 0;
-  func->func_aux   = NULL;
-  func->mix_coef   = NULL;
+  //func->func_aux   = NULL;
+  //func->mix_coef   = NULL;
   func->cam_omega  = func->cam_alpha = func->cam_beta = 0.0;
   func->nlc_b = func->nlc_C = 0.0;
 
@@ -292,20 +292,20 @@ void xc_func_end(xc_func_type *func)
       xc_func_end(func->func_aux[ii]);
       free(func->func_aux[ii]);
     }
-    free(func->func_aux);
+    //free(func->func_aux);
     func->n_func_aux = 0;
   }
 
-  if(func->mix_coef != NULL){
-    free(func->mix_coef);
-    func->mix_coef = NULL;
-  }
+  //if(func->mix_coef != NULL){
+  //  free(func->mix_coef);
+  //  func->mix_coef = NULL;
+  //}
 
   /* deallocate any used parameter */
-  if(func->params != NULL){
-    free(func->params);
-    func->params = NULL;
-  }
+  //if(func->params != NULL){
+  //  free(func->params);
+  //  func->params = NULL;
+  //}
 
   func->info = NULL;  
 }

@@ -21,8 +21,9 @@ lda_k_tf_init(xc_func_type *p)
 {
   lda_k_tf_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_k_tf_params));
+  assert(sizeof(lda_k_tf_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(lda_k_tf_params));
   params = (lda_k_tf_params *) (p->params);
 
   switch(p->info->number){

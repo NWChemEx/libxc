@@ -27,8 +27,9 @@ gga_k_apbe_init(xc_func_type *p)
 {
   gga_k_apbe_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_k_apbe_params));
+  assert(sizeof(gga_k_apbe_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(gga_k_apbe_params));
   params = (gga_k_apbe_params *) (p->params);
  
   params->lambda = 0.0;

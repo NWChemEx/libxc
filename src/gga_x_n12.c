@@ -37,7 +37,7 @@ static const double CC_GAM[4][4] = {
 };
 
 typedef struct{
-  const double (*CC)[4];
+  double CC[4][4];
 } gga_x_n12_params;
 
 
@@ -46,24 +46,25 @@ gga_x_n12_init(xc_func_type *p)
 {
   gga_x_n12_params *params;
 
+  assert(sizeof(gga_x_n12_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
   assert(p != NULL);
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_x_n12_params));
+  //assert(p->params == NULL);
+  //p->params = malloc(sizeof(gga_x_n12_params));
   params = (gga_x_n12_params *) (p->params);
 
   switch(p->info->number){
   case XC_GGA_X_N12: 
-    params->CC = CC_N12;
+    memcpy(params->CC, CC_N12, sizeof(CC_N12));
     break;
   case XC_HYB_GGA_X_N12_SX:
-    params->CC = CC_N12_SX;
+    memcpy(params->CC, CC_N12_SX, sizeof(CC_N12_SX));
     p->cam_alpha = 0.00;
     p->cam_beta  = 0.25;
     p->cam_omega = 0.11;
     break;
   case XC_GGA_X_GAM:
-    params->CC = CC_GAM;
+    memcpy(params->CC, CC_GAM, sizeof(CC_GAM));
     break;
   default:
     fprintf(stderr, "Internal error in gga_x_n12\n");

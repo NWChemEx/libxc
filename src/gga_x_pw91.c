@@ -23,8 +23,9 @@ gga_x_pw91_init(xc_func_type *p)
 {
   gga_x_pw91_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_pw91_params));
+  assert(sizeof(gga_x_pw91_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(gga_x_pw91_params));
   params = (gga_x_pw91_params *) (p->params);
 
   switch(p->info->number){
@@ -58,7 +59,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   gga_x_pw91_params *params;
   double bt, beta;
   
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_x_pw91_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
   params = (gga_x_pw91_params *) (p->params);
 
   bt = get_ext_param(p->info->ext_params, ext_params, 0);

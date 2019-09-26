@@ -12,7 +12,7 @@
 #define XC_GGA_XC_TH4          157 /* Tozer and Handy v. 4 */
 
 typedef struct{
-  double *omega;
+  double omega[19];
 } gga_xc_th3_params;
 
 
@@ -36,17 +36,18 @@ gga_xc_th3_init(xc_func_type *p)
 {
   gga_xc_th3_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_xc_th3_params));
+  assert(sizeof(gga_xc_th3_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_xc_th3_params));
   params = (gga_xc_th3_params *)p->params;
 
   switch(p->info->number){
   case XC_GGA_XC_TH3:
-    params->omega = omega_TH3;
+    memcpy(params->omega, omega_TH3, sizeof(omega_TH3));
     break;
 
   case XC_GGA_XC_TH4:
-    params->omega = omega_TH4;
+    memcpy(params->omega, omega_TH4, sizeof(omega_TH4));
     break;
 
   default:

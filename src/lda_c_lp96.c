@@ -23,8 +23,9 @@ lda_c_lp96_init(xc_func_type *p)
 {
   lda_c_lp96_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_c_lp96_params));
+  assert(sizeof(lda_c_lp96_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(lda_c_lp96_params));
   params = (lda_c_lp96_params *) (p->params);
 
   switch(p->info->number){

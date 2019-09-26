@@ -31,8 +31,9 @@ gga_c_sogga11_init(xc_func_type *p)
 {
   gga_c_sogga11_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_c_sogga11_params));
+  assert(sizeof(gga_c_sogga11_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p!=NULL && p->params == NULL);
+  //p->params = malloc(sizeof(gga_c_sogga11_params));
   params = (gga_c_sogga11_params *) (p->params);
 
   switch(p->info->number){
