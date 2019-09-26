@@ -68,8 +68,9 @@ lda_xc_ksdt_init(xc_func_type *p)
 {  
   lda_xc_ksdt_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_xc_ksdt_params));
+  assert(sizeof(lda_xc_ksdt_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(lda_xc_ksdt_params));
   params = (lda_xc_ksdt_params *)(p->params);
 
   switch(p->info->number){
@@ -97,7 +98,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_xc_ksdt_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(lda_xc_ksdt_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (lda_xc_ksdt_params *) (p->params);
 
   /* the temperature is in units of k_B */
