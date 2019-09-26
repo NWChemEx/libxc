@@ -44,7 +44,7 @@ work_lda_device(const XC(func_type) *p,
     if (vrho   != NULL) vrho_   = vrho+tid*dim_vrho;
     if (v2rho2 != NULL) v2rho2_ = v2rho2+tid*dim_v2rho2;
     if (v3rho3 != NULL) v3rho3_ = v3rho3+tid*dim_v3rho3;
-    work_lda<<<std::ceil(np/1024.),1024>>>(p,1,rho_,zk_,vrho_,v2rho2_,v3rho3_);
+    work_lda(p,1,rho_,zk_,vrho_,v2rho2_,v3rho3_);
 }
 
 static void 
@@ -52,7 +52,7 @@ work_lda_offload(const XC(func_type) *p, int np, const double *rho,
                  double *zk, double *vrho, double *v2rho2, double *v3rho3)
 {
     const xc_dimensions *dim = &(p->dim);
-    work_lda_device(xc_func_data+p->func_rank,dim->rho,dim->zk,dim->vrho,dim->v2rho2,dim->v3rho3,np,rho,zk,vrho,v2rho2,v3rho3);
+    work_lda_device<<<std::ceil(np/1024.),1024>>>(xc_func_data+p->func_rank,dim->rho,dim->zk,dim->vrho,dim->v2rho2,dim->v3rho3,np,rho,zk,vrho,v2rho2,v3rho3);
 }
 
 #endif
