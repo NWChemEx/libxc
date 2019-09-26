@@ -119,8 +119,9 @@ mgga_c_m08_init(xc_func_type *p)
 {
   mgga_c_m08_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(mgga_c_m08_params));
+  assert(sizeof(mgga_c_m08_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(mgga_c_m08_params));
   params = (mgga_c_m08_params *) (p->params);
 
   switch(p->info->number){

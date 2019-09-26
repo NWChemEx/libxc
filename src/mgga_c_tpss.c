@@ -24,8 +24,9 @@ mgga_c_tpss_init(xc_func_type *p)
 {
   mgga_c_tpss_params *params;
 
-  assert(p != NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_c_tpss_params));
+  assert(sizeof(mgga_c_tpss_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(mgga_c_tpss_params));
   params = (mgga_c_tpss_params *)p->params;
 
   switch(p->info->number){
@@ -55,7 +56,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_c_tpss_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(mgga_c_tpss_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (mgga_c_tpss_params *) (p->params);
 
   params->beta    = get_ext_param(p->info->ext_params, ext_params, 0);

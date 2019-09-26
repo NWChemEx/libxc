@@ -42,8 +42,9 @@ mgga_x_m11_init(xc_func_type *p)
 {
   mgga_x_m11_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(mgga_x_m11_params));
+  assert(sizeof(mgga_x_m11_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p == NULL);
+  //p->params = malloc(sizeof(mgga_x_m11_params));
   params = (mgga_x_m11_params *) (p->params);
 
   switch(p->info->number){

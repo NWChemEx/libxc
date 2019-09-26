@@ -38,7 +38,8 @@ mgga_x_tb09_init(xc_func_type *p)
 {
   mgga_x_tb09_params *params;
 
-  p->params = malloc(sizeof(mgga_x_tb09_params));
+  assert(sizeof(mgga_x_tb09_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //p->params = malloc(sizeof(mgga_x_tb09_params));
   params = (mgga_x_tb09_params *)p->params;
 
   params->c = 0;

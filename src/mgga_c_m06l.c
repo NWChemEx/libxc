@@ -71,16 +71,17 @@ mgga_c_m06l_init(xc_func_type *p)
 {
   mgga_c_m06l_params *params;
 
+  assert(sizeof(mgga_c_m06l_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
   assert(p != NULL);
 
   p->n_func_aux  = 1;
-  p->func_aux    = (xc_func_type **) malloc(1*sizeof(xc_func_type *));
+  //p->func_aux    = (xc_func_type **) malloc(1*sizeof(xc_func_type *));
   p->func_aux[0] = (xc_func_type *)  malloc(  sizeof(xc_func_type));
 
   xc_func_init(p->func_aux[0], XC_LDA_C_PW_MOD, XC_POLARIZED);
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_c_m06l_params));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(mgga_c_m06l_params));
   params = (mgga_c_m06l_params *)p->params;
 
   switch(p->info->number){
