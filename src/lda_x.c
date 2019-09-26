@@ -24,6 +24,10 @@
     Setting alpha equal to one gives the *usual* Slater Xalpha functional,
     whereas alpha equal to 2/3 just leaves the exchange functional unchanged.
 */
+//extern func_reference_type xc_ref_Bloch1929_545;
+//extern func_reference_type xc_ref_Dirac1930_376;
+//extern func_reference_type xc_ref_Rae1973_574;
+//extern func_reference_type xc_ref_Slater1951_385;
 
 /* Range separation
     J. Toulouse, A. Savin, H.-J. Flad, Int. J. of Quant. Chem. 100, 1047-1056 (2004).

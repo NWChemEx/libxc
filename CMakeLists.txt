@@ -103,8 +103,6 @@ if (CUDA_FOUND)
     bessel.c
     expint_e1.c
     func_info.c
-    functionals.c
-    functionals.cu
     gga.c
     gga_c_acgga.c
     gga_c_acggap.c
@@ -242,7 +240,6 @@ if (CUDA_FOUND)
     hyb_mgga_xc_wb97mv.c
     integrate.c
     lda.c
-    lda.cu
     lda_c_1d_csc.c
     lda_c_1d_loos.c
     lda_c_2d_amgb.c
@@ -268,7 +265,6 @@ if (CUDA_FOUND)
     lda_k_tf.c
     lda_k_zlp.c
     lda_k_gds08_worker.c
-    lda_x.cu
     lda_x_1d_soft.c
     lda_x_1d_exponential.c
     lda_x_2d.c
@@ -335,8 +331,15 @@ if (CUDA_FOUND)
     mix_func.c
     references.c
     special_functions.c
-    util.cu
     version.c
+    )
+    set(raw_sources_list_device
+    functionals.cu
+    functionals_device.cu
+    lda.cu
+    lda_x.cu
+    util.cu
+    xc_func_data.cu
     )
 else()
     set(raw_sources_list
@@ -579,7 +582,8 @@ else()
 endif()
 
 set(src_prefix "src/")
-string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list "${raw_sources_list}")
+string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list        "${raw_sources_list}")
+string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list_device "${raw_sources_list_device}")
 
 set(raw_sources_list_f90
     src/xc_f.c
@@ -597,10 +601,25 @@ string(REPLACE "<xc_version.h>" "\"xc_version.h\"" _quoted_src "${_src_contents}
 file(WRITE ${PROJECT_BINARY_DIR}/${src_prefix}xc.h "${_quoted_src}")
 
 # STATIC/SHARED on below governed by BUILD_SHARED_LIBS
+if(CUDA_FOUND)
+    add_library(xc_device ${sources_list_device})
+    target_link_libraries(xc_device INTERFACE ${STANDARD_MATH_LIBRARY})
+    set_target_properties(xc_device PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
+                                               SOVERSION ${${PROJECT_NAME}_SOMAJOR})
+    #target_compile_options(xc_device PUBLIC CMAKE_CUDA_FLAGS "-rdc true")
+    if(${BUILD_SHARED_LIBS})
+        target_link_libraries(xc_device PRIVATE ${LIBC_INTERJECT})
+        if(APPLE)
+            set_target_properties(xc_device PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+        endif()
+    endif()
+    set_property(TARGET xc_device PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+endif()
+
+set(CMAKE_C_FLAGS    "${CMAKE_C_FLAGS} -std=c99")
 add_library(xc ${sources_list})
 target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY})
 set_target_properties(xc PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
-                                    COMPILE_FLAGS "-std=c99"
                                     SOVERSION ${${PROJECT_NAME}_SOMAJOR})
 if(${BUILD_SHARED_LIBS})
     target_link_libraries(xc PRIVATE ${LIBC_INTERJECT})
@@ -649,10 +668,18 @@ execute_process(
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 add_executable(xc-info "${src_prefix}/xc-info.c")
-target_link_libraries(xc-info xc)
+if (CUDA_FOUND)
+    target_link_libraries(xc-info xc_device xc)
+else()
+    target_link_libraries(xc-info xc)
+endif()
 
 add_executable(xc-threshold "${src_prefix}/xc-threshold.c")
-target_link_libraries(xc-threshold xc)
+if (CUDA_FOUND)
+    target_link_libraries(xc-threshold xc_device xc )
+else()
+    target_link_libraries(xc-threshold xc)
+endif()
 
 
 include_directories(${PROJECT_SOURCE_DIR}/${src_prefix}  # for util.h
@@ -686,6 +713,13 @@ install(TARGETS xc xc-info xc-threshold
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if(CUDA_FOUND)
+    install(TARGETS xc_device
+            EXPORT "${PN}Targets"
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif()
 if(ENABLE_FORTRAN OR ENABLE_FORTRAN03)
     install(TARGETS xcf90
             EXPORT "${PN}Targets"

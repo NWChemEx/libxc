@@ -17,6 +17,7 @@
 #include <string.h>
 #include <assert.h>
 
+#include "xc_device.h"
 #include "xc.h"
 #include "xc_funcs_worker.h"
 
@@ -25,6 +26,10 @@
 
 /* need config to figure out what needs to be defined or not */
 #include "config.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* This takes care of disabling specific derivatives from the info structures */
 #ifdef XC_DONT_COMPILE_VXC
@@ -184,15 +189,15 @@ typedef struct xc_functional_key_t {
 
 
 /* The following inlines confuse the xlc compiler */
-void xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta);
+DEVICE void xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta);
 
 /* Functions to handle the internal counters */
 void internal_counters_set_lda (int nspin, xc_dimensions *dim);
-void internal_counters_lda_next
+DEVICE void internal_counters_lda_next
 (const xc_dimensions *dim, int offset,
  const double **rho, double **zk, double **vrho, double **v2rho2, double **v3rho3
  );
-void internal_counters_lda_prev
+DEVICE void internal_counters_lda_prev
 (const xc_dimensions *dim, int offset,
  const double **rho, double **zk, double **vrho, double **v2rho2, double **v3rho3
  );
@@ -257,5 +262,9 @@ void xc_mix_func
 const char *get_kind(const xc_func_type *func);
 const char *get_family(const xc_func_type *func);
 double get_ext_param(const func_params_type *params, const double *values, int index);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

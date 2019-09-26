@@ -27,22 +27,32 @@
  * @param[in,out] func_type: pointer to functional structure
  */
 __global__ static void 
+work_lda_device(const XC(func_type) *p,
+                int dim_rho, int dim_zk, int dim_vrho, int dim_v2rho2, int dim_v3rho3,
+                int np, const double *rho, 
+                double *zk, double *vrho, double *v2rho2, double *v3rho3)
+{
+    const xc_dimensions *dim = &(p->dim);
+    int tid = threadIdx.x + blockIdx.x * blockDim.x;
+    const double *rho_    = NULL;
+    double       *zk_     = NULL;
+    double       *vrho_   = NULL;
+    double       *v2rho2_ = NULL;
+    double       *v3rho3_ = NULL;
+    rho_ = rho+tid*dim_rho;
+    if (zk     != NULL) zk_     = zk+tid*dim_zk;
+    if (vrho   != NULL) vrho_   = vrho+tid*dim_vrho;
+    if (v2rho2 != NULL) v2rho2_ = v2rho2+tid*dim_v2rho2;
+    if (v3rho3 != NULL) v3rho3_ = v3rho3+tid*dim_v3rho3;
+    work_lda<<<std::ceil(np/1024.),1024>>>(p,1,rho_,zk_,vrho_,v2rho2_,v3rho3_);
+}
+
+static void 
 work_lda_offload(const XC(func_type) *p, int np, const double *rho, 
                  double *zk, double *vrho, double *v2rho2, double *v3rho3)
 {
-    const xc_dimensions *dim = &(func->dim);
-    int tid = threadIdx.x + blockIdx.x * blockDim.x;
-    double *rho_    = NULL;
-    double *zk_     = NULL;
-    double *vrho_   = NULL;
-    double *v2rho2_ = NULL;
-    double *v3rho3_ = NULL;
-    rho_ = rho+tid*dim->rho;
-    if (zk     != NULL) zk_     = zk+tid*dim->zk;
-    if (vrho   != NULL) vrho_   = vrho+tid*dim->vrho;
-    if (v2rho2 != NULL) v2rho2_ = v2rho2+tid*dim->v2rho2;
-    if (v3rho3 != NULL) v3rho3_ = v3rho3+tid*dim->v3rho3;
-    work_lda(xc_func_data[p->func_rank],1,rho_,zk_,vrho_,v2rho2_,v3rho3_);
+    const xc_dimensions *dim = &(p->dim);
+    work_lda_device(xc_func_data+p->func_rank,dim->rho,dim->zk,dim->vrho,dim->v2rho2,dim->v3rho3,np,rho,zk,vrho,v2rho2,v3rho3);
 }
 
 #endif

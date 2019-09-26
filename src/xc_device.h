@@ -11,6 +11,9 @@
 #ifdef __CUDACC__ 
 #define DEVICE __host__ __device__
 
+#include <stdio.h>
+#include <assert.h>
+
 // Convenience function for checking CUDA runtime API results
 // can be wrapped around any runtime API call. No-op in release builds.
 inline

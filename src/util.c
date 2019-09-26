@@ -6,10 +6,12 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-
-#include "util.h"
 #include "xc_device.h"
+#include "util.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* this function converts the spin-density into total density and
 	 relative magnetization */
@@ -378,3 +380,7 @@ internal_counters_mgga_prev
     *v3tau3         -= dim->v3tau3         + offset;
   }
 }
+
+#ifdef __cplusplus
+}
+#endif

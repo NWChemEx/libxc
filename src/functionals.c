@@ -17,6 +17,11 @@
 #include <strings.h>
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 extern xc_func_info_type 
   *xc_lda_known_funct[], 
   *xc_gga_known_funct[],
@@ -64,7 +69,7 @@ char *xc_functional_get_name(int number)
     if(xc_functional_keys[ii].number == number) {
       /* return duplicated: caller has the responsibility to dealloc string.
          Do this the old way since strdup and strndup aren't C standard. */
-      p=malloc(strlen(xc_functional_keys[ii].name)+1);
+      p=(char *)malloc(strlen(xc_functional_keys[ii].name)+1);
       strcpy(p,xc_functional_keys[ii].name);
       return p;
     }
@@ -82,7 +87,6 @@ char *xc_functional_get_name(int number)
 int xc_functional_get_rank(int number)
 {
   int ii;
-  char *p;
 
   for(ii=0;;ii++){
     if(xc_functional_keys[ii].number == -1)
@@ -363,3 +367,7 @@ void xc_nlc_coef(const xc_func_type *p, double *nlc_b, double *nlc_C)
   *nlc_b = p->nlc_b;
   *nlc_C = p->nlc_C;
 }
+
+#ifdef __cplusplus
+}
+#endif
