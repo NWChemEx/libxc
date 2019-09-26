@@ -9,6 +9,7 @@
 
 #include "util.h"
 #include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_X         1   /* Exchange                            */
 #define XC_LDA_C_XALPHA  6   /* Slater Xalpha                       */
@@ -24,10 +25,6 @@
     Setting alpha equal to one gives the *usual* Slater Xalpha functional,
     whereas alpha equal to 2/3 just leaves the exchange functional unchanged.
 */
-//extern func_reference_type xc_ref_Bloch1929_545;
-//extern func_reference_type xc_ref_Dirac1930_376;
-//extern func_reference_type xc_ref_Rae1973_574;
-//extern func_reference_type xc_ref_Slater1951_385;
 
 /* Range separation
     J. Toulouse, A. Savin, H.-J. Flad, Int. J. of Quant. Chem. 100, 1047-1056 (2004).
@@ -54,7 +51,7 @@ lda_x_init(xc_func_type *p)
 #include "work_lda_new.c"
 #include "work_lda_new.cu"
 
-extern const xc_func_info_type xc_func_info_lda_x = {
+EXTERN const xc_func_info_type xc_func_info_lda_x = {
   XC_LDA_X,
   XC_EXCHANGE,
   "Slater exchange",
@@ -87,7 +84,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   params->alpha = 1.5*get_ext_param(p->info->ext_params, ext_params, 0) - 1.0;
 }
 
-extern const xc_func_info_type xc_func_info_lda_c_xalpha = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_xalpha = {
   XC_LDA_C_XALPHA,
   XC_CORRELATION,
   "Slater's Xalpha",
@@ -126,7 +123,7 @@ N_set_ext_params(xc_func_type *p, const double *ext_params)
   params->alpha = 1.0 - 8.0/3.0*dx + 2.0*dx2 - dx2*dx2/3.0;
 }
 
-extern const xc_func_info_type xc_func_info_lda_x_rae = {
+EXTERN const xc_func_info_type xc_func_info_lda_x_rae = {
   XC_LDA_X_RAE,
   XC_EXCHANGE,
   "Rae self-energy corrected exchange",
