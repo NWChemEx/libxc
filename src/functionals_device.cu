@@ -18,8 +18,8 @@ __host__ void xc_copy_func_type_to_device(xc_func_type *dest, xc_func_type *sour
 
 __host__ void xc_copy_func_params_to_device(xc_func_type *dest, xc_func_type *source, size_t params_size)
 {
-    checkCuda(cudaMalloc((void**)&(dest->params),params_size);
-    checkCuda(cudaMemcpy(dest->params,source->params,params_size, cudaMemcpyHostToDevice);
+    checkCuda(cudaMalloc((void**)&(dest->params),params_size));
+    checkCuda(cudaMemcpy(dest->params,source->params,params_size, cudaMemcpyHostToDevice));
 }
 
 __host__ void xc_free_func_params(xc_func_type *dest)
@@ -34,8 +34,8 @@ __host__ void xc_func_init_device(xc_func_type *p)
     xc_copy_func_type_to_device(&xc_func_data[p->func_rank],p);
     if (p->params != NULL)
         xc_copy_func_params_to_device(&xc_func_data[p->func_rank],p,p->sizeof_params);
-    for (int ii=0, ii<n_func_aux, ii++)
-        xc_func_init_device(func_aux[ii]);
+    for (int ii=0; ii<p->n_func_aux; ii++)
+        xc_func_init_device(p->func_aux[ii]);
 }
 
 /* Free all the functional params on the device
@@ -43,6 +43,6 @@ __host__ void xc_func_init_device(xc_func_type *p)
 __host__ void xc_func_end_device(xc_func_type *p)
 {
     if (p->params != NULL) xc_free_func_params(&xc_func_data[p->func_rank]);
-    for (int ii=0, ii<n_func_aux, ii++)
-        xc_func_end_device(func_aux[ii]);
+    for (int ii=0; ii<p->n_func_aux; ii++)
+        xc_func_end_device(p->func_aux[ii]);
 }

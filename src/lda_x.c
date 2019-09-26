@@ -48,8 +48,9 @@ lda_x_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_x.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_x = {
+extern const xc_func_info_type xc_func_info_lda_x = {
   XC_LDA_X,
   XC_EXCHANGE,
   "Slater exchange",
@@ -59,7 +60,12 @@ const xc_func_info_type xc_func_info_lda_x = {
   1e-24,
   0, NULL, NULL,
   lda_x_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
 static const func_params_type ext_params[] = {
@@ -77,7 +83,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   params->alpha = 1.5*get_ext_param(p->info->ext_params, ext_params, 0) - 1.0;
 }
 
-const xc_func_info_type xc_func_info_lda_c_xalpha = {
+extern const xc_func_info_type xc_func_info_lda_c_xalpha = {
   XC_LDA_C_XALPHA,
   XC_CORRELATION,
   "Slater's Xalpha",
@@ -87,7 +93,12 @@ const xc_func_info_type xc_func_info_lda_c_xalpha = {
   1e-24,
   1, ext_params, set_ext_params,
   lda_x_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
 static const func_params_type N_ext_params[] = {
@@ -111,7 +122,7 @@ N_set_ext_params(xc_func_type *p, const double *ext_params)
   params->alpha = 1.0 - 8.0/3.0*dx + 2.0*dx2 - dx2*dx2/3.0;
 }
 
-const xc_func_info_type xc_func_info_lda_x_rae = {
+extern const xc_func_info_type xc_func_info_lda_x_rae = {
   XC_LDA_X_RAE,
   XC_EXCHANGE,
   "Rae self-energy corrected exchange",
@@ -121,5 +132,10 @@ const xc_func_info_type xc_func_info_lda_x_rae = {
   1e-24,
   1, N_ext_params, N_set_ext_params,
   lda_x_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

@@ -93,7 +93,7 @@ $s4,
 EOF
 ;
 
-open(OUT, ">$builddir/xc_func_data.cu") or die("Could not open '$builddir/xc_func_data.cu'.\n");
+open(OUT, ">$builddir/xc_func_data_include.cu") or die("Could not open '$builddir/xc_func_data_include.cu'.\n");
 print OUT <<EOF
 #include "util.h"
 
