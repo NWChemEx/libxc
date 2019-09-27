@@ -387,6 +387,7 @@ int xc_func_init_all(int nspin)
   for (int ii = 0; ii < number; ii++) {
       xc_func_init(&(xc_func_data[ii]),func_numbers[ii],nspin);
   }
+  free(func_numbers);
 #ifdef __CUDACC__
   xc_func_init_device(xc_func_data);
 #endif
