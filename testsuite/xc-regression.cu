@@ -14,6 +14,8 @@
 
 #include <xc.h>
 #include <xc_device.h>
+#include <functionals.cuh>
+#include <functionals_device.cuh>
 
 /* Buffer size (line length) for file reads */
 #define BUFSIZE 1024
@@ -268,7 +270,7 @@ values_t read_data(const char *file, int nspin, int order) {
 /*----------------------------------------------------------*/
 int main(int argc, char *argv[])
 {
-  int func_id, nspin, order, i;
+  int func_id, nspin, order, i, func_rank;
   /* Helpers for properties that may not have been implemented */
   double *zk, *vrho, *v2rho2, *v3rho3;
 
@@ -286,6 +288,7 @@ int main(int argc, char *argv[])
 
   /* Get functional id */
   func_id = xc_functional_get_number(argv[1]);
+  func_rank = xc_functional_get_rank(func_id);
   if(func_id <= 0) {
     fprintf(stderr, "Functional '%s' not found\n", argv[1]);
     exit(1);
@@ -300,7 +303,7 @@ int main(int argc, char *argv[])
   /* Data array */
     values_t d;
   /* Functional evaluator */
-  xc_func_type func;
+  //xc_func_type func;
   /* Flags for functional */
   int flags;
   /* Functional family */
@@ -314,13 +317,14 @@ int main(int argc, char *argv[])
   d = read_data(argv[4], nspin, order);
 
   /* Initialize functional */
-  if(xc_func_init(&func, func_id, nspin)) {
-    fprintf(stderr, "Functional '%d' (%s) not found.\nPlease report a bug against functional_get_number.\n", func_id, argv[1]);
-    exit(1);
-  }
+  xc_func_init_all(nspin);
+  //if(xc_func_init(&func, func_id, nspin)) {
+  //  fprintf(stderr, "Functional '%d' (%s) not found.\nPlease report a bug against functional_get_number.\n", func_id, argv[1]);
+  //  exit(1);
+  //}
   /* Get flags */
-  flags  = func.info->flags;
-  family = func.info->family;
+  flags  = xc_func_data[func_rank].info->flags;
+  family = xc_func_data[func_rank].info->family;
 
   /* Set helpers */
   zk     = (flags & XC_FLAGS_HAVE_EXC) ? d.zk     : NULL;
@@ -331,16 +335,16 @@ int main(int argc, char *argv[])
   /* Evaluate xc functional */
   switch(family) {
   case XC_FAMILY_LDA:
-    xc_lda(&func, d.n, d.rho, zk, vrho, v2rho2, v3rho3);
+    xc_lda(&xc_func_data[func_rank], d.n, d.rho, zk, vrho, v2rho2, v3rho3);
     break;
   case XC_FAMILY_GGA:
   case XC_FAMILY_HYB_GGA:
-    xc_gga(&func, d.n, d.rho, d.sigma, zk, vrho, d.vsigma,
+    xc_gga(&xc_func_data[func_rank], d.n, d.rho, d.sigma, zk, vrho, d.vsigma,
            v2rho2, d.v2rhosigma, d.v2sigma2, NULL, NULL, NULL, NULL);
     break;
   case XC_FAMILY_MGGA:
   case XC_FAMILY_HYB_MGGA:
-    xc_mgga(&func, d.n, d.rho, d.sigma, d.lapl, d.tau, zk, vrho, d.vsigma, d.vlapl, d.vtau,
+    xc_mgga(&xc_func_data[func_rank], d.n, d.rho, d.sigma, d.lapl, d.tau, zk, vrho, d.vsigma, d.vlapl, d.vtau,
             v2rho2, d.v2rhosigma, d.v2rholapl, d.v2rhotau, 
             d.v2sigma2, d.v2sigmalapl, d.v2sigmatau,
             d.v2lapl2, d.v2lapltau,
@@ -510,7 +514,8 @@ int main(int argc, char *argv[])
     fprintf(out,"\n");
   }
 
-  xc_func_end(&func);
+  //xc_func_end(&func);
+  xc_func_end_all();
   free_memory(d);
   fclose(out);
 
