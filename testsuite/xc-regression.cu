@@ -335,7 +335,8 @@ int main(int argc, char *argv[])
   /* Evaluate xc functional */
   switch(family) {
   case XC_FAMILY_LDA:
-    xc_lda(&xc_func_data[func_rank], d.n, d.rho, zk, vrho, v2rho2, v3rho3);
+    xc_lda_offload(&xc_func_data[func_rank], d.n, d.rho, zk, vrho, v2rho2, v3rho3);
+    //xc_lda(&xc_func_data[func_rank], d.n, d.rho, zk, vrho, v2rho2, v3rho3);
     break;
   case XC_FAMILY_GGA:
   case XC_FAMILY_HYB_GGA:

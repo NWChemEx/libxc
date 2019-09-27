@@ -36,7 +36,7 @@ static const double par_ferro[][10] = { /* ferromagnetic */
 static void 
 lda_c_1d_csc_init(xc_func_type *p)
 {
-  assert(p != NULL && p->params == NULL);
+  assert(p != NULL);
   //p->params = malloc(sizeof(lda_c_1d_csc_params));
 }
 

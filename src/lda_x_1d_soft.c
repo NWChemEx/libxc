@@ -18,7 +18,7 @@ typedef struct{
 static void 
 lda_x_1d_exponential_init(xc_func_type *p)
 {
-  assert(p->params == NULL);
+  assert(p != NULL);
   //p->params = malloc(sizeof(lda_x_1d_exponential_params));
 }
 

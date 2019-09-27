@@ -18,7 +18,7 @@ typedef struct {
 static void 
 lda_k_gds08_init(xc_func_type *p)
 {
-  assert(p!=NULL && p->params == NULL);
+  assert(p != NULL);
   //p->params = malloc(sizeof(lda_k_gds08_params));
 }
 

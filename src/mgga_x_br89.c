@@ -337,7 +337,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_x_tb09_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(p != NULL);
   params = (mgga_x_tb09_params *) (p->params);
 
   params->c = get_ext_param(p->info->ext_params, ext_params, 0);

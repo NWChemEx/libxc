@@ -62,7 +62,7 @@ xc_lda_offload(const xc_func_type *func, int np, const double *rho,
   assert(func->info!=NULL && func->info->lda!=NULL);
 
   /* call the LDA offload routines */
-  func->info->lda_offload<<<std::ceil(np/1024.),1024>>>(func, np, rho, zk, vrho, v2rho2, v3rho3);
+  func->info->lda_offload(func, np, rho, zk, vrho, v2rho2, v3rho3);
 }
 
 

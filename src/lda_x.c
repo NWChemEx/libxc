@@ -76,7 +76,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_x_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(p != NULL);
   params = (lda_x_params *)(p->params);
 
   params->alpha = 1.5*get_ext_param(p->info->ext_params, ext_params, 0) - 1.0;
@@ -110,7 +110,7 @@ N_set_ext_params(xc_func_type *p, const double *ext_params)
   lda_x_params *params;
   double ff, N, dx, dx2;
 
-  assert(p != NULL && p->params != NULL);
+  assert(p != NULL);
   params = (lda_x_params *)(p->params);
 
   ff = (ext_params == NULL) ? p->info->ext_params[0].value : ext_params[0];

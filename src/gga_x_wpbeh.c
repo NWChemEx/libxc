@@ -17,7 +17,7 @@ typedef struct{
 static void
 gga_x_wpbeh_init(xc_func_type *p)
 {
-  assert(p->params == NULL);
+  assert(p != NULL);
   //p->params = malloc(sizeof(gga_x_wpbeh_params));
 }
 

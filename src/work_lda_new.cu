@@ -34,17 +34,19 @@ work_lda_device(const XC(func_type) *p,
 {
     const xc_dimensions *dim = &(p->dim);
     int tid = threadIdx.x + blockIdx.x * blockDim.x;
-    const double *rho_    = NULL;
-    double       *zk_     = NULL;
-    double       *vrho_   = NULL;
-    double       *v2rho2_ = NULL;
-    double       *v3rho3_ = NULL;
-    rho_ = rho+tid*dim_rho;
-    if (zk     != NULL) zk_     = zk+tid*dim_zk;
-    if (vrho   != NULL) vrho_   = vrho+tid*dim_vrho;
-    if (v2rho2 != NULL) v2rho2_ = v2rho2+tid*dim_v2rho2;
-    if (v3rho3 != NULL) v3rho3_ = v3rho3+tid*dim_v3rho3;
-    work_lda(p,1,rho_,zk_,vrho_,v2rho2_,v3rho3_);
+    if( tid < np ) {
+        const double *rho_    = NULL;
+        double       *zk_     = NULL;
+        double       *vrho_   = NULL;
+        double       *v2rho2_ = NULL;
+        double       *v3rho3_ = NULL;
+        rho_ = rho+tid*dim_rho;
+        if (zk     != NULL) zk_     = zk+tid*dim_zk;
+        if (vrho   != NULL) vrho_   = vrho+tid*dim_vrho;
+        if (v2rho2 != NULL) v2rho2_ = v2rho2+tid*dim_v2rho2;
+        if (v3rho3 != NULL) v3rho3_ = v3rho3+tid*dim_v3rho3;
+        work_lda(p,1,rho_,zk_,vrho_,v2rho2_,v3rho3_);
+    }
 }
 
 static void 

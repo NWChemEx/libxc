@@ -245,7 +245,7 @@ set_ext_params_N(xc_func_type *p, const double *ext_params)
   gga_x_pbe_params *params;
   double lambda, ff;
 
-  assert(p != NULL && p->params != NULL);
+  assert(p != NULL);
   params = (gga_x_pbe_params *) (p->params);
 
   ff = (ext_params == NULL) ? p->info->ext_params[0].value : ext_params[0];
