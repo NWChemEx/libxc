@@ -9,7 +9,11 @@
 #include <stdlib.h>
 #include "xc.h"
 #include "funcs_key.c"
+#include "xc_extern.h"
 #include <string.h>
+#ifdef __CUDACC__
+#include "functionals_device.cuh"
+#endif
 #ifdef _MSC_VER
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp
@@ -21,6 +25,7 @@
 extern "C" {
 #endif
 
+EXTERN xc_func_type *xc_func_data; /* host table of all functionals */
 
 extern xc_func_info_type 
   *xc_lda_known_funct[], 
@@ -366,6 +371,41 @@ void xc_nlc_coef(const xc_func_type *p, double *nlc_b, double *nlc_C)
 
   *nlc_b = p->nlc_b;
   *nlc_C = p->nlc_C;
+}
+/*------------------------------------------------------*/
+int xc_func_init_all(int nspin)
+{
+  int *func_numbers; 
+  int number = xc_number_of_functionals();
+
+  assert(nspin==XC_UNPOLARIZED || nspin==XC_POLARIZED);
+  
+  xc_func_data = (xc_func_type *)malloc(number*sizeof(xc_func_type));
+  func_numbers = (int *)malloc(number*sizeof(int));
+  
+  xc_available_functional_numbers(func_numbers);
+  for (int ii = 0; ii < number; ii++) {
+      xc_func_init(&(xc_func_data[ii]),func_numbers[ii],nspin);
+  }
+#ifdef __CUDACC__
+  xc_func_init_device(xc_func_data);
+#endif
+
+  return 0;
+}
+
+
+/*------------------------------------------------------*/
+void xc_func_end_all()
+{
+  int number = xc_number_of_functionals();
+  for (int ii = 0; ii < number; ii++) {
+      xc_func_end(&(xc_func_data[ii]));
+  }
+  free(xc_func_data);
+#ifdef __CUDACC__
+  xc_func_end_device();
+#endif
 }
 
 #ifdef __cplusplus

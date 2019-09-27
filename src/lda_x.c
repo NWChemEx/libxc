@@ -39,9 +39,7 @@ lda_x_init(xc_func_type *p)
 {
   lda_x_params *params;
 
-  assert(p != NULL && p->params == NULL);
-  p->sizeof_params = sizeof(lda_x_params);
-  p->params = malloc(p->sizeof_params);
+  assert(p != NULL);
   params = (lda_x_params *) (p->params);
 
   params->alpha = 1.0;

@@ -15,7 +15,7 @@
  */
 #ifdef __CUDACC__
 
-#include "xc_func_data.cuh"
+extern xc_func_type *xc_func_data_device;
 
 #ifdef XC_NO_EXC
 #define OUT_PARAMS vrho, v2rho2, v3rho3
@@ -52,7 +52,7 @@ work_lda_offload(const XC(func_type) *p, int np, const double *rho,
                  double *zk, double *vrho, double *v2rho2, double *v3rho3)
 {
     const xc_dimensions *dim = &(p->dim);
-    work_lda_device<<<std::ceil(np/1024.),1024>>>(xc_func_data+p->func_rank,dim->rho,dim->zk,dim->vrho,dim->v2rho2,dim->v3rho3,np,rho,zk,vrho,v2rho2,v3rho3);
+    work_lda_device<<<std::ceil(np/1024.),1024>>>(xc_func_data_device+p->func_rank,dim->rho,dim->zk,dim->vrho,dim->v2rho2,dim->v3rho3,np,rho,zk,vrho,v2rho2,v3rho3);
 }
 
 #endif
