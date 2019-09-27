@@ -266,6 +266,15 @@ void xc_lda_vxc    (const xc_func_type *p, int np, const double *rho, double *vr
 void xc_lda_fxc    (const xc_func_type *p, int np, const double *rho, double *v2rho2);
 void xc_lda_kxc    (const xc_func_type *p, int np, const double *rho, double *v3rho3);
 
+#ifdef __CUDACC__
+void xc_lda_offload        (const xc_func_type *p, int np, const double *rho, double *zk, double *vrho, double *v2rho2, double *v3rho3);
+void xc_lda_exc_offload    (const xc_func_type *p, int np, const double *rho, double *zk);
+void xc_lda_exc_vxc_offload(const xc_func_type *p, int np, const double *rho, double *zk, double *vrho);
+void xc_lda_vxc_offload    (const xc_func_type *p, int np, const double *rho, double *vrho);
+void xc_lda_fxc_offload    (const xc_func_type *p, int np, const double *rho, double *v2rho2);
+void xc_lda_kxc_offload    (const xc_func_type *p, int np, const double *rho, double *v3rho3);
+#endif
+
 void xc_gga     (const xc_func_type *p, int np, const double *rho, const double *sigma,
 		 double *zk, double *vrho, double *vsigma,
 		 double *v2rho2, double *v2rhosigma, double *v2sigma2,

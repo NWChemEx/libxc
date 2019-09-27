@@ -20,7 +20,7 @@ mgga_x_mvs_init(xc_func_type *p)
 {
   mgga_x_mvs_params *params;
 
-  assert(sizeof(mgga_x_msv_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(sizeof(mgga_x_mvs_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
   assert(p!=NULL);
   //p->params = malloc(sizeof(mgga_x_mvs_params));
   params = (mgga_x_mvs_params *)p->params;
@@ -47,7 +47,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_x_mvs_params *params;
 
-  assert(sizeof(mgga_x_msv_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(sizeof(mgga_x_mvs_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
   assert(p != NULL);
   params = (mgga_x_mvs_params *) (p->params);
 

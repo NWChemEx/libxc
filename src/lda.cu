@@ -9,6 +9,10 @@
 
 #include "util.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* get the lda functional */
 void 
 xc_lda_offload(const xc_func_type *func, int np, const double *rho, 
@@ -93,3 +97,6 @@ xc_lda_kxc_offload(const xc_func_type *p, int np, const double *rho, double *v3r
   xc_lda_offload(p, np, rho, NULL, NULL, NULL, v3rho3);
 }
 
+#ifdef __cplusplus
+}
+#endif

@@ -54,7 +54,7 @@ gga_xc_th1_init(xc_func_type *p)
 {
   gga_xc_th1_params *params;
 
-  assert(sizeof(gga_x_th1_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(sizeof(gga_xc_th1_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
   assert(p != NULL);
   //p->params = malloc(sizeof(gga_xc_th1_params));
   params = (gga_xc_th1_params *)p->params;

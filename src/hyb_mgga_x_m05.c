@@ -41,7 +41,7 @@ mgga_x_m05_init(xc_func_type *p)
 {
   mgga_x_m05_params *params;
 
-  assert(sizeof(gga_x_m05_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(sizeof(mgga_x_m05_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
   assert(p != NULL);
   //p->params = malloc(sizeof(mgga_x_m05_params));
   params = (mgga_x_m05_params *) (p->params);

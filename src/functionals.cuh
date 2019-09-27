@@ -1,5 +1,5 @@
-#ifndef _FUNCTIONALS_DEVICE_CUH
-#define _FUNCTIONALS_DEVICE_CUH
+#ifndef _FUNCTIONALS_CUH
+#define _FUNCTIONALS_CUH
 
 #ifdef __CUDACC__
 
