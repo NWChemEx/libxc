@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_1D_CSC          18 /* Casula, Sorella, and Senatore 1D correlation     */
 
@@ -42,6 +44,7 @@ lda_c_1d_csc_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_c_1d_csc.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
 static const func_params_type ext_params[] = {
   {"interaction",  1, "0 (exponentially screened) | 1 (soft-Coulomb)"},
@@ -103,7 +106,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 }
 
 
-const xc_func_info_type xc_func_info_lda_c_1d_csc = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_1d_csc = {
   XC_LDA_C_1D_CSC,
   XC_CORRELATION,
   "Casula, Sorella & Senatore",
@@ -113,5 +116,10 @@ const xc_func_info_type xc_func_info_lda_c_1d_csc = {
   5e-26,
   2, ext_params, set_ext_params,
   lda_c_1d_csc_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

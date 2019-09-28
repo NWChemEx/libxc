@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /************************************************************************
  Random Phase Approximation (RPA)
@@ -16,8 +18,9 @@
 
 #include "maple2c/lda_exc/lda_c_gk72.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_gk72 = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_gk72 = {
   XC_LDA_C_GK72,
   XC_CORRELATION,
   "Gordon and Kim 1972",
@@ -27,5 +30,10 @@ const xc_func_info_type xc_func_info_lda_c_gk72 = {
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

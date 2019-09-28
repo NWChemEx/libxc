@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_WIGNER    2   /* Wigner parametrization       */
 #define XC_LDA_XC_LP_A   547   /* Lee-Parr reparametrization B */
@@ -67,8 +69,9 @@ lda_c_wigner_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_c_wigner.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_wigner = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_wigner = {
   XC_LDA_C_WIGNER,
   XC_CORRELATION,
   "Wigner",
@@ -78,10 +81,15 @@ const xc_func_info_type xc_func_info_lda_c_wigner = {
   1e-24,
   0, NULL, NULL,
   lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_xc_lp_a = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_lp_a = {
   XC_LDA_XC_LP_A,
   XC_EXCHANGE_CORRELATION,
   "Lee-Parr reparametrization A",
@@ -91,10 +99,15 @@ const xc_func_info_type xc_func_info_lda_xc_lp_a = {
   1e-24,
   0, NULL, NULL,
   lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_xc_lp_b = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_lp_b = {
   XC_LDA_XC_LP_B,
   XC_EXCHANGE_CORRELATION,
   "Lee-Parr reparametrization B",
@@ -104,10 +117,15 @@ const xc_func_info_type xc_func_info_lda_xc_lp_b = {
   1e-24,
   0, NULL, NULL,
   lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_mcweeny = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_mcweeny = {
   XC_LDA_C_MCWEENY,
   XC_CORRELATION,
   "McWeeny 76",
@@ -117,10 +135,15 @@ const xc_func_info_type xc_func_info_lda_c_mcweeny = {
   1e-24,
   0, NULL, NULL,
   lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_br78 = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_br78 = {
   XC_LDA_C_BR78,
   XC_CORRELATION,
   "Brual & Rothstein 78",
@@ -130,10 +153,15 @@ const xc_func_info_type xc_func_info_lda_c_br78 = {
   1e-24,
   0, NULL, NULL,
   lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_ow_lyp = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_ow_lyp = {
   XC_LDA_C_OW_LYP,
   XC_CORRELATION,
   "Wigner with corresponding LYP parameters",
@@ -143,10 +171,15 @@ const xc_func_info_type xc_func_info_lda_c_ow_lyp = {
   1e-24,
   0, NULL, NULL,
   lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_ow = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_ow = {
   XC_LDA_C_OW,
   XC_CORRELATION,
   "Optimized Wigner",
@@ -156,6 +189,11 @@ const xc_func_info_type xc_func_info_lda_c_ow = {
   1e-24,
   0, NULL, NULL,
   lda_c_wigner_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 

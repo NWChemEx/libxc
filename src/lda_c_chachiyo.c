@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_CHACHIYO  287   /* Chachiyo simple 2 parameter correlation   */
 #define XC_LDA_C_KARASIEV  579   /* Karasiev reparameterization of Chachiyo   */
@@ -44,8 +46,9 @@ lda_c_chachiyo_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_c_chachiyo.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_chachiyo = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_chachiyo = {
   XC_LDA_C_CHACHIYO,
   XC_CORRELATION,
   "Chachiyo simple 2 parameter correlation",
@@ -55,10 +58,15 @@ const xc_func_info_type xc_func_info_lda_c_chachiyo = {
   1e-24,
   0, NULL, NULL,
   lda_c_chachiyo_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_karasiev = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_karasiev = {
   XC_LDA_C_KARASIEV,
   XC_CORRELATION,
   "Karasiev reparameterization of Chachiyo",
@@ -68,5 +76,10 @@ const xc_func_info_type xc_func_info_lda_c_karasiev = {
   1e-24,
   0, NULL, NULL,
   lda_c_chachiyo_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

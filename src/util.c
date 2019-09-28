@@ -229,7 +229,7 @@ internal_counters_lda_prev
   if(*v3rho3 != NULL) *v3rho3 -= dim->v3rho3 + offset;
 }
 
-void
+DEVICE void
 internal_counters_gga_next
   (
    const xc_dimensions *dim, int offset,
@@ -255,7 +255,7 @@ internal_counters_gga_next
   }
 }
 
-void
+DEVICE void
 internal_counters_gga_prev
   (
    const xc_dimensions *dim, int offset,
@@ -281,7 +281,7 @@ internal_counters_gga_prev
   }
 }
 
-void
+DEVICE void
 internal_counters_mgga_next
   (const xc_dimensions *dim, int offset,
    const double **rho, const double **sigma, const double **lapl, const double **tau,
@@ -333,7 +333,7 @@ internal_counters_mgga_next
   }
 }
 
-void
+DEVICE void
 internal_counters_mgga_prev
   (const xc_dimensions *dim, int offset,
    const double **rho, const double **sigma, const double **lapl, const double **tau,

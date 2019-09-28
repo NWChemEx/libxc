@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /************************************************************************
  Correlation energy per-particle and potential of a HEG as parameterized 
@@ -106,8 +108,9 @@ lda_c_pw_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_c_pw.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_pw = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_pw = {
   XC_LDA_C_PW,
   XC_CORRELATION,
   "Perdew & Wang",
@@ -120,10 +123,15 @@ const xc_func_info_type xc_func_info_lda_c_pw = {
   NULL,     /* end  */
   work_lda, /* lda  */
   NULL,
-  NULL
+  NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_pw_mod = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_pw_mod = {
   XC_LDA_C_PW_MOD,
   XC_CORRELATION,
   "Perdew & Wang (modified)",
@@ -136,10 +144,15 @@ const xc_func_info_type xc_func_info_lda_c_pw_mod = {
   NULL,     /* end  */
   work_lda, /* lda  */
   NULL,
-  NULL
+  NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_ob_pw = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_ob_pw = {
   XC_LDA_C_OB_PW,
   XC_CORRELATION,
   "Ortiz & Ballone (PW parametrization)",
@@ -152,10 +165,15 @@ const xc_func_info_type xc_func_info_lda_c_ob_pw = {
   NULL,     /* end  */
   work_lda, /* lda  */
   NULL,
-  NULL
+  NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_pw_rpa = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_pw_rpa = {
   XC_LDA_C_PW_RPA,
   XC_CORRELATION,
   "Perdew & Wang (fit to the RPA energy)",
@@ -168,5 +186,10 @@ const xc_func_info_type xc_func_info_lda_c_pw_rpa = {
   NULL,     /* end  */
   work_lda, /* lda  */
   NULL,
-  NULL
+  NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

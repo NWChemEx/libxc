@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /************************************************************************
  LDA parametrization of Vosko, Wilk & Nusair
@@ -17,8 +19,9 @@
 
 #include "maple2c/lda_exc/lda_k_zlp.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_k_zlp = {
+EXTERN const xc_func_info_type xc_func_info_lda_k_zlp = {
   XC_LDA_K_ZLP,
   XC_KINETIC,
   "Wigner including kinetic energy contribution",
@@ -28,5 +31,10 @@ const xc_func_info_type xc_func_info_lda_k_zlp = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

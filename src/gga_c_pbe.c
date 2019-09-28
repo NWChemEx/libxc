@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /************************************************************************
  Implements Perdew, Burke & Ernzerhof Generalized Gradient Approximation
@@ -111,8 +113,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_c_pbe.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_pbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_pbe = {
   XC_GGA_C_PBE,
   XC_CORRELATION,
   "Perdew, Burke & Ernzerhof",
@@ -122,10 +125,15 @@ const xc_func_info_type xc_func_info_gga_c_pbe = {
   1e-12,
   3, ext_params, set_ext_params,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_pbe_sol = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_pbe_sol = {
   XC_GGA_C_PBE_SOL,
   XC_CORRELATION,
   "Perdew, Burke & Ernzerhof SOL",
@@ -135,10 +143,15 @@ const xc_func_info_type xc_func_info_gga_c_pbe_sol = {
   1e-12,
   0, NULL, NULL,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_xpbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_xpbe = {
   XC_GGA_C_XPBE,
   XC_CORRELATION,
   "Extended PBE by Xu & Goddard III",
@@ -148,10 +161,15 @@ const xc_func_info_type xc_func_info_gga_c_xpbe = {
   1e-12,
   0, NULL, NULL,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_pbe_jrgx = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_pbe_jrgx = {
   XC_GGA_C_PBE_JRGX,
   XC_CORRELATION,
   "Reparametrized PBE by Pedroza, Silva & Capelle",
@@ -161,10 +179,15 @@ const xc_func_info_type xc_func_info_gga_c_pbe_jrgx = {
   1e-12,
   0, NULL, NULL,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_rge2 = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_rge2 = {
   XC_GGA_C_RGE2,
   XC_CORRELATION,
   "Regularized PBE",
@@ -174,10 +197,15 @@ const xc_func_info_type xc_func_info_gga_c_rge2 = {
   1e-12,
   0, NULL, NULL,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_apbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_apbe = {
   XC_GGA_C_APBE,
   XC_CORRELATION,
   "mu fixed from the semiclassical neutral atom",
@@ -187,10 +215,15 @@ const xc_func_info_type xc_func_info_gga_c_apbe = {
   1e-12,
   0, NULL, NULL,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_spbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_spbe = {
   XC_GGA_C_SPBE,
   XC_CORRELATION,
   "PBE correlation to be used with the SSB exchange",
@@ -200,10 +233,15 @@ const xc_func_info_type xc_func_info_gga_c_spbe = {
   1e-12,
   0, NULL, NULL,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_pbeint = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_pbeint = {
   XC_GGA_C_PBEINT,
   XC_CORRELATION,
   "PBE for hybrid interfaces",
@@ -213,10 +251,15 @@ const xc_func_info_type xc_func_info_gga_c_pbeint = {
   1e-12,
   0, NULL, NULL,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_pbefe = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_pbefe = {
   XC_GGA_C_PBEFE,
   XC_CORRELATION,
   "PBE for formation energies",
@@ -226,10 +269,15 @@ const xc_func_info_type xc_func_info_gga_c_pbefe = {
   1e-12,
   0, NULL, NULL,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_pbe_mol = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_pbe_mol = {
   XC_GGA_C_PBE_MOL,
   XC_CORRELATION,
   "Reparametrized PBE by del Campo, Gazquez, Trickey & Vela",
@@ -239,10 +287,15 @@ const xc_func_info_type xc_func_info_gga_c_pbe_mol = {
   1e-12,
   0, NULL, NULL,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_tm_pbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_tm_pbe = {
   XC_GGA_C_TM_PBE,
   XC_CORRELATION,
   "Thakkar and McCarthy reparametrization",
@@ -252,5 +305,10 @@ const xc_func_info_type xc_func_info_gga_c_tm_pbe = {
   1e-12,
   0, NULL, NULL,
   gga_c_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

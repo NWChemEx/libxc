@@ -203,7 +203,7 @@ DEVICE void internal_counters_lda_prev
  );
 
 void internal_counters_set_gga (int nspin, xc_dimensions *dim);
-void internal_counters_gga_next
+DEVICE void internal_counters_gga_next
 (const xc_dimensions *dim, int offset,
  const double **rho, const double **sigma,
  double **zk,
@@ -212,7 +212,7 @@ void internal_counters_gga_next
  double **v3rho3, double **v3rho2sigma, double **v3rhosigma2, double **v3sigma3
  );
 
-void internal_counters_gga_prev
+DEVICE void internal_counters_gga_prev
 (const xc_dimensions *dim, int offset,
  const double **rho, const double **sigma,
  double **zk,
@@ -241,12 +241,12 @@ void internal_counters_gga_prev
 
 void internal_counters_set_mgga(int nspin, xc_dimensions *dim);
 
-void internal_counters_mgga_next
+DEVICE void internal_counters_mgga_next
 (const xc_dimensions *dim, int offset,
  const double **rho, const double **sigma, const double **lapl, const double **tau,
  double **zk, MGGA_OUT_PARAMS_NO_EXC(double **));
 
-void internal_counters_mgga_prev
+DEVICE void internal_counters_mgga_prev
 (const xc_dimensions *dim, int offset,
  const double **rho, const double **sigma, const double **lapl, const double **tau,
  double **zk, MGGA_OUT_PARAMS_NO_EXC(double **));

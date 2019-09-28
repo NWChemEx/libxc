@@ -340,8 +340,8 @@ int main(int argc, char *argv[])
     break;
   case XC_FAMILY_GGA:
   case XC_FAMILY_HYB_GGA:
-    xc_gga(&xc_func_data[func_rank], d.n, d.rho, d.sigma, zk, vrho, d.vsigma,
-           v2rho2, d.v2rhosigma, d.v2sigma2, NULL, NULL, NULL, NULL);
+    xc_gga_offload(&xc_func_data[func_rank], d.n, d.rho, d.sigma, zk, vrho, d.vsigma,
+                   v2rho2, d.v2rhosigma, d.v2sigma2, NULL, NULL, NULL, NULL);
     break;
   case XC_FAMILY_MGGA:
   case XC_FAMILY_HYB_MGGA:

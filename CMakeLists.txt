@@ -122,7 +122,6 @@ if (CUDA_FOUND)
     gga_c_op_xalpha.c
     gga_c_optc.c
     gga_c_p86.c
-    gga_c_pbe.c
     gga_c_pbeloc.c
     gga_c_pw91.c
     gga_c_q2d.c
@@ -190,7 +189,6 @@ if (CUDA_FOUND)
     gga_x_mpbe.c
     gga_x_n12.c
     gga_x_optx.c
-    gga_x_pbe.c
     gga_x_pbea.c
     gga_x_pbeint.c
     gga_x_pbepow.c
@@ -240,31 +238,7 @@ if (CUDA_FOUND)
     hyb_mgga_xc_wb97mv.c
     integrate.c
     lda.c
-    lda_c_1d_csc.c
-    lda_c_1d_loos.c
-    lda_c_2d_amgb.c
-    lda_c_2d_prm.c
-    lda_c_chachiyo.c
-    lda_c_gombas.c
-    lda_c_hl.c
-    lda_c_lp96.c
-    lda_c_ml1.c
-    lda_c_pk09.c
-    lda_c_pw.c
-    lda_c_pz.c
-    lda_c_rc04.c
-    lda_c_rpa.c
-    lda_c_vwn.c
-    lda_c_vwn_1.c
-    lda_c_vwn_2.c
-    lda_c_vwn_3.c
-    lda_c_vwn_4.c
-    lda_c_vwn_rpa.c
-    lda_c_wigner.c
-    lda_c_gk72.c
-    lda_k_tf.c
-    lda_k_zlp.c
-    lda_k_gds08_worker.c
+    lda_c_pk09.c           # this one kills the nvcc compiler
     lda_x_1d_soft.c
     lda_x_1d_exponential.c
     lda_x_2d.c
@@ -275,7 +249,6 @@ if (CUDA_FOUND)
     lda_xc_teter93.c
     lda_xc_zlp.c
     lda_xc_bn05.c
-    lda_c_pmgb06.c
     lda_xc_tih.c
     mgga.c
     mgga_c_b88.c
@@ -336,7 +309,35 @@ if (CUDA_FOUND)
     set(raw_sources_list_device
     functionals.cu
     functionals_device.cu
+    gga.cu
+    gga_c_pbe.cu
+    gga_x_pbe.cu
     lda.cu
+    lda_c_1d_csc.cu
+    lda_c_1d_loos.cu
+    lda_c_2d_amgb.cu
+    lda_c_2d_prm.cu
+    lda_c_chachiyo.cu
+    lda_c_gk72.cu
+    lda_c_gombas.cu
+    lda_c_hl.cu
+    lda_c_lp96.cu
+    lda_c_ml1.cu
+    lda_c_pmgb06.cu
+    lda_c_pw.cu
+    lda_c_pz.cu
+    lda_c_rc04.cu
+    lda_c_rpa.cu
+    lda_c_vwn.cu
+    lda_c_vwn_1.cu
+    lda_c_vwn_2.cu
+    lda_c_vwn_3.cu
+    lda_c_vwn_4.cu
+    lda_c_vwn_rpa.cu
+    lda_c_wigner.cu
+    lda_k_gds08_worker.cu
+    lda_k_tf.cu
+    lda_k_zlp.cu
     lda_x.cu
     util.cu
     xc_func_data.cu

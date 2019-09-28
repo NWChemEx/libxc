@@ -282,13 +282,30 @@ void xc_gga     (const xc_func_type *p, int np, const double *rho, const double 
 void xc_gga_exc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 		 double *zk);
 void xc_gga_exc_vxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
-		 double *zk, double *vrho, double *vsigma);
+		    double *zk, double *vrho, double *vsigma);
 void xc_gga_vxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 		 double *vrho, double *vsigma);
 void xc_gga_fxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 		 double *v2rho2, double *v2rhosigma, double *v2sigma2);
 void xc_gga_kxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 		 double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3);
+
+#ifdef __CUDACC__
+void xc_gga_offload    (const xc_func_type *p, int np, const double *rho, const double *sigma,
+                        double *zk, double *vrho, double *vsigma,
+                        double *v2rho2, double *v2rhosigma, double *v2sigma2,
+      	                double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3);
+void xc_gga_exc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+                        double *zk);
+void xc_gga_exc_vxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+                            double *zk, double *vrho, double *vsigma);
+void xc_gga_vxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+                        double *vrho, double *vsigma);
+void xc_gga_fxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+                        double *v2rho2, double *v2rhosigma, double *v2sigma2);
+void xc_gga_kxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+                        double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3);
+#endif
 
 void xc_gga_lb_modified  (const xc_func_type *p, int np, const double *rho, const double *sigma,
      double r, double *vrho);
