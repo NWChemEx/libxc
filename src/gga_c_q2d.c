@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_Q2D          47 /* Chiodo et al  */
 
 #include "maple2c/gga_exc/gga_c_q2d.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_q2d = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_q2d = {
   XC_GGA_C_Q2D,
   XC_CORRELATION,
   "Chiodo et al",
@@ -24,6 +27,11 @@ const xc_func_info_type xc_func_info_gga_c_q2d = {
   1e-10,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 

@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_LYP    131  /* Lee, Yang & Parr */
 #define XC_GGA_C_TM_LYP 559  /* Takkar and McCarthy reparametrization */
@@ -66,8 +68,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_c_lyp.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_lyp = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_lyp = {
   XC_GGA_C_LYP,
   XC_CORRELATION,
   "Lee, Yang & Parr",
@@ -77,10 +80,15 @@ const xc_func_info_type xc_func_info_gga_c_lyp = {
   1e-32,
   4, ext_params, set_ext_params,
   xc_gga_c_lyp_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_tm_lyp = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_tm_lyp = {
   XC_GGA_C_TM_LYP,
   XC_CORRELATION,
   "Takkar and McCarthy reparametrization",
@@ -90,5 +98,10 @@ const xc_func_info_type xc_func_info_gga_c_tm_lyp = {
   1e-32,
   0, NULL, NULL,
   xc_gga_c_lyp_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

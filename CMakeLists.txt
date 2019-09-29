@@ -102,39 +102,6 @@ if (CUDA_FOUND)
     set(raw_sources_list
     func_info.c
     gga.c
-    gga_c_acgga.c
-    gga_c_acggap.c
-    gga_c_am05.c
-    gga_c_bmk.c
-    gga_c_cs1.c
-    gga_c_ft97.c
-    gga_c_gapc.c
-    gga_c_gaploc.c
-    gga_c_hcth_a.c
-    gga_c_lm.c
-    gga_c_lyp.c
-    gga_c_op_b88.c
-    gga_c_op_g96.c
-    gga_c_op_pbe.c
-    gga_c_op_pw91.c
-    gga_c_op_xalpha.c
-    gga_c_optc.c
-    gga_c_p86.c
-    gga_c_pbeloc.c
-    gga_c_pw91.c
-    gga_c_q2d.c
-    gga_c_regtpss.c
-    gga_c_revtca.c
-    gga_c_scan_e0.c
-    gga_c_sg4.c
-    gga_c_sogga11.c
-    gga_c_tca.c
-    gga_c_w94.c
-    gga_c_wi.c
-    gga_c_wl.c
-    gga_c_zpbeint.c
-    gga_c_zvpbeint.c
-    gga_c_zvpbeloc.c
     gga_k_dk.c
     gga_k_meyer.c
     gga_k_ol1.c
@@ -298,7 +265,40 @@ if (CUDA_FOUND)
     functionals.cu
     functionals_device.cu
     gga.cu
+    gga_c_acgga.cu
+    gga_c_acggap.cu
+    gga_c_am05.cu
+    gga_c_bmk.cu
+    gga_c_cs1.cu
     gga_c_pbe.cu
+    gga_c_ft97.cu
+    gga_c_gapc.cu
+    gga_c_gaploc.cu
+    gga_c_hcth_a.cu
+    gga_c_lm.cu
+    gga_c_lyp.cu
+    gga_c_op_b88.cu
+    gga_c_op_g96.cu
+    gga_c_op_pbe.cu
+    gga_c_op_pw91.cu
+    gga_c_op_xalpha.cu
+    gga_c_optc.cu
+    gga_c_p86.cu
+    gga_c_pbeloc.cu
+    gga_c_pw91.cu
+    gga_c_q2d.cu
+    gga_c_regtpss.cu
+    gga_c_revtca.cu
+    gga_c_scan_e0.cu
+    gga_c_sg4.cu
+    gga_c_sogga11.cu
+    gga_c_tca.cu
+    gga_c_w94.cu
+    gga_c_wi.cu
+    gga_c_wl.cu
+    gga_c_zpbeint.cu
+    gga_c_zvpbeint.cu
+    gga_c_zvpbeloc.cu
     gga_x_pbe.cu
     integrate.cu
     lda.cu

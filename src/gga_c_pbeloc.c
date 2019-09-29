@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_PBELOC       246 /* Semilocal dynamical correlation                    */
 
 #include "maple2c/gga_exc/gga_c_pbeloc.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_pbeloc = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_pbeloc = {
   XC_GGA_C_PBELOC,
   XC_CORRELATION,
   "Semilocal dynamical correlation",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_c_pbeloc = {
   1e-11,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
