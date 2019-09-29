@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_K_APBEINT       54 /* interpolated version of APBE                   */
 #define XC_GGA_K_REVAPBEINT    53 /* interpolated version of REVAPBE                */
@@ -48,8 +50,9 @@ gga_k_apbe_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_k_apbeint.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_apbeint = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_apbeint = {
   XC_GGA_K_APBEINT,
   XC_KINETIC,
   "interpolated version of APBE",
@@ -59,10 +62,15 @@ const xc_func_info_type xc_func_info_gga_k_apbeint = {
   1e-32,
   0, NULL, NULL,
   gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_revapbeint = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_revapbeint = {
   XC_GGA_K_REVAPBEINT,
   XC_KINETIC,
   "interpolated version of revAPBE",
@@ -72,5 +80,10 @@ const xc_func_info_type xc_func_info_gga_k_revapbeint = {
   1e-32,
   0, NULL, NULL,
   gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

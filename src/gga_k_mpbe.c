@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_K_PBE3         595 /* Three parameter PBE-like expansion             */
 #define XC_GGA_K_PBE4         596 /* Four  parameter PBE-like expansion             */
@@ -49,8 +51,9 @@ gga_k_mpbe_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_k_mpbe.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_pbe3 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_pbe3 = {
   XC_GGA_K_PBE3,
   XC_KINETIC,
   "Three parameter PBE-like expansion",
@@ -60,10 +63,15 @@ const xc_func_info_type xc_func_info_gga_k_pbe3 = {
   1e-21,
   0, NULL, NULL,
   gga_k_mpbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_pbe4 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_pbe4 = {
   XC_GGA_K_PBE4,
   XC_KINETIC,
   "Four parameter PBE-like expansion",
@@ -73,5 +81,10 @@ const xc_func_info_type xc_func_info_gga_k_pbe4 = {
   1e-21,
   0, NULL, NULL,
   gga_k_mpbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

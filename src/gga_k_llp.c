@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_K_LLP          522 /* Lee, Lee & Parr */
 #define XC_GGA_K_FR_B88       514 /* Fuentealba & Reyes (B88 version) */
@@ -44,8 +46,9 @@ gga_k_llp_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_k_llp.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_llp = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_llp = {
   XC_GGA_K_LLP,
   XC_KINETIC,
   "Lee, Lee & Parr",
@@ -55,10 +58,15 @@ const xc_func_info_type xc_func_info_gga_k_llp = {
   1e-25,
   0, NULL, NULL,
   gga_k_llp_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_fr_b88 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_fr_b88 = {
   XC_GGA_K_FR_B88,
   XC_KINETIC,
   "Fuentealba & Reyes (B88 version)",
@@ -68,5 +76,10 @@ const xc_func_info_type xc_func_info_gga_k_fr_b88 = {
   1e-25,
   0, NULL, NULL,
   gga_k_llp_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

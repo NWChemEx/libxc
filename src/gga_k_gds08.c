@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_K_GDS08     591 /* Combined analytical theory with Monte Carlo sampling */
 #define XC_GGA_K_GHDS10    592 /* As GDS08 but for an electron gas with spin */
@@ -23,7 +25,7 @@ gga_k_gds08_init(xc_func_type *p)
   xc_mix_init(p, 2, funcs_id, funcs_coef);  
 }
 
-const xc_func_info_type xc_func_info_gga_k_gds08 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_gds08 = {
   XC_GGA_K_GDS08,
   XC_KINETIC,
   "Combined analytical theory with Monte Carlo sampling",
@@ -33,6 +35,7 @@ const xc_func_info_type xc_func_info_gga_k_gds08 = {
   1e-24,
   0, NULL, NULL,
   gga_k_gds08_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
@@ -49,7 +52,7 @@ gga_k_ghds10_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[1], par_k_gds08);
 }
 
-const xc_func_info_type xc_func_info_gga_k_ghds10 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_ghds10 = {
   XC_GGA_K_GHDS10,
   XC_KINETIC,
   "As GDS08 but for an electron gas with spin",
@@ -59,6 +62,7 @@ const xc_func_info_type xc_func_info_gga_k_ghds10 = {
   1e-24,
   0, NULL, NULL,
   gga_k_ghds10_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
@@ -75,7 +79,7 @@ gga_k_ghds10r_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[1], par_k_gds08);
 }
 
-const xc_func_info_type xc_func_info_gga_k_ghds10r = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_ghds10r = {
   XC_GGA_K_GHDS10R,
   XC_KINETIC,
   "Reparametrized GHDS10",
@@ -85,6 +89,7 @@ const xc_func_info_type xc_func_info_gga_k_ghds10r = {
   1e-24,
   0, NULL, NULL,
   gga_k_ghds10r_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
@@ -101,7 +106,7 @@ gga_k_tkvln_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[1], par_k_gds08);
 }
 
-const xc_func_info_type xc_func_info_gga_k_tkvln = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_tkvln = {
   XC_GGA_K_TKVLN,
   XC_KINETIC,
   "Trickey, Karasiev, and Vela",
@@ -111,5 +116,6 @@ const xc_func_info_type xc_func_info_gga_k_tkvln = {
   1e-24,
   0, NULL, NULL,
   gga_k_tkvln_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };

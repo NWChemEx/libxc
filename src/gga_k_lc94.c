@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_K_LC94         521 /* Lembarki & Chermette */
 
@@ -39,8 +41,9 @@ gga_k_lc94_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_k_lc94.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_lc94 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_lc94 = {
   XC_GGA_K_LC94,
   XC_KINETIC,
   "Lembarki & Chermette",
@@ -50,5 +53,10 @@ const xc_func_info_type xc_func_info_gga_k_lc94 = {
   1e-21,
   0, NULL, NULL,
   gga_k_lc94_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

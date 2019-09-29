@@ -102,16 +102,6 @@ if (CUDA_FOUND)
     set(raw_sources_list
     func_info.c
     gga.c
-    gga_k_dk.c
-    gga_k_meyer.c
-    gga_k_ol1.c
-    gga_k_ol2.c
-    gga_x_ol2.c
-    gga_k_pearson.c
-    gga_k_tflw.c
-    gga_k_thakkar.c
-    gga_k_gds08.c
-    gga_k_exp4.c
     gga_x_2d_b86.c
     gga_x_2d_b86_mgc.c
     gga_x_2d_b88.c
@@ -121,12 +111,6 @@ if (CUDA_FOUND)
     gga_x_am05.c
     gga_x_b86.c
     gga_x_b88.c
-    gga_k_llp.c
-    gga_k_pw86.c
-    gga_k_mpbe.c
-    gga_k_apbe.c
-    gga_k_apbeint.c
-    gga_k_lc94.c
     gga_x_bayesian.c
     gga_x_beefvdw.c
     gga_x_bpccac.c
@@ -153,6 +137,7 @@ if (CUDA_FOUND)
     gga_x_lv_rpw86.c
     gga_x_mpbe.c
     gga_x_n12.c
+    gga_x_ol2.c
     gga_x_optx.c
     gga_x_pbea.c
     gga_x_pbeint.c
@@ -299,6 +284,21 @@ if (CUDA_FOUND)
     gga_c_zpbeint.cu
     gga_c_zvpbeint.cu
     gga_c_zvpbeloc.cu
+    gga_k_dk.cu
+    gga_k_meyer.cu
+    gga_k_ol1.cu
+    gga_k_ol2.cu
+    gga_k_pearson.cu
+    gga_k_tflw.cu
+    gga_k_thakkar.cu
+    gga_k_gds08.cu
+    gga_k_exp4.cu
+    gga_k_llp.cu
+    gga_k_pw86.cu
+    gga_k_mpbe.cu
+    gga_k_apbe.cu
+    gga_k_apbeint.cu
+    gga_k_lc94.cu
     gga_x_pbe.cu
     integrate.cu
     lda.cu
