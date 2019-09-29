@@ -239,17 +239,6 @@ if (CUDA_FOUND)
     integrate.c
     lda.c
     lda_c_pk09.c           # this one kills the nvcc compiler
-    lda_x_1d_soft.c
-    lda_x_1d_exponential.c
-    lda_x_2d.c
-    lda_x_erf.c
-    lda_x_rel.c
-    lda_xc_1d_ehwlrg.c
-    lda_xc_ksdt.c
-    lda_xc_teter93.c
-    lda_xc_zlp.c
-    lda_xc_bn05.c
-    lda_xc_tih.c
     mgga.c
     mgga_c_b88.c
     mgga_c_bc95.c
@@ -307,6 +296,7 @@ if (CUDA_FOUND)
     version.c
     )
     set(raw_sources_list_device
+    bessel.cu
     functionals.cu
     functionals_device.cu
     gga.cu
@@ -339,6 +329,17 @@ if (CUDA_FOUND)
     lda_k_tf.cu
     lda_k_zlp.cu
     lda_x.cu
+    lda_x_1d_exponential.cu
+    lda_x_1d_soft.cu
+    lda_x_2d.cu
+    lda_x_erf.cu
+    lda_x_rel.cu
+    lda_xc_1d_ehwlrg.cu
+    lda_xc_ksdt.cu
+    lda_xc_teter93.cu
+    lda_xc_zlp.cu
+    lda_xc_bn05.cu
+    lda_xc_tih.cu
     util.cu
     xc_func_data.cu
     )

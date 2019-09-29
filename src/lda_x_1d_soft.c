@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_X_1D_SOFT  21 /* Exchange in 1D for a soft-Coulomb interaction */
 
@@ -45,6 +47,7 @@ static void func2(double *x, int n, void *dummy)
 
 #include "maple2c/lda_exc/lda_x_1d_soft.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
 static const func_params_type ext_params[] = {
   {"beta", 1.0, "Screening parameter"}
@@ -62,7 +65,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   params->beta = get_ext_param(p->info->ext_params, ext_params, 0);
 }
 
-const xc_func_info_type xc_func_info_lda_x_1d_soft = {
+EXTERN const xc_func_info_type xc_func_info_lda_x_1d_soft = {
   XC_LDA_X_1D_SOFT,
   XC_EXCHANGE,
   "Exchange in 1D for an soft-Coulomb interaction",
@@ -72,5 +75,10 @@ const xc_func_info_type xc_func_info_lda_x_1d_soft = {
   1e-26,
   1, ext_params, set_ext_params,
   lda_x_1d_exponential_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /***********************************************************************
   Exchange and correlation free energy density and potential as 
@@ -88,6 +90,7 @@ lda_xc_ksdt_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_xc_ksdt.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
 static const func_params_type ext_params[] = {
   {"T", 0.0, "Temperature"},
@@ -107,7 +110,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   if(params->T < 1e-8) params->T = 1e-8;
 }
 
-const xc_func_info_type xc_func_info_lda_xc_ksdt = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_ksdt = {
   XC_LDA_XC_KSDT,
   XC_EXCHANGE_CORRELATION,
   "Karasiev, Sjostrom, Dufty & Trickey",
@@ -117,10 +120,15 @@ const xc_func_info_type xc_func_info_lda_xc_ksdt = {
   1e-24,
   1, ext_params, set_ext_params,
   lda_xc_ksdt_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_xc_gdsmfb = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_gdsmfb = {
   XC_LDA_XC_GDSMFB,
   XC_EXCHANGE_CORRELATION,
   "Groth, Dornheim, Sjostrom, Malone, Foulkes, Bonitz",
@@ -130,5 +138,10 @@ const xc_func_info_type xc_func_info_lda_xc_gdsmfb = {
   1e-24,
   1, ext_params, set_ext_params,
   lda_xc_ksdt_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

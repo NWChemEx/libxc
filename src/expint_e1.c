@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
 
 /* expint_E1 calculates the exponential integral, E1(X), for positive
    argument X and the Cauchy principal value for negative X.  If
@@ -70,7 +71,7 @@ static double AE14_data[26] = {
 
 
 /* implementation for E1, allowing for scaling by exp(x) */
-double xc_expint_e1_impl(double x, const int scale){
+DEVICE double xc_expint_e1_impl(double x, const int scale){
   const double xmaxt = -LOG_DBL_MIN;        /* XMAXT = -log (R1MACH(1)) */
   const double xmax  = xmaxt - log(xmaxt);    /* XMAX = XMAXT - log(XMAXT) */
 

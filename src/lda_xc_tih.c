@@ -7,14 +7,17 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_XC_TIH   599   /* Neural network LDA from Tozer et al */
 
 #include "maple2c/lda_vxc/lda_xc_tih.c"
 #define XC_NO_EXC
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_xc_tih = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_tih = {
   XC_LDA_XC_TIH,
   XC_EXCHANGE_CORRELATION,
   "Neural network LDA from Tozer et al",
@@ -24,5 +27,10 @@ const xc_func_info_type xc_func_info_lda_xc_tih = {
   5e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
