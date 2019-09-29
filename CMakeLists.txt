@@ -100,8 +100,6 @@ message(STATUS "Libxc SO Full ${${PROJECT_NAME}_SOVERSION} Major ${${PROJECT_NAM
 
 if (CUDA_FOUND)
     set(raw_sources_list
-    bessel.c
-    expint_e1.c
     func_info.c
     gga.c
     gga_c_acgga.c
@@ -236,7 +234,6 @@ if (CUDA_FOUND)
     hyb_mgga_xc_kcis.c
     hyb_mgga_xc_tpssh.c
     hyb_mgga_xc_wb97mv.c
-    integrate.c
     lda.c
     lda_c_pk09.c           # this one kills the nvcc compiler
     mgga.c
@@ -297,11 +294,13 @@ if (CUDA_FOUND)
     )
     set(raw_sources_list_device
     bessel.cu
+    expint_e1.cu
     functionals.cu
     functionals_device.cu
     gga.cu
     gga_c_pbe.cu
     gga_x_pbe.cu
+    integrate.cu
     lda.cu
     lda_c_1d_csc.cu
     lda_c_1d_loos.cu
