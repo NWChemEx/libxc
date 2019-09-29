@@ -114,7 +114,7 @@ void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const d
 		    v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
 
   if(func->n_func_aux > 0) {
-    printf("Multi-term functional: %s\n",func->info->name);
+    fprintf(stderr,"Multi-term functional: %s\n",func->info->name);
     exit(1);
     /*
     xc_mix_func(func, np, rho, sigma, NULL, NULL, zk, vrho, vsigma, NULL, NULL,

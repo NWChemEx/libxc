@@ -29,7 +29,6 @@ DEVICE double xc_integrate(integr_fn func, void *ex, double a, double b)
   double epsabs, epsrel, result, abserr;
   int limit=LIMIT, neval, ierr, last;
 
-#ifndef __CUDACC__
   int    *iord;
   double *alist, *blist, *rlist, *elist;
   alist = (double *)malloc(limit*sizeof(double));
@@ -37,13 +36,6 @@ DEVICE double xc_integrate(integr_fn func, void *ex, double a, double b)
   rlist = (double *)malloc(limit*sizeof(double));
   elist = (double *)malloc(limit*sizeof(double));
   iord  = (int   *)malloc(limit*sizeof(int));
-#else
-  double alist[LIMIT];
-  double blist[LIMIT];
-  double rlist[LIMIT];
-  double elist[LIMIT];
-  int    iord[LIMIT];
-#endif
 
   epsabs = 1e-10;
   epsrel = 1e-10;
@@ -51,13 +43,11 @@ DEVICE double xc_integrate(integr_fn func, void *ex, double a, double b)
   xc_rdqagse(func, ex, &a, &b, &epsabs, &epsrel, &limit, &result, &abserr, &neval, &ierr,
 	    alist, blist, rlist, elist, iord, &last);
 
-#ifndef __CUDACC__
   free(alist);
   free(blist);
   free(rlist);
   free(elist);
   free(iord);
-#endif
 
   return result;
 }
