@@ -17,48 +17,61 @@
 
 #include <float.h>
 #include <util.h>
+#include "xc_device.h"
 
 
 #define FALSE 0
 #define TRUE 1
+#define LIMIT 1000
 
-double xc_integrate(integr_fn func, void *ex, double a, double b)
+DEVICE double xc_integrate(integr_fn func, void *ex, double a, double b)
 {
-  double epsabs, epsrel, result, abserr, *alist, *blist, *rlist, *elist;
-  int limit, neval, ierr, *iord, last;
+  double epsabs, epsrel, result, abserr;
+  int limit=LIMIT, neval, ierr, last;
 
-  epsabs = 1e-10;
-  epsrel = 1e-10;
-
-  limit  = 1000;
+#ifndef __CUDACC__
+  int    *iord;
+  double *alist, *blist, *rlist, *elist;
   alist = (double *)malloc(limit*sizeof(double));
   blist = (double *)malloc(limit*sizeof(double));
   rlist = (double *)malloc(limit*sizeof(double));
   elist = (double *)malloc(limit*sizeof(double));
   iord  = (int   *)malloc(limit*sizeof(int));
+#else
+  double alist[LIMIT];
+  double blist[LIMIT];
+  double rlist[LIMIT];
+  double elist[LIMIT];
+  int    iord[LIMIT];
+#endif
+
+  epsabs = 1e-10;
+  epsrel = 1e-10;
 
   xc_rdqagse(func, ex, &a, &b, &epsabs, &epsrel, &limit, &result, &abserr, &neval, &ierr,
 	    alist, blist, rlist, elist, iord, &last);
 
+#ifndef __CUDACC__
   free(alist);
   free(blist);
   free(rlist);
   free(elist);
   free(iord);
+#endif
 
   return result;
 }
 
 /* f2c-ed translations + modifications of QUADPACK functions from here down */
 
-static void rdqk21(integr_fn f, void *ex,
+DEVICE static void rdqk21(integr_fn f, void *ex,
 		   double *, double *, double *, double *, double *, double *);
 
-static void rdqpsrt(int *, int *, int *, double *, double *, int *, int *);
+DEVICE static void rdqpsrt(int *, int *, int *, double *, double *, int *, int *);
 
-static void rdqelg(int *, double *, double *, double *, double *, int *);
+DEVICE static void rdqelg(int *, double *, double *, double *, double *, int *);
 
-void xc_rdqagse(integr_fn f, void *ex, double *a, double *b, 
+DEVICE void xc_rdqagse(integr_fn f, void *ex, double *a, double *b, 
 	     double *epsabs, double *epsrel, int *limit, double *result,
 	     double *abserr, int *neval, int *ier, double *alist__,
 	     double *blist, double *rlist, double *elist, int *iord, int *last)
@@ -578,7 +591,7 @@ void xc_rdqagse(integr_fn f, void *ex, double *a, double *b,
 } /* rdqagse_ */
 
 
-static void rdqelg(int *n, double *epstab, double *
+DEVICE static void rdqelg(int *n, double *epstab, double *
 		   result, double *abserr, double *res3la, int *nres)
 {
   /* Local variables */
@@ -779,7 +792,7 @@ static void rdqelg(int *n, double *epstab, double *
   return;
 } /* rdqelg_ */
 
-static void  rdqk21(integr_fn f, void *ex, double *a, double *b, double *result,
+DEVICE static void  rdqk21(integr_fn f, void *ex, double *a, double *b, double *result,
 		    double *abserr, double *resabs, double *resasc)
 {
   /* Initialized data */
@@ -989,7 +1002,7 @@ bell labs, nov. 1981.
 } /* rdqk21_ */
 
 
-static void rdqpsrt(int *limit, int *last, int *maxerr,
+DEVICE static void rdqpsrt(int *limit, int *last, int *maxerr,
 		    double *ermax, double *elist, int *iord, int *nrmax)
 {
   /* Local variables */
