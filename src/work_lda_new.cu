@@ -58,10 +58,11 @@ work_lda_offload(const XC(func_type) *p, int np, const double *rho,
                    (xc_func_data_device+p->func_rank,
                     dim->rho,dim->zk,dim->vrho,dim->v2rho2,dim->v3rho3,
                     np,rho,zk,vrho,v2rho2,v3rho3);
-    cudaError_t stat = cudaGetLastError();
-    if (stat != cudaSuccess) {
-        printf("Launch work_lda_device: %s\n",cudaGetErrorString( stat ));
-    }
+    //cudaError_t stat = cudaGetLastError();
+    //cudaError_t stat = cudaDeviceSynchronize();
+    //if (stat != cudaSuccess) {
+    //    printf("Launch work_lda_device: %s\n",cudaGetErrorString( stat ));
+    //}
 }
 
 #endif

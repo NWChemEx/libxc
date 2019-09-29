@@ -85,10 +85,11 @@ work_gga_offload(const XC(func_type) *p, int np, const double *rho, const double
                     np,rho,sigma,zk,vrho,vsigma,
                     v2rho2,v2rhosigma,v2sigma2,
                     v3rho3,v3rho2sigma,v3rhosigma2,v3sigma3);
-    cudaError_t stat = cudaGetLastError();
-    if (stat != cudaSuccess) {
-        printf("Launch work_gga_device: %s\n",cudaGetErrorString( stat ));
-    }
+    //cudaError_t stat = cudaGetLastError();
+    //cudaError_t stat = cudaDeviceSynchronize();
+    //if (stat != cudaSuccess) {
+    //    printf("Launch work_gga_device: %s\n",cudaGetErrorString( stat ));
+    //}
 }
 
 #endif
