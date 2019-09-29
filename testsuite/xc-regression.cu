@@ -336,12 +336,19 @@ int main(int argc, char *argv[])
   switch(family) {
   case XC_FAMILY_LDA:
     xc_lda_offload(&xc_func_data[func_rank], d.n, d.rho, zk, vrho, v2rho2, v3rho3);
-    //xc_lda(&xc_func_data[func_rank], d.n, d.rho, zk, vrho, v2rho2, v3rho3);
+    cudaError_t stat = cudaDeviceSynchronize();
+    if (stat != cudaSuccess) {
+        printf("Launch xc_lda_offload: %s\n",cudaGetErrorString( stat ));
+    }
     break;
   case XC_FAMILY_GGA:
   case XC_FAMILY_HYB_GGA:
     xc_gga_offload(&xc_func_data[func_rank], d.n, d.rho, d.sigma, zk, vrho, d.vsigma,
                    v2rho2, d.v2rhosigma, d.v2sigma2, NULL, NULL, NULL, NULL);
+    cudaError_t stat = cudaDeviceSynchronize();
+    if (stat != cudaSuccess) {
+        printf("Launch xc_gga_offload: %s\n",cudaGetErrorString( stat ));
+    }
     break;
   case XC_FAMILY_MGGA:
   case XC_FAMILY_HYB_MGGA:

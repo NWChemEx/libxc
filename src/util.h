@@ -155,8 +155,8 @@ DEVICE static inline double expint_Ei_scaled(const double x)  { return -xc_expin
 
 /* integration */
 typedef void integr_fn(double *x, int n, void *ex);
-double xc_integrate(integr_fn func, void *ex, double a, double b);
-void xc_rdqagse(integr_fn f, void *ex, double *a, double *b, 
+DEVICE double xc_integrate(integr_fn func, void *ex, double a, double b);
+DEVICE void xc_rdqagse(integr_fn f, void *ex, double *a, double *b, 
 	     double *epsabs, double *epsrel, int *limit, double *result,
 	     double *abserr, int *neval, int *ier, double *alist__,
 	     double *blist, double *rlist, double *elist, int *iord, int *last);
