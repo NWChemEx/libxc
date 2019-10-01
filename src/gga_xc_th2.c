@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_XC_TH2          155 /* Tozer and Handy v. 2 */
 
 #include "maple2c/gga_exc/gga_xc_th2.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_xc_th2 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th2 = {
   XC_GGA_XC_TH2,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. 2",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_xc_th2 = {
   1e-17,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_XC_OBLYP_D       67  /* oBLYP-D functional of Goerigk and Grimme  */
 #define XC_GGA_XC_OPWLYP_D      66  /* oPWLYP-D functional of Goerigk and Grimme */
@@ -26,7 +28,7 @@ gga_xc_oblyp_d_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[1], par_c_lyp);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_oblyp_d = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_oblyp_d = {
   XC_GGA_XC_OBLYP_D,
   XC_EXCHANGE_CORRELATION,
   "oBLYP-D functional of Goerigk and Grimme",
@@ -36,7 +38,8 @@ const xc_func_info_type xc_func_info_gga_xc_oblyp_d = {
   1e-32,
   0, NULL, NULL,
   gga_xc_oblyp_d_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -54,7 +57,7 @@ gga_xc_opwlyp_d_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[1], par_c_lyp);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_opwlyp_d = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_opwlyp_d = {
   XC_GGA_XC_OPWLYP_D,
   XC_EXCHANGE_CORRELATION,
   "oPWLYP-D functional of Goerigk and Grimme",
@@ -64,7 +67,8 @@ const xc_func_info_type xc_func_info_gga_xc_opwlyp_d = {
   1e-32,
   0, NULL, NULL,
   gga_xc_opwlyp_d_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -82,7 +86,7 @@ gga_xc_opbe_d_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[1], par_c_pbe);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_opbe_d = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_opbe_d = {
   XC_GGA_XC_OPBE_D,
   XC_EXCHANGE_CORRELATION,
   "oPBE-D functional of Goerigk and Grimme",
@@ -92,6 +96,7 @@ const xc_func_info_type xc_func_info_gga_xc_opbe_d = {
   1e-32,
   0, NULL, NULL,
   gga_xc_opbe_d_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 

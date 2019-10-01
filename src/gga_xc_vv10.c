@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_XC_VV10         255 /* Vydrov and Van Voorhis */
 #define XC_HYB_GGA_XC_LC_VV10  469 /* Vydrov and Van Voorhis */
@@ -38,7 +40,7 @@ hyb_gga_xc_lc_vv10_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[0], &p->cam_omega);  
 }
 
-const xc_func_info_type xc_func_info_gga_xc_vv10 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_vv10 = {
   XC_GGA_XC_VV10,
   XC_EXCHANGE_CORRELATION,
   "Vydrov and Van Voorhis",
@@ -48,10 +50,11 @@ const xc_func_info_type xc_func_info_gga_xc_vv10 = {
   1e-32,
   0, NULL, NULL,
   gga_xc_vv10_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lc_vv10 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_lc_vv10 = {
   XC_HYB_GGA_XC_LC_VV10,
   XC_EXCHANGE_CORRELATION,
   "Vydrov and Van Voorhis",
@@ -61,5 +64,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lc_vv10 = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_lc_vv10_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };

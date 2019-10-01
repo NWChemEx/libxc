@@ -102,14 +102,6 @@ if (CUDA_FOUND)
     set(raw_sources_list
     func_info.c
     gga.c
-    gga_xc_1w.c
-    gga_xc_b97.c
-    gga_xc_edf1.c
-    gga_xc_oblyp_d.c
-    gga_xc_th1.c
-    gga_xc_th2.c
-    gga_xc_th3.c
-    gga_xc_vv10.c
     hyb_gga_xc_b1wc.c
     hyb_gga_xc_b3lyp.c
     hyb_gga_xc_cam_b3lyp.c
@@ -300,6 +292,14 @@ if (CUDA_FOUND)
     gga_x_wpbeh.cu
     gga_x_fd_lb94.cu
     gga_x_pbe.cu
+    gga_xc_1w.cu
+    gga_xc_b97.cu
+    gga_xc_edf1.cu
+    gga_xc_oblyp_d.cu
+    gga_xc_th1.cu
+    gga_xc_th2.cu
+    gga_xc_th3.cu
+    gga_xc_vv10.cu
     integrate.cu
     lda.cu
     lda_c_1d_csc.cu

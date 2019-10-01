@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_XC_TH_FL        196 /* Tozer and Handy v. FL  */
 #define XC_GGA_XC_TH_FC        197 /* Tozer and Handy v. FC  */
@@ -88,8 +90,9 @@ gga_xc_th1_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_xc_th1.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_xc_th_fl = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th_fl = {
   XC_GGA_XC_TH_FL,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FL",
@@ -99,10 +102,15 @@ const xc_func_info_type xc_func_info_gga_xc_th_fl = {
   1e-32,
   0, NULL, NULL,
   gga_xc_th1_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_th_fc = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th_fc = {
   XC_GGA_XC_TH_FC,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FC",
@@ -112,10 +120,15 @@ const xc_func_info_type xc_func_info_gga_xc_th_fc = {
   1e-32,
   0, NULL, NULL,
   gga_xc_th1_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_th_fcfo = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th_fcfo = {
   XC_GGA_XC_TH_FCFO,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FCFO",
@@ -125,10 +138,15 @@ const xc_func_info_type xc_func_info_gga_xc_th_fcfo = {
   1e-32,
   0, NULL, NULL,
   gga_xc_th1_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_th_fco = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th_fco = {
   XC_GGA_XC_TH_FCO,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FCO",
@@ -138,10 +156,15 @@ const xc_func_info_type xc_func_info_gga_xc_th_fco = {
   1e-32,
   0, NULL, NULL,
   gga_xc_th1_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_th1 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th1 = {
   XC_GGA_XC_TH1,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. 1",
@@ -151,5 +174,10 @@ const xc_func_info_type xc_func_info_gga_xc_th1 = {
   1e-32,
   0, NULL, NULL,
   gga_xc_th1_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

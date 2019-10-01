@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_XC_TH3          156 /* Tozer and Handy v. 3 */
 #define XC_GGA_XC_TH4          157 /* Tozer and Handy v. 4 */
@@ -58,8 +60,9 @@ gga_xc_th3_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_xc_th3.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_xc_th3 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th3 = {
   XC_GGA_XC_TH3,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. 3",
@@ -69,10 +72,15 @@ const xc_func_info_type xc_func_info_gga_xc_th3 = {
   1e-18,
   0, NULL, NULL,
   gga_xc_th3_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_th4 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th4 = {
   XC_GGA_XC_TH4,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. 4",
@@ -82,5 +90,10 @@ const xc_func_info_type xc_func_info_gga_xc_th4 = {
   1e-15,
   0, NULL, NULL,
   gga_xc_th3_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
