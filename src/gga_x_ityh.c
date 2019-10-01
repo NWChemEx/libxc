@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_ITYH 529 /* short-range recipe B88 functionals - erf */
 
@@ -22,8 +24,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_ityh.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_ityh = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_ityh = {
   XC_GGA_X_ITYH,
   XC_EXCHANGE,
   "Short-range recipe for B88 functional - erf",
@@ -33,5 +36,10 @@ const xc_func_info_type xc_func_info_gga_x_ityh = {
   1e-8,
   1, ext_params, set_ext_params,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

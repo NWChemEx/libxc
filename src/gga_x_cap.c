@@ -7,14 +7,17 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_CAP         270 /* Correct Asymptotic Potential */
 #define XC_HYB_GGA_XC_CAP0   477 /* Correct Asymptotic Potential hybrid */
 
 #include "maple2c/gga_exc/gga_x_cap.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_cap = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_cap = {
   XC_GGA_X_CAP,
   XC_EXCHANGE,
   "Correct Asymptotic Potential",
@@ -24,7 +27,12 @@ const xc_func_info_type xc_func_info_gga_x_cap = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
 void
@@ -41,7 +49,7 @@ xc_hyb_gga_xc_cap0_init(xc_func_type *p)
   p->cam_alpha = 0.75;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_cap0 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_cap0 = {
   XC_HYB_GGA_XC_CAP0,
   XC_EXCHANGE_CORRELATION,
   "Correct Asymptotic Potential hybrid",
@@ -51,5 +59,10 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cap0 = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_cap0_init, NULL,
+  NULL, NULL, NULL,
+#ifndef __CUDACC__
   NULL, NULL, NULL
+#else
+  NULL, NULL, NULL
+#endif
 };

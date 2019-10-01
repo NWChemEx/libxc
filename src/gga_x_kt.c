@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_KT1          145 /* Exchange part of Keal and Tozer version 1 */
 #define XC_GGA_XC_KT1         167 /* Keal and Tozer version 1                  */
@@ -45,8 +47,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_kt.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_kt1 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_kt1 = {
   XC_GGA_X_KT1,
   XC_EXCHANGE,
   "Exchange part of Keal and Tozer version 1",
@@ -56,7 +59,12 @@ const xc_func_info_type xc_func_info_gga_x_kt1 = {
   1e-32,
   2, ext_params, set_ext_params,
   gga_x_kt_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
 
@@ -69,7 +77,7 @@ gga_xc_kt1_init(xc_func_type *p)
   xc_mix_init(p, 2, funcs_id, funcs_coef);  
 }
 
-const xc_func_info_type xc_func_info_gga_xc_kt1 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_kt1 = {
   XC_GGA_XC_KT1,
   XC_EXCHANGE_CORRELATION,
   "Keal and Tozer, version 1",
@@ -79,6 +87,7 @@ const xc_func_info_type xc_func_info_gga_xc_kt1 = {
   1e-24,
   0, NULL, NULL,
   gga_xc_kt1_init, NULL, 
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
@@ -92,7 +101,7 @@ gga_xc_kt2_init(xc_func_type *p)
   xc_mix_init(p, 3, funcs_id, funcs_coef);  
 }
 
-const xc_func_info_type xc_func_info_gga_xc_kt2 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_kt2 = {
   XC_GGA_XC_KT2,
   XC_EXCHANGE_CORRELATION,
   "Keal and Tozer, version 2",
@@ -102,6 +111,7 @@ const xc_func_info_type xc_func_info_gga_xc_kt2 = {
   1e-24,
   0, NULL, NULL,
   gga_xc_kt2_init, NULL, 
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
@@ -130,7 +140,7 @@ gga_xc_kt3_init(xc_func_type *p)
   set_ext_params(p->func_aux[2], par_kt);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_kt3 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_kt3 = {
   XC_GGA_XC_KT3,
   XC_EXCHANGE_CORRELATION,
   "Keal and Tozer, version 3",
@@ -140,5 +150,6 @@ const xc_func_info_type xc_func_info_gga_xc_kt3 = {
   1e-24,
   0, NULL, NULL,
   gga_xc_kt3_init, NULL, 
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };

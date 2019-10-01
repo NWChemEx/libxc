@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_PW91         109 /* Perdew & Wang 91 */
 #define XC_GGA_X_MPW91        119 /* Modified form of PW91 by Adamo & Barone */
@@ -78,8 +80,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_pw91.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_pw91 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pw91 = {
   XC_GGA_X_PW91,
   XC_EXCHANGE,
   "Perdew & Wang 91",
@@ -89,10 +92,15 @@ const xc_func_info_type xc_func_info_gga_x_pw91 = {
   1e-24,
   0, NULL, NULL,
   gga_x_pw91_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_mpw91 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_mpw91 = {
   XC_GGA_X_MPW91,
   XC_EXCHANGE,
   "mPW91 of Adamo & Barone",
@@ -102,5 +110,10 @@ const xc_func_info_type xc_func_info_gga_x_mpw91 = {
   1e-31,
   3, ext_params, set_ext_params,
   gga_x_pw91_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

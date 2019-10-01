@@ -8,6 +8,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_B86          103 /* Becke 86 Xalpha,beta,gamma                      */
 #define XC_GGA_X_B86_MGC      105 /* Becke 86 Xalpha,beta,gamma (with mod. grad. correction) */
@@ -83,8 +85,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_b86.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_b86 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_b86 = {
   XC_GGA_X_B86,
   XC_EXCHANGE,
   "Becke 86",
@@ -94,10 +97,15 @@ const xc_func_info_type xc_func_info_gga_x_b86 = {
   1e-24,
   3, ext_params, set_ext_params,
   gga_x_b86_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_b86_mgc = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_b86_mgc = {
   XC_GGA_X_B86_MGC,
   XC_EXCHANGE,
   "Becke 86 with modified gradient correction",
@@ -107,10 +115,15 @@ const xc_func_info_type xc_func_info_gga_x_b86_mgc = {
   1e-24,
   0, NULL, NULL,
   gga_x_b86_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_b86_r = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_b86_r = {
   XC_GGA_X_B86_R,
   XC_EXCHANGE,
   "Revised Becke 86 with modified gradient correction",
@@ -120,11 +133,16 @@ const xc_func_info_type xc_func_info_gga_x_b86_r = {
   1e-24,
   0, NULL, NULL,
   gga_x_b86_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 
 };
 
-const xc_func_info_type xc_func_info_gga_x_optb86b_vdw = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_optb86b_vdw = {
   XC_GGA_X_OPTB86B_VDW,
   XC_EXCHANGE,
   "Becke 86 reoptimized for use with vdW functional of Dion et al",
@@ -134,5 +152,10 @@ const xc_func_info_type xc_func_info_gga_x_optb86b_vdw = {
   1e-24,
   0, NULL, NULL,
   gga_x_b86_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

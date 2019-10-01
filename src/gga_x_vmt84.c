@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_VMT84_PBE        69 /* VMT{8,4} with constraint satisfaction with mu = mu_PBE  */
 #define XC_GGA_X_VMT84_GE         68 /* VMT{8,4} with constraint satisfaction with mu = mu_GE  */
@@ -43,8 +45,9 @@ gga_x_vmt84_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_x_vmt84.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_vmt84_pbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_vmt84_pbe = {
   XC_GGA_X_VMT84_PBE,
   XC_EXCHANGE,
   "VMT{8,4} with constraint satisfaction with mu = mu_PBE",
@@ -54,10 +57,15 @@ const xc_func_info_type xc_func_info_gga_x_vmt84_pbe = {
   1e-32,
   0, NULL, NULL,
   gga_x_vmt84_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_vmt84_ge = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_vmt84_ge = {
   XC_GGA_X_VMT84_GE,
   XC_EXCHANGE,
   "VMT{8,4} with constraint satisfaction with mu = mu_GE",
@@ -67,5 +75,10 @@ const xc_func_info_type xc_func_info_gga_x_vmt84_ge = {
   1e-32,
   0, NULL, NULL,
   gga_x_vmt84_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

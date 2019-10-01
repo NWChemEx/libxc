@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_SSB_SW       90  /* Swart, Sola and Bickelhaupt correction to PBE  */
 #define XC_GGA_X_SSB          91  /* Swart, Sola and Bickelhaupt  */
@@ -51,8 +53,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_ssb_sw.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_ssb_sw = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_ssb_sw = {
   XC_GGA_X_SSB_SW,
   XC_EXCHANGE,
   "Swart, Sola and Bickelhaupt correction to PBE",
@@ -62,7 +65,12 @@ const xc_func_info_type xc_func_info_gga_x_ssb_sw = {
   1e-22,
   5, ext_params, set_ext_params,
   gga_x_ssb_sw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
 static void
@@ -84,7 +92,7 @@ gga_x_ssb_init(xc_func_type *p)
 }
 
 
-const xc_func_info_type xc_func_info_gga_x_ssb = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_ssb = {
   XC_GGA_X_SSB,
   XC_EXCHANGE,
   "Swart, Sola and Bickelhaupt",
@@ -94,6 +102,7 @@ const xc_func_info_type xc_func_info_gga_x_ssb = {
   1e-24,
   0, NULL, NULL,
   gga_x_ssb_init, NULL, 
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
@@ -116,7 +125,7 @@ gga_x_ssb_d_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[2], par_x_kt);
 }
 
-const xc_func_info_type xc_func_info_gga_x_ssb_d = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_ssb_d = {
   XC_GGA_X_SSB_D,
   XC_EXCHANGE,
   "Swart, Sola and Bickelhaupt dispersion",
@@ -126,6 +135,7 @@ const xc_func_info_type xc_func_info_gga_x_ssb_d = {
   1e-23,
   0, NULL, NULL,
   gga_x_ssb_d_init, NULL, 
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 

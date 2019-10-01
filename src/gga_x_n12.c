@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_N12          82 /* N12 functional from Minnesota    */
 #define XC_HYB_GGA_X_N12_SX   81 /* N12-SX functional from Minnesota */
@@ -74,9 +76,10 @@ gga_x_n12_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_x_n12.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
 
-const xc_func_info_type xc_func_info_gga_x_n12 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_n12 = {
   XC_GGA_X_N12,
   XC_EXCHANGE,
   "Minnesota N12 exchange functional",
@@ -86,10 +89,15 @@ const xc_func_info_type xc_func_info_gga_x_n12 = {
   1e-24,
   0, NULL, NULL,
   gga_x_n12_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_x_n12_sx = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_x_n12_sx = {
   XC_HYB_GGA_X_N12_SX,
   XC_EXCHANGE,
   "Minnesota N12-SX exchange functional",
@@ -99,10 +107,15 @@ const xc_func_info_type xc_func_info_hyb_gga_x_n12_sx = {
   1e-24,
   0, NULL, NULL,
   gga_x_n12_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_gam = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_gam = {
   XC_GGA_X_GAM,
   XC_EXCHANGE,
   "Minnesota GAM exhange functional",
@@ -112,5 +125,10 @@ const xc_func_info_type xc_func_info_gga_x_gam = {
   1e-24,
   0, NULL, NULL,
   gga_x_n12_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

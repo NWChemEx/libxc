@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_SOGGA11        151 /* Second-order generalized gradient approximation 2011 */
 #define XC_HYB_GGA_X_SOGGA11_X  426 /* Hybrid based on SOGGA11 form */
@@ -54,9 +56,10 @@ gga_x_sogga11_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_x_sogga11.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
 
-const xc_func_info_type xc_func_info_gga_x_sogga11 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_sogga11 = {
   XC_GGA_X_SOGGA11,
   XC_EXCHANGE,
   "Second-order generalized gradient approximation 2011",
@@ -66,10 +69,15 @@ const xc_func_info_type xc_func_info_gga_x_sogga11 = {
   1e-32,
   0, NULL, NULL,
   gga_x_sogga11_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_x_sogga11_x = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_x_sogga11_x = {
   XC_HYB_GGA_X_SOGGA11_X,
   XC_EXCHANGE,
   "Hybrid based on SOGGA11 form",
@@ -79,5 +87,10 @@ const xc_func_info_type xc_func_info_hyb_gga_x_sogga11_x = {
   1e-32,
   0, NULL, NULL,
   gga_x_sogga11_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

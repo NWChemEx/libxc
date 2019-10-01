@@ -102,62 +102,6 @@ if (CUDA_FOUND)
     set(raw_sources_list
     func_info.c
     gga.c
-    gga_x_2d_b86.c
-    gga_x_2d_b86_mgc.c
-    gga_x_2d_b88.c
-    gga_x_2d_pbe.c
-    gga_x_airy.c
-    gga_x_ak13.c
-    gga_x_am05.c
-    gga_x_b86.c
-    gga_x_b88.c
-    gga_x_bayesian.c
-    gga_x_beefvdw.c
-    gga_x_bpccac.c
-    gga_x_c09x.c
-    gga_x_cap.c
-    gga_x_chachiyo.c
-    gga_x_dk87.c
-    gga_x_ev93.c
-    gga_x_ft97.c
-    gga_x_g96.c
-    gga_x_gg99.c
-    gga_x_hcth_a.c
-    gga_x_herman.c
-    gga_x_hjs.c
-    gga_x_hjs_b88_v2.c
-    gga_x_htbs.c
-    gga_x_ityh.c
-    gga_x_kt.c
-    gga_x_lag.c
-    gga_x_lb.c
-    gga_x_lg93.c
-    gga_x_lspbe.c
-    gga_x_lsrpbe.c
-    gga_x_lv_rpw86.c
-    gga_x_mpbe.c
-    gga_x_n12.c
-    gga_x_ol2.c
-    gga_x_optx.c
-    gga_x_pbea.c
-    gga_x_pbeint.c
-    gga_x_pbepow.c
-    gga_x_pbetrans.c
-    gga_x_pw86.c
-    gga_x_pw91.c
-    gga_x_q2d.c
-    gga_x_rge2.c
-    gga_x_rpbe.c
-    gga_x_sfat.c
-    gga_x_sfat_pbe.c
-    gga_x_sg4.c
-    gga_x_sogga11.c
-    gga_x_ssb_sw.c
-    gga_x_vmt.c
-    gga_x_vmt84.c
-    gga_x_wc.c
-    gga_x_wpbeh.c
-    gga_x_fd_lb94.c
     gga_xc_1w.c
     gga_xc_b97.c
     gga_xc_edf1.c
@@ -299,6 +243,62 @@ if (CUDA_FOUND)
     gga_k_apbe.cu
     gga_k_apbeint.cu
     gga_k_lc94.cu
+    gga_x_2d_b86.cu
+    gga_x_2d_b86_mgc.cu
+    gga_x_2d_b88.cu
+    gga_x_2d_pbe.cu
+    gga_x_airy.cu
+    gga_x_ak13.cu
+    gga_x_am05.cu
+    gga_x_b86.cu
+    gga_x_b88.cu
+    gga_x_bayesian.cu
+    gga_x_beefvdw.cu
+    gga_x_bpccac.cu
+    gga_x_c09x.cu
+    gga_x_cap.cu
+    gga_x_chachiyo.cu
+    gga_x_dk87.cu
+    gga_x_ev93.cu
+    gga_x_ft97.cu
+    gga_x_g96.cu
+    gga_x_gg99.cu
+    gga_x_hcth_a.cu
+    gga_x_herman.cu
+    gga_x_hjs.cu
+    gga_x_hjs_b88_v2.cu
+    gga_x_htbs.cu
+    gga_x_ityh.cu
+    gga_x_kt.cu
+    gga_x_lag.cu
+    gga_x_lb.cu
+    gga_x_lg93.cu
+    gga_x_lspbe.cu
+    gga_x_lsrpbe.cu
+    gga_x_lv_rpw86.cu
+    gga_x_mpbe.cu
+    gga_x_n12.cu
+    gga_x_ol2.cu
+    gga_x_optx.cu
+    gga_x_pbea.cu
+    gga_x_pbeint.cu
+    gga_x_pbepow.cu
+    gga_x_pbetrans.cu
+    gga_x_pw86.cu
+    gga_x_pw91.cu
+    gga_x_q2d.cu
+    gga_x_rge2.cu
+    gga_x_rpbe.cu
+    gga_x_sfat.cu
+    gga_x_sfat_pbe.cu
+    gga_x_sg4.cu
+    gga_x_sogga11.cu
+    gga_x_ssb_sw.cu
+    gga_x_vmt.cu
+    gga_x_vmt84.cu
+    gga_x_wc.cu
+    gga_x_wpbeh.cu
+    gga_x_fd_lb94.cu
     gga_x_pbe.cu
     integrate.cu
     lda.cu

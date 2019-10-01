@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_FT97_A       114 /* Filatov & Thiel 97 (version A) */
 #define XC_GGA_X_FT97_B       115 /* Filatov & Thiel 97 (version B) */
@@ -51,8 +53,9 @@ gga_x_ft97_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_x_ft97.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_ft97_a = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_ft97_a = {
   XC_GGA_X_FT97_A,
   XC_EXCHANGE,
   "Filatov & Thiel 97 (version A)",
@@ -62,10 +65,15 @@ const xc_func_info_type xc_func_info_gga_x_ft97_a = {
   1e-22,
   0, NULL, NULL,
   gga_x_ft97_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_ft97_b = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_ft97_b = {
   XC_GGA_X_FT97_B,
   XC_EXCHANGE,
   "Filatov & Thiel 97 (version B)",
@@ -75,5 +83,10 @@ const xc_func_info_type xc_func_info_gga_x_ft97_b = {
   1e-22,
   0, NULL, NULL,
   gga_x_ft97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

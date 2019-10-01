@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_DK87_R1      111 /* dePristo & Kress 87 (version R1)               */
 #define XC_GGA_X_DK87_R2      112 /* dePristo & Kress 87 (version R2)               */
@@ -48,8 +50,9 @@ gga_x_dk87_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_x_dk87.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_dk87_r1 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_dk87_r1 = {
   XC_GGA_X_DK87_R1,
   XC_EXCHANGE,
   "dePristo & Kress 87 version R1",
@@ -59,10 +62,15 @@ const xc_func_info_type xc_func_info_gga_x_dk87_r1 = {
   1e-24,
   0, NULL, NULL,
   gga_x_dk87_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_dk87_r2 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_dk87_r2 = {
   XC_GGA_X_DK87_R2,
   XC_EXCHANGE,
   "dePristo & Kress 87 version R2",
@@ -72,5 +80,10 @@ const xc_func_info_type xc_func_info_gga_x_dk87_r2 = {
   1e-24,
   0, NULL, NULL,
   gga_x_dk87_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

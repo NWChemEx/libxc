@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_HJS_B88_V2   46 /* HJS screened exchange corrected B88 version */
 
@@ -40,8 +42,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_hjs_b88_v2.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_hjs_b88_v2 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_hjs_b88_v2 = {
   XC_GGA_X_HJS_B88_V2,
   XC_EXCHANGE,
   "HJS screened exchange B88 corrected version",
@@ -51,5 +54,10 @@ const xc_func_info_type xc_func_info_gga_x_hjs_b88_v2 = {
   1e-6, /* densities smaller than 1e-6 yield NaNs */
   1, ext_params, set_ext_params,
   gga_x_hjs_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

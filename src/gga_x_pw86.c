@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_PW86         108 /* Perdew & Wang 86 */
 #define XC_GGA_X_RPW86        144 /* refitted Perdew & Wang 86 */
@@ -49,8 +51,9 @@ gga_x_pw86_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_x_pw86.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_pw86 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pw86 = {
   XC_GGA_X_PW86,
   XC_EXCHANGE,
   "Perdew & Wang 86",
@@ -60,10 +63,15 @@ const xc_func_info_type xc_func_info_gga_x_pw86 = {
   1e-24,
   0, NULL, NULL,
   gga_x_pw86_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_rpw86 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_rpw86 = {
   XC_GGA_X_RPW86,
   XC_EXCHANGE,
   "Refitted Perdew & Wang 86",
@@ -73,6 +81,11 @@ const xc_func_info_type xc_func_info_gga_x_rpw86 = {
   1e-24,
   0, NULL, NULL,
   gga_x_pw86_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 

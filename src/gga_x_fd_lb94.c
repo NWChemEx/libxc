@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_FD_LB94     604 /* Functional derivative recovered from the stray LB94 potential */
 #define XC_GGA_X_FD_REVLB94  605 /* Revised FD_LB94 */
@@ -39,7 +41,7 @@ gga_x_fd_lb94_init(xc_func_type *p)
   }
 }
 
-static inline double FT_inter(int n, double x)
+DEVICE static inline double FT_inter(int n, double x)
 {
   static double fd_beta = 0.05, fd_csi = M_CBRT2;
 
@@ -51,7 +53,7 @@ static inline double FT_inter(int n, double x)
     (1 + 3*fd_beta*fd_csi*x*log(fd_csi*x + sqrt(fd_csi*fd_csi*x*x + 1)));
 }
 
-static void func0(double *x, int n, void *dummy)
+DEVICE static void func0(double *x, int n, void *dummy)
 {
   int ii;
   
@@ -59,7 +61,7 @@ static void func0(double *x, int n, void *dummy)
     x[ii] = FT_inter(0, x[ii]);
 }
 
-static void func1(double *x, int n, void *dummy)
+DEVICE static void func1(double *x, int n, void *dummy)
 {
   int ii;
   
@@ -69,8 +71,9 @@ static void func1(double *x, int n, void *dummy)
 
 #include "maple2c/gga_exc/gga_x_fd_lb94.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_fd_lb94 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_fd_lb94 = {
   XC_GGA_X_FD_LB94,
   XC_EXCHANGE,
   "Functional derivative recovered from the stray LB94 potential",
@@ -80,10 +83,15 @@ const xc_func_info_type xc_func_info_gga_x_fd_lb94 = {
   1e-26,
   0, NULL, NULL,
   gga_x_fd_lb94_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_fd_revlb94 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_fd_revlb94 = {
   XC_GGA_X_FD_REVLB94,
   XC_EXCHANGE,
   "Revised FD_LB94",
@@ -93,5 +101,10 @@ const xc_func_info_type xc_func_info_gga_x_fd_revlb94 = {
   1e-26,
   0, NULL, NULL,
   gga_x_fd_lb94_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

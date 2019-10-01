@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_2D_PBE          129 /* Perdew, Burke & Ernzerhof exchange in 2D          */
 
 #include "maple2c/gga_exc/gga_x_2d_pbe.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_2d_pbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_2d_pbe = {
   XC_GGA_X_2D_PBE,
   XC_EXCHANGE,
   "Perdew, Burke & Ernzerhof in 2D",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_x_2d_pbe = {
   1e-32,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_B88          106 /* Becke 88 */
 #define XC_GGA_X_OPTB88_VDW   139 /* Becke 88 reoptimized to be used with vdW functional of Dion et al */
@@ -77,8 +79,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_b88.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_b88 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_b88 = {
   XC_GGA_X_B88,
   XC_EXCHANGE,
   "Becke 88",
@@ -88,10 +91,15 @@ const xc_func_info_type xc_func_info_gga_x_b88 = {
   1e-25,
   2, ext_params, set_ext_params,
   gga_x_b88_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_optb88_vdw = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_optb88_vdw = {
   XC_GGA_X_OPTB88_VDW,
   XC_EXCHANGE,
   "opt-Becke 88 for vdW",
@@ -101,10 +109,15 @@ const xc_func_info_type xc_func_info_gga_x_optb88_vdw = {
   1e-25,
   0, NULL, NULL,
   gga_x_b88_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_mb88 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_mb88 = {
   XC_GGA_X_MB88,
   XC_EXCHANGE,
   "Modified Becke 88 for proton transfer",
@@ -114,10 +127,15 @@ const xc_func_info_type xc_func_info_gga_x_mb88 = {
   1e-25,
   0, NULL, NULL,
   gga_x_b88_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_eb88 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_eb88 = {
   XC_GGA_X_EB88,
   XC_EXCHANGE,
   "Non-empirical (excogitated) B88 functional of Becke and Elliott",
@@ -127,10 +145,15 @@ const xc_func_info_type xc_func_info_gga_x_eb88 = {
   1e-25,
   0, NULL, NULL,
   gga_x_b88_init,  NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_b88m = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_b88m = {
   XC_GGA_X_B88M,
   XC_EXCHANGE,
   "Becke 88 reoptimized to be used with tau1",
@@ -140,5 +163,10 @@ const xc_func_info_type xc_func_info_gga_x_b88m = {
   1e-25,
   0, NULL, NULL,
   gga_x_b88_init,  NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_G96          107 /* Gill 96                                        */
 
 #include "maple2c/gga_exc/gga_x_g96.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_g96 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_g96 = {
   XC_GGA_X_G96,
   XC_EXCHANGE,
   "Gill 96",
@@ -23,6 +26,11 @@ const xc_func_info_type xc_func_info_gga_x_g96 = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 

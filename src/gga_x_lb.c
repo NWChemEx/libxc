@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define MIN_GRAD             5.0e-13
 
@@ -68,7 +70,7 @@ gga_lb_init(xc_func_type *p)
 }
 
 
-void 
+DEVICE void 
 xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const double *sigma, double r, double *vrho)
 {
   int ip, is, is2;
@@ -130,7 +132,7 @@ xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const do
 }
 
 
-static void 
+DEVICE static void 
 gga_x_lb(const xc_func_type *p, int np, const double *rho, const double *sigma,
 	 double *zk, double *vrho, double *vsigma,
 	 double *v2rho2, double *v2rhosigma, double *v2sigma2,
@@ -139,6 +141,10 @@ gga_x_lb(const xc_func_type *p, int np, const double *rho, const double *sigma,
   if (vrho != NULL)
     xc_gga_lb_modified(p, np, rho, sigma, 0.0, vrho);
 }
+
+/*
+Need to add a work_gga_offload equivalent of gga_x_lb here.
+*/
 
 
 static const func_params_type ext_params[] = {
@@ -173,7 +179,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 }
 
 
-const xc_func_info_type xc_func_info_gga_x_lb = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_lb = {
   XC_GGA_X_LB,
   XC_EXCHANGE,
   "van Leeuwen & Baerends",
@@ -187,7 +193,7 @@ const xc_func_info_type xc_func_info_gga_x_lb = {
 };
 
 
-const xc_func_info_type xc_func_info_gga_x_lbm = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_lbm = {
   XC_GGA_X_LBM,
   XC_EXCHANGE,
   "van Leeuwen & Baerends modified",

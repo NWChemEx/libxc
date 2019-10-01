@@ -8,6 +8,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_LSPBE        168 /* PW91-like exchange with simple analytical form */
 
@@ -63,8 +65,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_lspbe.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_lspbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_lspbe = {
   XC_GGA_X_LSPBE,
   XC_EXCHANGE,
   "lsPBE, a PW91-like modification of PBE exchange",
@@ -74,5 +77,10 @@ const xc_func_info_type xc_func_info_gga_x_lspbe = {
   1e-32,
   3, ext_params, set_ext_params,
   gga_x_lspbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
