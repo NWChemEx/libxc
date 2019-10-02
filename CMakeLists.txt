@@ -289,6 +289,7 @@ if (CUDA_FOUND)
     lda_xc_zlp.cu
     lda_xc_bn05.cu
     lda_xc_tih.cu
+    mgga.cu
     mgga_c_b88.cu
     mgga_c_bc95.cu
     mgga_c_cs.cu
