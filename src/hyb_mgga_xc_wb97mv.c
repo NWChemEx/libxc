@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_MGGA_XC_WB97M_V   531 /* Mardirossian and Head-Gordon */
 
@@ -23,8 +25,9 @@ hyb_mgga_xc_wb97mv_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/hyb_mgga_xc_wb97mv.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_wb97m_v = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_wb97m_v = {
   XC_HYB_MGGA_XC_WB97M_V,
   XC_EXCHANGE_CORRELATION,
   "wB97M-V exchange-correlation functional",
@@ -35,4 +38,9 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_wb97m_v = {
   0, NULL, NULL,
   hyb_mgga_xc_wb97mv_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

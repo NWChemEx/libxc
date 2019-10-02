@@ -13,7 +13,7 @@
 
 #define maple2c_order 3
 
-static inline void
+DEVICE static inline void
 func_unpol(const xc_func_type *p, int order, const double *rho, const double *sigma, const double *lapl, const double *tau, double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau, double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, double *v2sigma2, double *v2sigmalapl, double *v2sigmatau, double *v2lapl2, double *v2lapltau, double *v2tau2, double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau, double *v3rholapl2, double *v3rholapltau, double *v3rhotau2, double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau, double *v3sigmalapl2, double *v3sigmalapltau, double *v3sigmatau2, double *v3lapl3, double *v3lapl2tau, double *v3lapltau2, double *v3tau3)
 {
   double t2, t4, t5, t6, t7, t8, t9, t10;
@@ -462,7 +462,7 @@ func_unpol(const xc_func_type *p, int order, const double *rho, const double *si
 }
 
 
-static inline void
+DEVICE static inline void
 func_ferr(const xc_func_type *p, int order, const double *rho, const double *sigma, const double *lapl, const double *tau, double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau, double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, double *v2sigma2, double *v2sigmalapl, double *v2sigmatau, double *v2lapl2, double *v2lapltau, double *v2tau2, double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau, double *v3rholapl2, double *v3rholapltau, double *v3rhotau2, double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau, double *v3sigmalapl2, double *v3sigmalapltau, double *v3sigmatau2, double *v3lapl3, double *v3lapl2tau, double *v3lapltau2, double *v3tau3)
 {
   double t2, t4, t5, t6, t7, t8, t9, t10;
@@ -875,7 +875,7 @@ func_ferr(const xc_func_type *p, int order, const double *rho, const double *sig
 }
 
 
-static inline void
+DEVICE static inline void
 func_pol(const xc_func_type *p, int order, const double *rho, const double *sigma, const double *lapl, const double *tau, double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau, double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, double *v2sigma2, double *v2sigmalapl, double *v2sigmatau, double *v2lapl2, double *v2lapltau, double *v2tau2, double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau, double *v3rholapl2, double *v3rholapltau, double *v3rhotau2, double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau, double *v3sigmalapl2, double *v3sigmalapltau, double *v3sigmatau2, double *v3lapl3, double *v3lapl2tau, double *v3lapltau2, double *v3tau3)
 {
   double t2, t4, t5, t6, t7, t8, t9, t10;

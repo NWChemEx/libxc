@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_REGTPSS          603 /* Regularized TPSS */
 
 #include "maple2c/mgga_exc/mgga_x_regtpss.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_regtpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_regtpss = {
   XC_MGGA_X_REGTPSS,
   XC_EXCHANGE,
   "Regularized TPSS",
@@ -24,4 +27,9 @@ const xc_func_info_type xc_func_info_mgga_x_regtpss = {
   0, NULL, NULL,
   NULL, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_BC95          240 /* Becke correlation 95 */
 
@@ -43,8 +45,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_c_bc95.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_c_bc95 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_bc95 = {
   XC_MGGA_C_BC95,
   XC_CORRELATION,
   "Becke correlation 95",
@@ -55,5 +58,10 @@ const xc_func_info_type xc_func_info_mgga_c_bc95 = {
   2, ext_params, set_ext_params,
   mgga_c_bc95_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 

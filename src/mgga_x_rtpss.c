@@ -9,6 +9,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_RTPSS          299 /* Revised TPSS exchange by Garza, Bell and Head-Gordon */
 
@@ -62,8 +64,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_x_rtpss.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_rtpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_rtpss = {
   XC_MGGA_X_RTPSS,
   XC_EXCHANGE,
   "TPSS for surface adsorption",
@@ -74,4 +77,9 @@ const xc_func_info_type xc_func_info_mgga_x_rtpss = {
   5, ext_params, set_ext_params,
   mgga_x_rtpss_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

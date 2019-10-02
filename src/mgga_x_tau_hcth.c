@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_TAU_HCTH        205 /* tau-HCTH from Boese and Handy */
 #define XC_HYB_MGGA_X_BMK         279 /* Boese-Martin for kinetics     */
@@ -63,8 +65,9 @@ mgga_x_tau_hcth_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_x_tau_hcth.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_tau_hcth = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_tau_hcth = {
   XC_MGGA_X_TAU_HCTH,
   XC_EXCHANGE,
   "tau-HCTH from Boese and Handy",
@@ -75,9 +78,14 @@ const xc_func_info_type xc_func_info_mgga_x_tau_hcth = {
   0, NULL, NULL,
   mgga_x_tau_hcth_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_bmk = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_bmk = {
   XC_HYB_MGGA_X_BMK,
   XC_EXCHANGE,
   "Boese-Martin for kinetics",
@@ -88,9 +96,14 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_bmk = {
   0, NULL, NULL,
   mgga_x_tau_hcth_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_tau_hcth = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_tau_hcth = {
   XC_HYB_MGGA_X_TAU_HCTH,
   XC_EXCHANGE,
   "Hybrid version of tau-HCTH",
@@ -101,4 +114,9 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_tau_hcth = {
   0, NULL, NULL,
   mgga_x_tau_hcth_init,  NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

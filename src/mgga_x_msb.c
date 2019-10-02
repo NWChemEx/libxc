@@ -9,6 +9,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_MS2B          300  /* MS2beta exchange by Furness and Sun */
 #define XC_MGGA_X_MS2BS         301  /* MS2beta* exchange by Furness and Sun */
@@ -46,8 +48,9 @@ mgga_x_msb_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_x_msb.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_ms2b = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_ms2b = {
   XC_MGGA_X_MS2B,
   XC_EXCHANGE,
   "MS2beta exchange of Furness and Sun",
@@ -58,9 +61,14 @@ const xc_func_info_type xc_func_info_mgga_x_ms2b = {
   0, NULL, NULL,
   mgga_x_msb_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_ms2bs = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_ms2bs = {
   XC_MGGA_X_MS2BS,
   XC_EXCHANGE,
   "MS2beta* exchange of Furness and Sun",
@@ -71,4 +79,9 @@ const xc_func_info_type xc_func_info_mgga_x_ms2bs = {
   0, NULL, NULL,
   mgga_x_msb_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

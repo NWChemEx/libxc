@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /************************************************************************
  Implements Tao, Perdew, Staroverov & Scuseria 
@@ -89,8 +91,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_x_tpss.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_tpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_tpss = {
   XC_MGGA_X_TPSS,
   XC_EXCHANGE,
   "Tao, Perdew, Staroverov & Scuseria",
@@ -101,9 +104,14 @@ const xc_func_info_type xc_func_info_mgga_x_tpss = {
   7, ext_params, set_ext_params,
   mgga_x_tpss_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_modtpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_modtpss = {
   XC_MGGA_X_MODTPSS,
   XC_EXCHANGE,
   "Modified Tao, Perdew, Staroverov & Scuseria",
@@ -114,9 +122,14 @@ const xc_func_info_type xc_func_info_mgga_x_modtpss = {
   0, NULL, NULL,
   mgga_x_tpss_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_revtpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_revtpss = {
   XC_MGGA_X_REVTPSS,
   XC_EXCHANGE,
   "revised Tao, Perdew, Staroverov & Scuseria",
@@ -127,9 +140,14 @@ const xc_func_info_type xc_func_info_mgga_x_revtpss = {
   0, NULL, NULL,
   mgga_x_tpss_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_bloc = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_bloc = {
   XC_MGGA_X_BLOC,
   XC_EXCHANGE,
   "functional with balanced localization",
@@ -140,4 +158,9 @@ const xc_func_info_type xc_func_info_mgga_x_bloc = {
   0, NULL, NULL,
   mgga_x_tpss_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

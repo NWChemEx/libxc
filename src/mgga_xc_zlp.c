@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_XC_ZLP          42 /* Zhao, Levy & Parr, Eq. (21) */
 
 #include "maple2c/mgga_exc/mgga_xc_zlp.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_xc_zlp = {
+EXTERN const xc_func_info_type xc_func_info_mgga_xc_zlp = {
   XC_MGGA_XC_ZLP,
   XC_EXCHANGE_CORRELATION,
   "Zhao, Levy & Parr, Eq. (21)",
@@ -25,5 +28,10 @@ const xc_func_info_type xc_func_info_mgga_xc_zlp = {
   0, NULL, NULL,
   NULL, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 

@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_BR89         206 /* Becke-Roussel 89, gamma = 0.8 */
 #define XC_MGGA_X_BR89_1       214 /* Becke-Roussel 89, gamma = 1.0 */
@@ -286,8 +288,9 @@ func(const xc_func_type *pt, xc_mgga_work_x_t *r)
 }
 
 #include "work_mgga_x.c"
+#include "work_mgga_x.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_br89 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_br89 = {
   XC_MGGA_X_BR89,
   XC_EXCHANGE,
   "Becke-Roussel 89, gamma = 0.8",
@@ -299,9 +302,14 @@ const xc_func_info_type xc_func_info_mgga_x_br89 = {
   NULL, NULL,
   NULL, NULL,        /* this is not an LDA                   */
   work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_br89_1 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_br89_1 = {
   XC_MGGA_X_BR89_1,
   XC_EXCHANGE,
   "Becke-Roussel 89, gamma = 1.0",
@@ -313,9 +321,14 @@ const xc_func_info_type xc_func_info_mgga_x_br89_1 = {
   NULL, NULL,
   NULL, NULL,        /* this is not an LDA                   */
   work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_bj06 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_bj06 = {
   XC_MGGA_X_BJ06,
   XC_EXCHANGE,
   "Becke & Johnson 06",
@@ -326,6 +339,11 @@ const xc_func_info_type xc_func_info_mgga_x_bj06 = {
   0, NULL, NULL,
   mgga_x_tb09_init, NULL,
   NULL, NULL, work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
 static const func_params_type ext_params[] = {
@@ -343,7 +361,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   params->c = get_ext_param(p->info->ext_params, ext_params, 0);
 }
 
-const xc_func_info_type xc_func_info_mgga_x_tb09 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_tb09 = {
   XC_MGGA_X_TB09,
   XC_EXCHANGE,
   "Tran & Blaha 09",
@@ -354,9 +372,14 @@ const xc_func_info_type xc_func_info_mgga_x_tb09 = {
   1, ext_params, set_ext_params,
   mgga_x_tb09_init, NULL,
   NULL, NULL, work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_rpp09 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_rpp09 = {
   XC_MGGA_X_RPP09,
   XC_EXCHANGE,
   "Rasanen, Pittalis & Proetto 09",
@@ -367,9 +390,14 @@ const xc_func_info_type xc_func_info_mgga_x_rpp09 = {
   0, NULL, NULL,
   mgga_x_tb09_init, NULL,
   NULL, NULL, work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_b00 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_b00 = {
   XC_MGGA_X_B00,
   XC_EXCHANGE,
   "Becke 2000",
@@ -380,4 +408,9 @@ const xc_func_info_type xc_func_info_mgga_x_b00 = {
   0, NULL, NULL,
   mgga_x_tb09_init, NULL,
   NULL, NULL, work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };

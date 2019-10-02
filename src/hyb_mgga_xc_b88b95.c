@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_MGGA_XC_B88B95   440  /* Mixture of B88 with BC95 (B1B95)                             */
 #define XC_HYB_MGGA_XC_B86B95   441  /* Mixture of B86 with BC95                                     */
@@ -31,7 +33,7 @@ xc_hyb_mgga_xc_b88b95_init(xc_func_type *p)
   p->cam_alpha = 0.28;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_b88b95 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_b88b95 = {
   XC_HYB_MGGA_XC_B88B95,
   XC_EXCHANGE_CORRELATION,
   "Mixture of B88 with BC95 (B1B95)",
@@ -42,6 +44,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b88b95 = {
   0, NULL, NULL,
   xc_hyb_mgga_xc_b88b95_init,
   NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -56,7 +59,7 @@ xc_hyb_mgga_xc_b86b95_init(xc_func_type *p)
   p->cam_alpha = 0.28;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_b86b95 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_b86b95 = {
   XC_HYB_MGGA_XC_B86B95,
   XC_EXCHANGE_CORRELATION,
   "Mixture of B86 with BC95",
@@ -67,6 +70,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b86b95 = {
   0, NULL, NULL,
   xc_hyb_mgga_xc_b86b95_init,
   NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -81,7 +85,7 @@ xc_hyb_mgga_xc_pw86b95_init(xc_func_type *p)
   p->cam_alpha = 0.29;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_pw86b95 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_pw86b95 = {
   XC_HYB_MGGA_XC_PW86B95,
   XC_EXCHANGE_CORRELATION,
   "Mixture of PW86 with BC95",
@@ -92,6 +96,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pw86b95 = {
   0, NULL, NULL,
   xc_hyb_mgga_xc_pw86b95_init,
   NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -106,7 +111,7 @@ xc_hyb_mgga_xc_bb1k_init(xc_func_type *p)
   p->cam_alpha = 0.42;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_bb1k = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_bb1k = {
   XC_HYB_MGGA_XC_BB1K,
   XC_EXCHANGE_CORRELATION,
   "Mixture of B88 with BC95 from Zhao and Truhlar",
@@ -117,6 +122,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_bb1k = {
   0, NULL, NULL,
   xc_hyb_mgga_xc_bb1k_init,
   NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -131,7 +137,7 @@ xc_hyb_mgga_xc_mpw1b95_init(xc_func_type *p)
   p->cam_alpha = 0.31;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_mpw1b95 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_mpw1b95 = {
   XC_HYB_MGGA_XC_MPW1B95,
   XC_EXCHANGE_CORRELATION,
   "Mixture of mPW91 with BC95 from Zhao and Truhlar",
@@ -142,6 +148,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpw1b95 = {
   0, NULL, NULL,
   xc_hyb_mgga_xc_mpw1b95_init,
   NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -156,7 +163,7 @@ xc_hyb_mgga_xc_mpwb1k_init(xc_func_type *p)
   p->cam_alpha = 0.44;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwb1k = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwb1k = {
   XC_HYB_MGGA_XC_MPWB1K,
   XC_EXCHANGE_CORRELATION,
   "Mixture of mPW91 with BC95 for kinetics",
@@ -167,6 +174,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwb1k = {
   0, NULL, NULL,
   xc_hyb_mgga_xc_mpwb1k_init,
   NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -187,7 +195,7 @@ xc_hyb_mgga_xc_x1b95_init(xc_func_type *p)
   p->cam_alpha = a0;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_x1b95 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_x1b95 = {
   XC_HYB_MGGA_XC_X1B95,
   XC_EXCHANGE_CORRELATION,
   "Mixture of X with BC95",
@@ -198,6 +206,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_x1b95 = {
   0, NULL, NULL,
   xc_hyb_mgga_xc_x1b95_init,
   NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -218,7 +227,7 @@ xc_hyb_mgga_xc_xb1k_init(xc_func_type *p)
   p->cam_alpha = a0;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_xb1k = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_xb1k = {
   XC_HYB_MGGA_XC_XB1K,
   XC_EXCHANGE_CORRELATION,
   "Mixture of X with BC95 for kinetics",
@@ -229,6 +238,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_xb1k = {
   0, NULL, NULL,
   xc_hyb_mgga_xc_xb1k_init,
   NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -248,7 +258,7 @@ xc_hyb_mgga_xc_pw6b95_init(xc_func_type *p)
   p->cam_alpha = 0.28;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_pw6b95 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_pw6b95 = {
   XC_HYB_MGGA_XC_PW6B95,
   XC_EXCHANGE_CORRELATION,
   "Mixture of PW91 with BC95 from Zhao and Truhlar",
@@ -259,6 +269,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pw6b95 = {
   0, NULL, NULL,
   xc_hyb_mgga_xc_pw6b95_init,
   NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -278,7 +289,7 @@ xc_hyb_mgga_xc_pwb6k_init(xc_func_type *p)
   p->cam_alpha = 0.46;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_pwb6k = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_pwb6k = {
   XC_HYB_MGGA_XC_PWB6K,
   XC_EXCHANGE_CORRELATION,
   "Mixture of PW91 with BC95 from Zhao and Truhlar for kinetics",
@@ -289,6 +300,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pwb6k = {
   0, NULL, NULL,
   xc_hyb_mgga_xc_pwb6k_init,
   NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -302,7 +314,7 @@ mgga_xc_tpsslyp1w_init(xc_func_type *p)
   xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
-const xc_func_info_type xc_func_info_mgga_xc_tpsslyp1w = {
+EXTERN const xc_func_info_type xc_func_info_mgga_xc_tpsslyp1w = {
   XC_MGGA_XC_TPSSLYP1W,
   XC_EXCHANGE_CORRELATION,
   "TPSSLYP1W",
@@ -312,5 +324,6 @@ const xc_func_info_type xc_func_info_mgga_xc_tpsslyp1w = {
   1e-23,
   0, NULL, NULL,
   mgga_xc_tpsslyp1w_init, 
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };

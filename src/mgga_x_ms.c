@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_MS0          221 /* MS exchange of Sun, Xiao, and Ruzsinszky */
 #define XC_MGGA_X_MS1          222 /* MS1 exchange of Sun, et al */
@@ -71,9 +73,10 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_x_ms.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
 
-const xc_func_info_type xc_func_info_mgga_x_ms0 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_ms0 = {
   XC_MGGA_X_MS0,
   XC_EXCHANGE,
   "MS exchange of Sun, Xiao, and Ruzsinszky",
@@ -84,9 +87,14 @@ const xc_func_info_type xc_func_info_mgga_x_ms0 = {
   3, ext_params, set_ext_params,
   mgga_x_ms_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_ms1 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_ms1 = {
   XC_MGGA_X_MS1,
   XC_EXCHANGE,
   "MS1 exchange of Sun, et al",
@@ -97,9 +105,14 @@ const xc_func_info_type xc_func_info_mgga_x_ms1 = {
   0, NULL, NULL,
   mgga_x_ms_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_ms2 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_ms2 = {
   XC_MGGA_X_MS2,
   XC_EXCHANGE,
   "MS2 exchange of Sun, et al",
@@ -110,6 +123,11 @@ const xc_func_info_type xc_func_info_mgga_x_ms2 = {
   0, NULL, NULL,
   mgga_x_ms_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
 static void
@@ -122,7 +140,7 @@ hyb_mgga_x_ms2h_init(xc_func_type *p)
   p->cam_alpha = 0.09;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_ms2h = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_ms2h = {
   XC_HYB_MGGA_X_MS2H,
   XC_EXCHANGE,
   "MS2 hybrid exchange of Sun, et al",
@@ -132,5 +150,6 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_ms2h = {
   1e-32,
   0, NULL, NULL,
   hyb_mgga_x_ms2h_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };

@@ -102,66 +102,9 @@ if (CUDA_FOUND)
     set(raw_sources_list
     func_info.c
     gga.c
-    hyb_mgga_x_dldf.c
-    hyb_mgga_x_m05.c
-    hyb_mgga_x_mvsh.c
-    hyb_mgga_xc_b88b95.c
-    hyb_mgga_xc_kcis.c
-    hyb_mgga_xc_tpssh.c
-    hyb_mgga_xc_wb97mv.c
     lda.c
     lda_c_pk09.c           # this one kills the nvcc compiler
     mgga.c
-    mgga_c_b88.c
-    mgga_c_bc95.c
-    mgga_c_cs.c
-    mgga_c_kcis.c
-    mgga_xc_lp90.c
-    mgga_c_m05.c
-    mgga_c_m06l.c
-    mgga_c_m08.c
-    mgga_c_pkzb.c
-    mgga_c_revscan.c
-    mgga_c_revtpss.c
-    mgga_c_scan.c
-    mgga_c_tpss.c
-    mgga_c_tpssloc.c
-    mgga_c_vsxc.c
-    mgga_k_pc07.c
-    mgga_x_2d_prhg07.c
-    mgga_x_br89.c
-    mgga_x_br89_explicit.c
-    mgga_x_gvt4.c
-    mgga_x_gx.c
-    mgga_x_lta.c
-    mgga_x_m06l.c
-    mgga_x_m08.c
-    mgga_x_m11.c
-    mgga_x_m11_l.c
-    mgga_x_mbeef.c
-    mgga_x_mbeefvdw.c
-    mgga_x_mk00.c
-    mgga_x_mn12.c
-    mgga_x_ms.c
-    mgga_x_msb.c
-    mgga_x_mvs.c
-    mgga_x_mvsb.c
-    mgga_x_pbe_gx.c
-    mgga_x_pkzb.c
-    mgga_x_sa_tpss.c
-    mgga_x_scan.c
-    mgga_x_tau_hcth.c
-    mgga_x_tm.c
-    mgga_x_tpss.c
-    mgga_x_regtpss.c
-    mgga_x_vt84.c
-    mgga_x_rtpss.c
-    mgga_xc_b97mv.c
-    mgga_xc_cc06.c
-    mgga_xc_hle17.c
-    mgga_xc_otpss_d.c
-    mgga_xc_zlp.c
-    mgga_xc_b98.c
     mix_func.c
     references.c
     special_functions.c
@@ -300,6 +243,13 @@ if (CUDA_FOUND)
     hyb_gga_xc_o3lyp.cu
     hyb_gga_xc_pbeh.cu
     hyb_gga_xc_wb97.cu
+    hyb_mgga_x_dldf.cu
+    hyb_mgga_x_m05.cu
+    hyb_mgga_x_mvsh.cu
+    hyb_mgga_xc_b88b95.cu
+    hyb_mgga_xc_kcis.cu
+    hyb_mgga_xc_tpssh.cu
+    hyb_mgga_xc_wb97mv.cu
     integrate.cu
     lda.cu
     lda_c_1d_csc.cu
@@ -339,6 +289,56 @@ if (CUDA_FOUND)
     lda_xc_zlp.cu
     lda_xc_bn05.cu
     lda_xc_tih.cu
+    mgga_c_b88.cu
+    mgga_c_bc95.cu
+    mgga_c_cs.cu
+    mgga_c_kcis.cu
+    mgga_xc_lp90.cu
+    mgga_c_m05.cu
+    mgga_c_m06l.cu
+    mgga_c_m08.cu
+    mgga_c_pkzb.cu
+    mgga_c_revscan.cu
+    mgga_c_revtpss.cu
+    mgga_c_scan.cu
+    mgga_c_tpss.cu
+    mgga_c_tpssloc.cu
+    mgga_c_vsxc.cu
+    mgga_k_pc07.cu
+    mgga_x_2d_prhg07.cu
+    mgga_x_br89.cu
+    mgga_x_br89_explicit.cu
+    mgga_x_gvt4.cu
+    mgga_x_gx.cu
+    mgga_x_lta.cu
+    mgga_x_m06l.cu
+    mgga_x_m08.cu
+    mgga_x_m11.cu
+    mgga_x_m11_l.cu
+    mgga_x_mbeef.cu
+    mgga_x_mbeefvdw.cu
+    mgga_x_mk00.cu
+    mgga_x_mn12.cu
+    mgga_x_ms.cu
+    mgga_x_msb.cu
+    mgga_x_mvs.cu
+    mgga_x_mvsb.cu
+    mgga_x_pbe_gx.cu
+    mgga_x_pkzb.cu
+    mgga_x_sa_tpss.cu
+    mgga_x_scan.cu
+    mgga_x_tau_hcth.cu
+    mgga_x_tm.cu
+    mgga_x_tpss.cu
+    mgga_x_regtpss.cu
+    mgga_x_vt84.cu
+    mgga_x_rtpss.cu
+    mgga_xc_b97mv.cu
+    mgga_xc_cc06.cu
+    mgga_xc_hle17.cu
+    mgga_xc_otpss_d.cu
+    mgga_xc_zlp.cu
+    mgga_xc_b98.cu
     util.cu
     xc_func_data.cu
     )

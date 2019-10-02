@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_XC_B97M_V        254 /* Mardirossian and Head-Gordon */
 
@@ -21,8 +23,9 @@ mgga_xc_b97mv_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_xc_b97mv.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_xc_b97m_v = {
+EXTERN const xc_func_info_type xc_func_info_mgga_xc_b97m_v = {
   XC_MGGA_XC_B97M_V,
   XC_EXCHANGE_CORRELATION,
   "B97M-V exchange-correlation functional",
@@ -33,4 +36,9 @@ const xc_func_info_type xc_func_info_mgga_xc_b97m_v = {
   0, NULL, NULL,
   mgga_xc_b97mv_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

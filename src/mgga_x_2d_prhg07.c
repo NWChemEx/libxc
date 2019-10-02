@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_2D_PRHG07         210   /* Pittalis, Rasanen, Helbig, Gross Exchange Functional */
 #define XC_MGGA_X_2D_PRHG07_PRP10   211   /* PRGH07 with PRP10 correction */
@@ -128,8 +130,9 @@ func(const xc_func_type *p, xc_mgga_work_x_t *r)
 }
 #define XC_DIMENSIONS 2
 #include "work_mgga_x.c"
+#include "work_mgga_x.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_2d_prhg07 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_2d_prhg07 = {
   XC_MGGA_X_2D_PRHG07,
   XC_EXCHANGE,
   "Pittalis-Rasanen-Helbig-Gross 2007",
@@ -141,9 +144,14 @@ const xc_func_info_type xc_func_info_mgga_x_2d_prhg07 = {
   NULL, NULL, 
   NULL, NULL,
   work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_2d_prhg07_prp10 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_2d_prhg07_prp10 = {
   XC_MGGA_X_2D_PRHG07_PRP10,
   XC_EXCHANGE,
   "PRHG07 with Pittalis-Rasanen-Proetto 2010 correction",
@@ -156,5 +164,10 @@ const xc_func_info_type xc_func_info_mgga_x_2d_prhg07_prp10 = {
   NULL,
   NULL, NULL,
   work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 

@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_MGGA_X_M08_HX   295 /* M08-HX exchange functional from Minnesota  */
 #define XC_HYB_MGGA_X_M08_SO   296 /* M08-SO exchange functional from Minnesota  */
@@ -64,9 +66,10 @@ mgga_x_m08_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_x_m08.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_m08_hx = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_m08_hx = {
   XC_HYB_MGGA_X_M08_HX,
   XC_EXCHANGE,
   "Minnesota M08-HX hybrid exchange functional",
@@ -77,9 +80,14 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m08_hx = {
   0, NULL, NULL,
   mgga_x_m08_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_m08_so = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_m08_so = {
   XC_HYB_MGGA_X_M08_SO,
   XC_EXCHANGE,
   "Minnesota M08-SO hybrid exchange functional",
@@ -90,4 +98,9 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m08_so = {
   0, NULL, NULL,
   mgga_x_m08_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

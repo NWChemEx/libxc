@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_MVS          257 /* MVS exchange of Sun, Perdew, and Ruzsinszky */
 
@@ -59,8 +61,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_x_mvs.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_mvs = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_mvs = {
   XC_MGGA_X_MVS,
   XC_EXCHANGE,
   "MVS exchange of Sun, Perdew, and Ruzsinszky",
@@ -71,4 +74,9 @@ const xc_func_info_type xc_func_info_mgga_x_mvs = {
   4, ext_params, set_ext_params,
   mgga_x_mvs_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_SCAN          267 /* SCAN correlation */
 #define XC_MGGA_C_SCAN_RVV10    292 /* SCAN correlation + rVV10 correlation */
@@ -15,8 +17,9 @@
 
 #include "maple2c/mgga_exc/mgga_c_scan.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_c_scan = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_scan = {
   XC_MGGA_C_SCAN,
   XC_CORRELATION,
   "SCAN correlation of Sun, Ruzsinszky, and Perdew",
@@ -27,6 +30,11 @@ const xc_func_info_type xc_func_info_mgga_c_scan = {
   0, NULL, NULL,
   NULL, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
 
@@ -42,7 +50,7 @@ mgga_c_scan_rvv10_init(xc_func_type *p)
   p->nlc_C = 0.0093;
 }
 
-const xc_func_info_type xc_func_info_mgga_c_scan_rvv10 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_scan_rvv10 = {
   XC_MGGA_C_SCAN_RVV10,
   XC_CORRELATION,
   "SCAN + rVV10 correlation",
@@ -52,7 +60,12 @@ const xc_func_info_type xc_func_info_mgga_c_scan_rvv10 = {
   1e-32,
   0, NULL, NULL,
   mgga_c_scan_rvv10_init, NULL,
+  NULL, NULL, NULL,
+#ifndef __CUDACC__
   NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
 static void
@@ -67,7 +80,7 @@ mgga_c_scan_vv10_init(xc_func_type *p)
   p->nlc_C = 0.0093;
 }
 
-const xc_func_info_type xc_func_info_mgga_c_scan_vv10 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_scan_vv10 = {
   XC_MGGA_C_SCAN_VV10,
   XC_CORRELATION,
   "SCAN + VV10 correlation",
@@ -77,5 +90,10 @@ const xc_func_info_type xc_func_info_mgga_c_scan_vv10 = {
   1e-32,
   0, NULL, NULL,
   mgga_c_scan_vv10_init, NULL,
+  NULL, NULL, NULL,
+#ifndef __CUDACC__
   NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

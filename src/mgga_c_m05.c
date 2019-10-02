@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_M05           237 /* M05 correlation functional from Minnesota     */
 #define XC_MGGA_C_M05_2X        238 /* M05-2X correlation functional from Minnesota  */
@@ -83,8 +85,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_c_m05.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_c_m05 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_m05 = {
   XC_MGGA_C_M05,
   XC_CORRELATION,
   "Minnesota M05 correlation functional",
@@ -94,11 +97,16 @@ const xc_func_info_type xc_func_info_mgga_c_m05 = {
   1.0e-23,
   1, ext_params, set_ext_params,
   mgga_c_vsxc_init, NULL, 
-  NULL, NULL, work_mgga
+  NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
 
-const xc_func_info_type xc_func_info_mgga_c_m05_2x = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_m05_2x = {
   XC_MGGA_C_M05_2X,
   XC_CORRELATION,
   "Minnesota M05-2X correlation functional",
@@ -108,10 +116,15 @@ const xc_func_info_type xc_func_info_mgga_c_m05_2x = {
   1.0e-23,
   1, ext_params, set_ext_params,
   mgga_c_vsxc_init, NULL, 
-  NULL, NULL, work_mgga
+  NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_c_dldf = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_dldf = {
   XC_MGGA_C_DLDF,
   XC_CORRELATION,
   "Dispersionless Density Functional",
@@ -121,5 +134,10 @@ const xc_func_info_type xc_func_info_mgga_c_dldf = {
   5.0e-23,
   1, ext_params, set_ext_params,
   mgga_c_vsxc_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

@@ -20,7 +20,7 @@
 /**
  * @param[in,out] func_type: pointer to functional structure
  */
-static void 
+DEVICE static void 
 work_mgga(const XC(func_type) *p, int np,
          const double *rho, const double *sigma, const double *lapl, const double *tau,
          OUT_PARAMS(double *))

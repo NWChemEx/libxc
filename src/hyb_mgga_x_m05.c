@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_MGGA_X_M05      438 /* M05 hybrid exchange functional from Minnesota     */
 #define XC_HYB_MGGA_X_M05_2X   439 /* M05-2X hybrid exchange functional from Minnesota  */
@@ -68,9 +70,10 @@ mgga_x_m05_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/hyb_mgga_x_m05.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_m05 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_m05 = {
   XC_HYB_MGGA_X_M05,
   XC_EXCHANGE,
   "Minnesota M05 hybrid exchange functional",
@@ -81,10 +84,15 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m05 = {
   0, NULL, NULL,
   mgga_x_m05_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_m05_2x = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_m05_2x = {
   XC_HYB_MGGA_X_M05_2X,
   XC_EXCHANGE,
   "Minnesota M05-2X hybrid exchange functional",
@@ -95,9 +103,14 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m05_2x = {
   0, NULL, NULL,
   mgga_x_m05_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_m06_2x = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_m06_2x = {
   XC_HYB_MGGA_X_M06_2X,
   XC_EXCHANGE,
   "Minnesota M06-2X hybrid exchange functional",
@@ -108,4 +121,9 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m06_2x = {
   0, NULL, NULL,
   mgga_x_m05_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

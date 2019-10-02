@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_CS          72 /* Colle and Salvetti */
 
@@ -23,8 +25,9 @@
 
 #include "maple2c/mgga_exc/mgga_c_cs.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_c_cs = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_cs = {
   XC_MGGA_C_CS,
   XC_CORRELATION,
   "Colle and Salvetti",
@@ -35,4 +38,9 @@ const xc_func_info_type xc_func_info_mgga_c_cs = {
   0, NULL, NULL,
   NULL, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

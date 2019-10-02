@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_M11_L        226 /* M11-L exchange functional from Minnesota  */
 
@@ -54,8 +56,9 @@ mgga_x_m11_l_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_x_m11_l.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_m11_l = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_m11_l = {
   XC_MGGA_X_M11_L,
   XC_EXCHANGE,
   "Minnesota M11-L exchange functional",
@@ -66,4 +69,9 @@ const xc_func_info_type xc_func_info_mgga_x_m11_l = {
   0, NULL, NULL,
   mgga_x_m11_l_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
