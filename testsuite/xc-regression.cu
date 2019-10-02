@@ -354,14 +354,18 @@ int main(int argc, char *argv[])
     break;
   case XC_FAMILY_MGGA:
   case XC_FAMILY_HYB_MGGA:
-    xc_mgga(&xc_func_data[func_rank], d.n, d.rho, d.sigma, d.lapl, d.tau, zk, vrho, d.vsigma, d.vlapl, d.vtau,
+    xc_mgga_offload(&xc_func_data[func_rank], d.n, d.rho, d.sigma, d.lapl, d.tau,
+            zk, vrho, d.vsigma, d.vlapl, d.vtau,
             v2rho2, d.v2rhosigma, d.v2rholapl, d.v2rhotau, 
             d.v2sigma2, d.v2sigmalapl, d.v2sigmatau,
             d.v2lapl2, d.v2lapltau,
             d.v2tau2,
             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-            
+    stat = cudaDeviceSynchronize();
+    if (stat != cudaSuccess) {
+        fprintf(stderr,"Launch xc_mgga_offload: %s\n",cudaGetErrorString( stat ));
+    }
     break;
 
   default:

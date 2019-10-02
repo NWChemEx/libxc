@@ -107,7 +107,6 @@ if (CUDA_FOUND)
     mgga.c
     mix_func.c
     references.c
-    special_functions.c
     version.c
     )
     set(raw_sources_list_device
@@ -340,6 +339,7 @@ if (CUDA_FOUND)
     mgga_xc_otpss_d.cu
     mgga_xc_zlp.cu
     mgga_xc_b98.cu
+    special_functions.cu
     util.cu
     xc_func_data.cu
     )

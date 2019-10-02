@@ -141,7 +141,7 @@ xc_mgga_offload(const xc_func_type *func, int np,
   }
 
   /* call functional */
-  if(func->info->mgga != NULL)
+  if(func->info->mgga_offload != NULL)
     func->info->mgga_offload(func, np, rho, sigma, lapl, tau, zk, MGGA_OUT_PARAMS_NO_EXC());
 
   /* WARNING: Kxc is not properly mixed */
@@ -173,47 +173,47 @@ xc_mgga_offload(const xc_func_type *func, int np,
 
 /* specializations */
 void
-xc_mgga_exc(const xc_func_type *p, int np, 
+xc_mgga_exc_offload(const xc_func_type *p, int np, 
             const double *rho, const double *sigma, const double *lapl, const double *tau,
             double *zk)
 {
-  xc_mgga(p, np, rho, sigma, lapl, tau, zk, NULL, NULL, NULL, NULL, 
+  xc_mgga_offload(p, np, rho, sigma, lapl, tau, zk, NULL, NULL, NULL, NULL, 
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 void
-xc_mgga_exc_vxc(const xc_func_type *p, int np,
+xc_mgga_exc_vxc_offload(const xc_func_type *p, int np,
                 const double *rho, const double *sigma, const double *lapl, const double *tau,
                 double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau)
 {
-  xc_mgga(p, np, rho, sigma, lapl, tau, zk, vrho, vsigma, vlapl, vtau, 
+  xc_mgga_offload(p, np, rho, sigma, lapl, tau, zk, vrho, vsigma, vlapl, vtau, 
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 void
-xc_mgga_vxc(const xc_func_type *p, int np,
+xc_mgga_vxc_offload(const xc_func_type *p, int np,
             const double *rho, const double *sigma, const double *lapl, const double *tau,
             double *vrho, double *vsigma, double *vlapl, double *vtau)
 {
-  xc_mgga(p, np, rho, sigma, lapl, tau, NULL, vrho, vsigma, vlapl, vtau, 
+  xc_mgga_offload(p, np, rho, sigma, lapl, tau, NULL, vrho, vsigma, vlapl, vtau, 
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 void
-xc_mgga_fxc(const xc_func_type *p, int np,
+xc_mgga_fxc_offload(const xc_func_type *p, int np,
             const double *rho, const double *sigma, const double *lapl, const double *tau,
             double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau,
             double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
             double *v2lapl2, double *v2lapltau,
             double *v2tau2)
 {
-  xc_mgga(p, np, rho, sigma, lapl, tau,
+  xc_mgga_offload(p, np, rho, sigma, lapl, tau,
           NULL, NULL, NULL, NULL, NULL,
           v2rho2, v2rhosigma, v2rholapl, v2rhotau,
           v2sigma2, v2sigmalapl, v2sigmatau,
@@ -231,7 +231,7 @@ xc_mgga_fxc(const xc_func_type *p, int np,
           NULL);
 }
 
-void xc_mgga_kxc(const xc_func_type *p, int np,
+void xc_mgga_kxc_offload(const xc_func_type *p, int np,
                  const double *rho, const double *sigma, const double *lapl, const double *tau,
                  double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau,
                  double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
@@ -244,7 +244,7 @@ void xc_mgga_kxc(const xc_func_type *p, int np,
                  double *v3lapltau2,
                  double *v3tau3)
 {
-  xc_mgga(p, np, rho, sigma, lapl, tau,
+  xc_mgga_offload(p, np, rho, sigma, lapl, tau,
           NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL,
           NULL, NULL, NULL,

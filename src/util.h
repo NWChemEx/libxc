@@ -117,8 +117,8 @@ extern "C" {
 
 /* special functions */
 #define Heaviside(x) (((x) >= 0) ? 1.0 : 0.0)
-double LambertW(double z);
-double xc_dilogarithm(const double x);
+DEVICE double LambertW(double z);
+DEVICE double xc_dilogarithm(const double x);
 
 /* we define this function here, so it can be properly inlined by all compilers */
 DEVICE static inline double

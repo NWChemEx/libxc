@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
 
 /*
   Lambert W function. 
@@ -16,14 +17,14 @@
          Adv. in Comp. Math. 5(4):329-359. 
 */
 
-double LambertW(double z)
+DEVICE double LambertW(double z)
 {
   double w;
   int i;
 
   /* Sanity check - function is only defined for z >= -1/e */
   if(z + 1.0/M_E < -10*DBL_EPSILON) {
-    fprintf(stderr,"Error - Lambert function called with argument z = %e.\n",z);
+    printf("Error - Lambert function called with argument z = %e.\n",z);
     exit(1);
   } else if(z < -1.0/M_E)
     /* Value of W(x) at x=-1/e is -1 */
@@ -70,7 +71,7 @@ double LambertW(double z)
   }
 
   /* This should never happen! */
-  fprintf(stderr, "%s\n%s\n", "lambert_w: iteration limit reached",
+  printf("%s\n%s\n", "lambert_w: iteration limit reached",
 	  "Should never happen: execution aborted");
   exit(1);
 }
@@ -81,9 +82,12 @@ double LambertW(double z)
   based on the SLATEC routine by W. Fullerton
 */
 
+DEVICE double xc_dilogarithm(const double x)
+{
+  const int nspenc = 38;
 
-static double pi26 = 1.644934066848226436472415166646025189219;
-static double spencs[38] = 
+  static double pi26 = 1.644934066848226436472415166646025189219;
+  static double spencs[38] = 
   {
     +.1527365598892405872946684910028e+0,
     +.8169658058051014403501838185271e-1,
@@ -124,11 +128,6 @@ static double spencs[38] =
     +.2917505845976095173290666666666e-30,
     +.4742646808928671061333333333333e-31
   };
-
-
-double xc_dilogarithm(const double x)
-{
-  const int nspenc = 38;
   double aux, dspenc;
 
   if (x > 2.0){
