@@ -307,8 +307,10 @@ void xc_gga_kxc_offload(const xc_func_type *p, int np, const double *rho, const 
                         double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3);
 #endif
 
+/* This function should not be here
 void xc_gga_lb_modified  (const xc_func_type *p, int np, const double *rho, const double *sigma,
      double r, double *vrho);
+*/
 
 double xc_gga_ak13_get_asymptotic (double homo);
 

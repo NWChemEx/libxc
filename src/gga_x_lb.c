@@ -11,6 +11,10 @@
 #include "xc_device.h"
 #include "xc_extern.h"
 
+#ifdef __CUDACC__
+extern xc_func_type *xc_func_data_device;
+#endif
+
 #define MIN_GRAD             5.0e-13
 
 /* Note: Do not forget to add a correlation (LDA) functional to the
@@ -70,7 +74,7 @@ gga_lb_init(xc_func_type *p)
 }
 
 
-DEVICE void 
+DEVICE void static inline
 xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const double *sigma, double r, double *vrho)
 {
   int ip, is, is2;
@@ -132,7 +136,7 @@ xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const do
 }
 
 
-DEVICE static void 
+static void 
 gga_x_lb(const xc_func_type *p, int np, const double *rho, const double *sigma,
 	 double *zk, double *vrho, double *vsigma,
 	 double *v2rho2, double *v2rhosigma, double *v2sigma2,
@@ -141,6 +145,39 @@ gga_x_lb(const xc_func_type *p, int np, const double *rho, const double *sigma,
   if (vrho != NULL)
     xc_gga_lb_modified(p, np, rho, sigma, 0.0, vrho);
 }
+
+#ifdef __CUDACC__
+__global__ static void 
+gga_x_lb_device(const xc_func_type *p, 
+         int dim_rho, int dim_sigma, int dim_vrho, 
+         int np, const double *rho, const double *sigma,
+	 double zk, double *vrho)
+{
+    int tid = threadIdx.x + blockIdx.x * blockDim.x;
+    if( tid < np ) {
+        const double *rho_         = NULL;
+        const double *sigma_       = NULL;
+        double       *vrho_        = NULL;
+        rho_   = rho   + tid*dim_rho;
+        sigma_ = sigma + tid*dim_sigma;
+        if (vrho        != NULL) vrho_        = vrho        + tid*dim_vrho;
+        xc_gga_lb_modified(p, 1, rho_, sigma_, 0.0, vrho_);
+    }
+}
+
+static void 
+gga_x_lb_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+	 double *zk, double *vrho, double *vsigma,
+	 double *v2rho2, double *v2rhosigma, double *v2sigma2,
+	 double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
+{
+  const xc_dimensions *dim = &(p->dim);
+  if (vrho != NULL)
+    gga_x_lb_device<<<std::ceil(np/1024.),1024>>>
+       (xc_func_data_device+p->func_rank, dim->rho, dim->sigma,
+        dim->vrho, np, rho, sigma, 0.0, vrho);
+}
+#endif
 
 /*
 Need to add a work_gga_offload equivalent of gga_x_lb here.
@@ -189,7 +226,12 @@ EXTERN const xc_func_info_type xc_func_info_gga_x_lb = {
   1e-32,
   4, ext_params, set_ext_params,
   gga_lb_init, NULL,
-  NULL, gga_x_lb, NULL
+  NULL, gga_x_lb, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, gga_x_lb_offload, NULL
+#endif
 };
 
 
@@ -203,6 +245,11 @@ EXTERN const xc_func_info_type xc_func_info_gga_x_lbm = {
   1e-32,
   4, ext_params, set_ext_params,
   gga_lb_init, NULL,
-  NULL, gga_x_lb, NULL
+  NULL, gga_x_lb, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, gga_x_lb_offload, NULL
+#endif
 };
 

@@ -25,7 +25,9 @@ DEVICE double LambertW(double z)
   /* Sanity check - function is only defined for z >= -1/e */
   if(z + 1.0/M_E < -10*DBL_EPSILON) {
     printf("Error - Lambert function called with argument z = %e.\n",z);
+    #ifndef __CUDACC__
     exit(1);
+    #endif
   } else if(z < -1.0/M_E)
     /* Value of W(x) at x=-1/e is -1 */
     return -1.0;
@@ -73,7 +75,9 @@ DEVICE double LambertW(double z)
   /* This should never happen! */
   printf("%s\n%s\n", "lambert_w: iteration limit reached",
 	  "Should never happen: execution aborted");
+  #ifndef __CUDACC__
   exit(1);
+  #endif
 }
 
 /*
