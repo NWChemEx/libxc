@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define  XC_HYB_GGA_XC_LCY_PBE 467  /* PBE with yukawa screening */
 
@@ -30,7 +32,7 @@ xc_hyb_gga_xc_lcy_pbe_init(xc_func_type *p)
   p->cam_beta  = -1.0;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lcy_pbe = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_lcy_pbe = {
   XC_HYB_GGA_XC_LCY_PBE,
   XC_EXCHANGE_CORRELATION,
   "LCY version of PBE",
@@ -40,5 +42,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lcy_pbe = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_lcy_pbe_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };

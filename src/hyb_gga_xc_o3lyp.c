@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_GGA_XC_O3LYP   404 /* hybrid using the optx functional */
 #define XC_HYB_GGA_XC_X3LYP   411 /* hybrid by Xu and Goddard */
@@ -37,7 +39,7 @@ gga_xc_o3lyp_init(xc_func_type *p)
   p->cam_alpha = a;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_o3lyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_o3lyp = {
   XC_HYB_GGA_XC_O3LYP,
   XC_EXCHANGE_CORRELATION,
   "O3LYP",
@@ -47,7 +49,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_o3lyp = {
   1e-32,
   0, NULL, NULL,
   gga_xc_o3lyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -71,7 +74,7 @@ gga_xc_x3lyp_init(xc_func_type *p)
   p->cam_alpha = a0;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_x3lyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_x3lyp = {
   XC_HYB_GGA_XC_X3LYP,
   XC_EXCHANGE_CORRELATION,
   "X3LYP",
@@ -81,5 +84,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_x3lyp = {
   1e-32,
   0, NULL, NULL,
   gga_xc_x3lyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };

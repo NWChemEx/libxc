@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define  XC_HYB_GGA_XC_CAMY_BLYP 455  /* BLYP with yukawa screening */
 
@@ -41,7 +43,7 @@ xc_hyb_gga_xc_camy_blyp_init(xc_func_type *p)
   p->cam_beta  = beta;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_camy_blyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_camy_blyp = {
   XC_HYB_GGA_XC_CAMY_BLYP,
   XC_EXCHANGE_CORRELATION,
   "CAMY version of BLYP",
@@ -51,6 +53,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_camy_blyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_camy_blyp_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 

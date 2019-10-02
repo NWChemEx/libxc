@@ -102,19 +102,6 @@ if (CUDA_FOUND)
     set(raw_sources_list
     func_info.c
     gga.c
-    hyb_gga_xc_b1wc.c
-    hyb_gga_xc_b3lyp.c
-    hyb_gga_xc_cam_b3lyp.c
-    hyb_gga_xc_cam_qtp.c
-    hyb_gga_xc_camy_b3lyp.c
-    hyb_gga_xc_camy_blyp.c
-    hyb_gga_xc_edf2.c
-    hyb_gga_xc_hse.c
-    hyb_gga_xc_lcy_blyp.c
-    hyb_gga_xc_lcy_pbe.c
-    hyb_gga_xc_o3lyp.c
-    hyb_gga_xc_pbeh.c
-    hyb_gga_xc_wb97.c
     hyb_mgga_x_dldf.c
     hyb_mgga_x_m05.c
     hyb_mgga_x_mvsh.c
@@ -300,6 +287,19 @@ if (CUDA_FOUND)
     gga_xc_th2.cu
     gga_xc_th3.cu
     gga_xc_vv10.cu
+    hyb_gga_xc_b1wc.cu
+    hyb_gga_xc_b3lyp.cu
+    hyb_gga_xc_cam_b3lyp.cu
+    hyb_gga_xc_cam_qtp.cu
+    hyb_gga_xc_camy_b3lyp.cu
+    hyb_gga_xc_camy_blyp.cu
+    hyb_gga_xc_edf2.cu
+    hyb_gga_xc_hse.cu
+    hyb_gga_xc_lcy_blyp.cu
+    hyb_gga_xc_lcy_pbe.cu
+    hyb_gga_xc_o3lyp.cu
+    hyb_gga_xc_pbeh.cu
+    hyb_gga_xc_wb97.cu
     integrate.cu
     lda.cu
     lda_c_1d_csc.cu
