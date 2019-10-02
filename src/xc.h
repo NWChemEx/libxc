@@ -362,6 +362,53 @@ void xc_mgga_kxc    (const xc_func_type *p, int np,
 		      double *v3lapl3, double *v3lapl2tau,
 		      double *v3lapltau2,
 		      double *v3tau3);
+#ifdef __CUDACC__
+void xc_mgga_offload(const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl_rho, const double *tau,
+		      double *zk,
+		      double *vrho, double *vsigma, double *vlapl, double *vtau,
+		      double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, 
+		      double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
+		      double *v2lapl2, double *v2lapltau,
+		      double *v2tau2,
+					double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau,
+		      double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
+		      double *v3rholapl2, double *v3rholapltau,
+		      double *v3rhotau2,
+		      double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
+		      double *v3sigmalapl2, double *v3sigmalapltau,
+		      double *v3sigmatau2,
+		      double *v3lapl3, double *v3lapl2tau,
+		      double *v3lapltau2,
+		      double *v3tau3);
+void xc_mgga_exc_offload    (const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+		      double *zk);
+void xc_mgga_exc_vxc_offload(const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+		      double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau);
+void xc_mgga_vxc_offload    (const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+		      double *vrho, double *vsigma, double *vlapl, double *vtau);
+void xc_mgga_fxc_offload    (const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+   	      double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, 
+ 		      double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
+		      double *v2lapl2, double *v2lapltau,
+		      double *v2tau2);
+void xc_mgga_kxc_offload    (const xc_func_type *p, int np,
+          const double *rho, const double *sigma, const double *lapl, const double *tau,
+          double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, 
+		      double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
+		      double *v3rholapl2, double *v3rholapltau,
+		      double *v3rhotau2,
+		      double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
+		      double *v3sigmalapl2, double *v3sigmalapltau,
+		      double *v3sigmatau2,
+		      double *v3lapl3, double *v3lapl2tau,
+		      double *v3lapltau2,
+		      double *v3tau3);
+#endif
   
 #ifdef __cplusplus
 }
