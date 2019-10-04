@@ -1,5 +1,5 @@
 if (CUDA_FOUND)
-    link_libraries(xc_device xc)
+    link_libraries(xc_device xc ${CUDA_cublas_LIBRARY})
 else()
     link_libraries(xc)
 endif()

@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <cublas_v2.h>
 
 // Convenience function for checking CUDA runtime API results
 // can be wrapped around any runtime API call. No-op in release builds.
@@ -24,6 +25,19 @@ cudaError_t checkCuda(cudaError_t result)
     fprintf(stderr, "CUDA Runtime Error: %s\n", 
             cudaGetErrorString(result));
     assert(result == cudaSuccess);
+  }
+#endif
+  return result;
+}
+
+
+inline static
+cublasStatus_t checkCublas(cublasStatus_t result)
+{
+#if defined(DEBUG) || defined(_DEBUG)
+  if (result != CUBLAS_STATUS_SUCCESS) {
+    fprintf(stderr, "cuBlas failure.\n");
+    assert(result == CUBLAS_STATUS_SUCCESS);
   }
 #endif
   return result;

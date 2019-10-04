@@ -257,6 +257,14 @@ void xc_mix_func
   (const xc_func_type *func, int np,
    const double *rho, const double *sigma, const double *lapl, const double *tau,
    double *zk, MGGA_OUT_PARAMS_NO_EXC(double *));
+#ifdef __CUDACC__
+void xc_mix_func_init_cublas();
+void xc_mix_func_end_cublas();
+void xc_mix_func_offload
+  (const xc_func_type *func, int np,
+   const double *rho, const double *sigma, const double *lapl, const double *tau,
+   double *zk, MGGA_OUT_PARAMS_NO_EXC(double *));
+#endif
 
 /* Some useful functions */
 const char *get_kind(const xc_func_type *func);

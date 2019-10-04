@@ -103,7 +103,7 @@ if (CUDA_FOUND)
     func_info.c
     gga.c
     lda.c
-    lda_c_pk09.c           # this one kills the nvcc compiler
+    lda_c_pk09.c          # this one kills the nvcc compiler
     mgga.c
     mix_func.c
     references.c
@@ -339,6 +339,7 @@ if (CUDA_FOUND)
     mgga_xc_otpss_d.cu
     mgga_xc_zlp.cu
     mgga_xc_b98.cu
+    mix_func.cu
     special_functions.cu
     util.cu
     xc_func_data.cu
@@ -605,7 +606,7 @@ file(WRITE ${PROJECT_BINARY_DIR}/${src_prefix}xc.h "${_quoted_src}")
 # STATIC/SHARED on below governed by BUILD_SHARED_LIBS
 if(CUDA_FOUND)
     add_library(xc_device ${sources_list_device})
-    target_link_libraries(xc_device INTERFACE ${STANDARD_MATH_LIBRARY})
+    target_link_libraries(xc_device INTERFACE ${STANDARD_MATH_LIBRARY} ${CUDA_cublas_LIBRARY})
     set_target_properties(xc_device PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
                                                SOVERSION ${${PROJECT_NAME}_SOMAJOR})
     #target_compile_options(xc_device PUBLIC CMAKE_CUDA_FLAGS "-rdc true")
@@ -620,7 +621,7 @@ endif()
 
 set(CMAKE_C_FLAGS    "${CMAKE_C_FLAGS} -std=c99")
 add_library(xc ${sources_list})
-target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY})
+target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY} ${CUDA_cublas_LIBRARY})
 set_target_properties(xc PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
                                     SOVERSION ${${PROJECT_NAME}_SOMAJOR})
 if(${BUILD_SHARED_LIBS})
@@ -671,14 +672,14 @@ execute_process(
 
 add_executable(xc-info "${src_prefix}/xc-info.c")
 if (CUDA_FOUND)
-    target_link_libraries(xc-info xc_device xc)
+    target_link_libraries(xc-info xc_device xc ${CUDA_cublas_LIBRARY})
 else()
     target_link_libraries(xc-info xc)
 endif()
 
 add_executable(xc-threshold "${src_prefix}/xc-threshold.c")
 if (CUDA_FOUND)
-    target_link_libraries(xc-threshold xc_device xc )
+    target_link_libraries(xc-threshold xc_device xc  ${CUDA_cublas_LIBRARY})
 else()
     target_link_libraries(xc-threshold xc)
 endif()

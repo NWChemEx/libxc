@@ -82,28 +82,28 @@ void allocate_memory(values_t *data, int nspin, int order)
       checkCuda(cudaMallocManaged(&(data->tau), data->n*sizeof(double)));
       switch (order) {
         case (0):
-          checkCuda(cudaMallocManaged(&(data->zk), data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->zk), 2*data->n*sizeof(double)));
           break;
         case (1):
-          checkCuda(cudaMallocManaged(&(data->vrho), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vsigma), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vlapl), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vtau), data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->vrho), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->vsigma), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->vlapl), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->vtau), 2*data->n*sizeof(double)));
           break;
         case (2):
-          checkCuda(cudaMallocManaged(&(data->v2rho2), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2tau2), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2lapl2), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rhotau), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rholapl), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2lapltau), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigma2), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rhosigma), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigmatau), data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigmalapl), data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2rho2), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2tau2), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2lapl2), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2rhotau), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2rholapl), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2lapltau), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2sigma2), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2rhosigma), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2sigmatau), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2sigmalapl), 2*data->n*sizeof(double)));
           break;
         case (3):
-          checkCuda(cudaMallocManaged(&(data->v3rho3), data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v3rho3), 2*data->n*sizeof(double)));
           break;
         default:
           fprintf(stderr, "order = %i not recognized.\n", order);
@@ -112,34 +112,34 @@ void allocate_memory(values_t *data, int nspin, int order)
       break;
 
     case (XC_POLARIZED):
-      checkCuda(cudaMallocManaged(&(data->rho), 2*data->n*sizeof(double)));
-      checkCuda(cudaMallocManaged(&(data->sigma), 3*data->n*sizeof(double)));
-      checkCuda(cudaMallocManaged(&(data->lapl), 2*data->n*sizeof(double)));
-      checkCuda(cudaMallocManaged(&(data->tau), 2*data->n*sizeof(double)));
+      checkCuda(cudaMallocManaged(&(data->rho), 2*2*data->n*sizeof(double)));
+      checkCuda(cudaMallocManaged(&(data->sigma), 2*3*data->n*sizeof(double)));
+      checkCuda(cudaMallocManaged(&(data->lapl), 2*2*data->n*sizeof(double)));
+      checkCuda(cudaMallocManaged(&(data->tau), 2*2*data->n*sizeof(double)));
       switch (order) {
         case (0):
-          checkCuda(cudaMallocManaged(&(data->zk), data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->zk), 2*data->n*sizeof(double)));
           break;
         case (1):
-          checkCuda(cudaMallocManaged(&(data->vrho), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vsigma), 3*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vlapl), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vtau), 2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->vrho), 2*2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->vsigma), 2*3*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->vlapl), 2*2*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->vtau), 2*2*data->n*sizeof(double)));
           break;
         case (2):
-          checkCuda(cudaMallocManaged(&(data->v2rho2), 3*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2tau2), 3*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2lapl2), 3*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rhotau), 4*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rholapl), 4*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2lapltau), 4*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigma2), 6*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rhosigma), 6*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigmatau), 6*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigmalapl), 6*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2rho2), 2*3*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2tau2), 2*3*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2lapl2), 2*3*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2rhotau), 2*4*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2rholapl), 2*4*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2lapltau), 2*4*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2sigma2), 2*6*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2rhosigma), 2*6*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2sigmatau), 2*6*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v2sigmalapl), 2*6*data->n*sizeof(double)));
           break;
         case (3):
-          checkCuda(cudaMallocManaged(&(data->v3rho3), 4*data->n*sizeof(double)));
+          checkCuda(cudaMallocManaged(&(data->v3rho3), 2*4*data->n*sizeof(double)));
           break;
         default:
           fprintf(stderr, "order = %i not recognized.\n", order);

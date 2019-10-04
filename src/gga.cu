@@ -53,6 +53,8 @@ void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const d
 	     double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
 {
   const xc_dimensions *dim = &(func->dim);
+  /* CUDA status */
+  cudaError_t stat;
   
   /* sanity check */
   if(zk != NULL && !(func->info->flags & XC_FLAGS_HAVE_EXC)){
@@ -80,32 +82,36 @@ void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const d
   }
 
   /* initialize output to zero */
+  int nd = 1;
+  if(func->n_func_aux > 0) nd = 2;
+  
   if(zk != NULL)
-    cudaMemset(zk, 0, dim->zk*np*sizeof(double));
+    cudaMemset(zk, 0, dim->zk*np*nd*sizeof(double));
 
   if(vrho != NULL){
     assert(vsigma != NULL);
     
-    cudaMemset(vrho,   0, dim->vrho  *np*sizeof(double));
-    cudaMemset(vsigma, 0, dim->vsigma*np*sizeof(double));
+    cudaMemset(vrho,   0, dim->vrho  *np*nd*sizeof(double));
+    cudaMemset(vsigma, 0, dim->vsigma*np*nd*sizeof(double));
   }
 
   if(v2rho2 != NULL){
     assert(v2rhosigma!=NULL && v2sigma2!=NULL);
 
-    cudaMemset(v2rho2,     0, dim->v2rho2    *np*sizeof(double));
-    cudaMemset(v2rhosigma, 0, dim->v2rhosigma*np*sizeof(double));
-    cudaMemset(v2sigma2,   0, dim->v2sigma2  *np*sizeof(double));
+    cudaMemset(v2rho2,     0, dim->v2rho2    *np*nd*sizeof(double));
+    cudaMemset(v2rhosigma, 0, dim->v2rhosigma*np*nd*sizeof(double));
+    cudaMemset(v2sigma2,   0, dim->v2sigma2  *np*nd*sizeof(double));
   }
 
   if(v3rho3 != NULL){
     assert(v3rho2sigma!=NULL && v3rhosigma2!=NULL && v3sigma3!=NULL);
 
-    cudaMemset(v3rho3,      0, dim->v3rho3     *np*sizeof(double));
-    cudaMemset(v3rho2sigma, 0, dim->v3rho2sigma*np*sizeof(double));
-    cudaMemset(v3rhosigma2, 0, dim->v3rhosigma2*np*sizeof(double));
-    cudaMemset(v3sigma3,    0, dim->v3sigma3   *np*sizeof(double));
+    cudaMemset(v3rho3,      0, dim->v3rho3     *np*nd*sizeof(double));
+    cudaMemset(v3rho2sigma, 0, dim->v3rho2sigma*np*nd*sizeof(double));
+    cudaMemset(v3rhosigma2, 0, dim->v3rhosigma2*np*nd*sizeof(double));
+    cudaMemset(v3sigma3,    0, dim->v3sigma3   *np*nd*sizeof(double));
   }
+  stat = cudaDeviceSynchronize();
 
   /* call functional */
   if(func->info->gga != NULL)
@@ -114,10 +120,8 @@ void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const d
 		    v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
 
   if(func->n_func_aux > 0) {
-    fprintf(stderr,"Multi-term functional: %s\n",func->info->name);
-    exit(1);
-    /*
-    xc_mix_func(func, np, rho, sigma, NULL, NULL, zk, vrho, vsigma, NULL, NULL,
+    //fprintf(stderr,"Multi-term functional: %s\n",func->info->name);
+    xc_mix_func_offload(func, np, rho, sigma, NULL, NULL, zk, vrho, vsigma, NULL, NULL,
                 v2rho2, v2rhosigma, NULL, NULL, v2sigma2, NULL, NULL, NULL, NULL, NULL,
                 v3rho3, v3rho2sigma, NULL, NULL,
                 v3rhosigma2, NULL, NULL,
@@ -129,7 +133,6 @@ void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const d
                 NULL, NULL,
                 NULL,
                 NULL);
-    */
   }
 }
 

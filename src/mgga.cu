@@ -48,8 +48,10 @@ xc_mgga_offload(const xc_func_type *func, int np,
 
 
   /* initialize output to zero */
+  int nd = 1;
+  if(func->n_func_aux > 0) nd = 2;
   if(zk != NULL)
-    memset(zk, 0, dim->zk*np*sizeof(double));
+    cudaMemset(zk, 0, dim->zk*np*nd*sizeof(double));
 
   if(vrho != NULL){
     assert(vsigma != NULL);
@@ -57,11 +59,11 @@ xc_mgga_offload(const xc_func_type *func, int np,
       assert(vlapl != NULL);
     assert(vtau   != NULL);
 
-    memset(vrho,   0, dim->vrho  *np*sizeof(double));
-    memset(vsigma, 0, dim->vsigma*np*sizeof(double));
+    cudaMemset(vrho,   0, dim->vrho  *np*nd*sizeof(double));
+    cudaMemset(vsigma, 0, dim->vsigma*np*nd*sizeof(double));
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN)
-       memset(vlapl,  0, dim->vlapl *np*sizeof(double));
-    memset(vtau,   0, dim->vtau  *np*sizeof(double));
+       cudaMemset(vlapl,  0, dim->vlapl *np*nd*sizeof(double));
+    cudaMemset(vtau,   0, dim->vtau  *np*nd*sizeof(double));
   }
 
   if(v2rho2 != NULL){
@@ -78,18 +80,18 @@ xc_mgga_offload(const xc_func_type *func, int np,
       assert(v2lapltau   != NULL);
     }
       
-    memset(v2rho2,     0, dim->v2rho2     *np*sizeof(double));
-    memset(v2rhosigma, 0, dim->v2rhosigma *np*sizeof(double));
-    memset(v2rhotau,   0, dim->v2rhotau   *np*sizeof(double));
-    memset(v2sigma2,   0, dim->v2sigma2   *np*sizeof(double));
-    memset(v2sigmatau, 0, dim->v2sigmatau *np*sizeof(double));
-    memset(v2tau2,     0, dim->v2tau2     *np*sizeof(double));
+    cudaMemset(v2rho2,     0, dim->v2rho2     *np*nd*sizeof(double));
+    cudaMemset(v2rhosigma, 0, dim->v2rhosigma *np*nd*sizeof(double));
+    cudaMemset(v2rhotau,   0, dim->v2rhotau   *np*nd*sizeof(double));
+    cudaMemset(v2sigma2,   0, dim->v2sigma2   *np*nd*sizeof(double));
+    cudaMemset(v2sigmatau, 0, dim->v2sigmatau *np*nd*sizeof(double));
+    cudaMemset(v2tau2,     0, dim->v2tau2     *np*nd*sizeof(double));
 
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
-      memset(v2rholapl,   0, dim->v2rholapl  *np*sizeof(double));
-      memset(v2sigmalapl, 0, dim->v2sigmalapl*np*sizeof(double));
-      memset(v2lapl2,     0, dim->v2lapl2    *np*sizeof(double));
-      memset(v2lapltau,   0, dim->v2lapltau  *np*sizeof(double));
+      cudaMemset(v2rholapl,   0, dim->v2rholapl  *np*nd*sizeof(double));
+      cudaMemset(v2sigmalapl, 0, dim->v2sigmalapl*np*nd*sizeof(double));
+      cudaMemset(v2lapl2,     0, dim->v2lapl2    *np*nd*sizeof(double));
+      cudaMemset(v2lapltau,   0, dim->v2lapltau  *np*nd*sizeof(double));
     }
   }
 
@@ -116,27 +118,27 @@ xc_mgga_offload(const xc_func_type *func, int np,
       assert(v3lapl2tau     != NULL);
     }
 	
-    memset(v3rho3,        0, dim->v3rho3       *np*sizeof(double));
-    memset(v3rho2sigma,   0, dim->v3rho2sigma  *np*sizeof(double));
-    memset(v3rho2tau,     0, dim->v3rho2tau    *np*sizeof(double));
-    memset(v3rhosigma2,   0, dim->v3rhosigma2  *np*sizeof(double));
-    memset(v3rhosigmatau, 0, dim->v3rhosigmatau*np*sizeof(double));
-    memset(v3rhotau2,     0, dim->v3rhotau2    *np*sizeof(double));
-    memset(v3sigma3,      0, dim->v3sigma3     *np*sizeof(double));
-    memset(v3sigma2tau,   0, dim->v3sigma2tau  *np*sizeof(double));
-    memset(v3sigmatau2,   0, dim->v3sigmatau2  *np*sizeof(double));  
-    memset(v3tau3,        0, dim->v3tau3       *np*sizeof(double));
+    cudaMemset(v3rho3,        0, dim->v3rho3       *np*nd*sizeof(double));
+    cudaMemset(v3rho2sigma,   0, dim->v3rho2sigma  *np*nd*sizeof(double));
+    cudaMemset(v3rho2tau,     0, dim->v3rho2tau    *np*nd*sizeof(double));
+    cudaMemset(v3rhosigma2,   0, dim->v3rhosigma2  *np*nd*sizeof(double));
+    cudaMemset(v3rhosigmatau, 0, dim->v3rhosigmatau*np*nd*sizeof(double));
+    cudaMemset(v3rhotau2,     0, dim->v3rhotau2    *np*nd*sizeof(double));
+    cudaMemset(v3sigma3,      0, dim->v3sigma3     *np*nd*sizeof(double));
+    cudaMemset(v3sigma2tau,   0, dim->v3sigma2tau  *np*nd*sizeof(double));
+    cudaMemset(v3sigmatau2,   0, dim->v3sigmatau2  *np*nd*sizeof(double));  
+    cudaMemset(v3tau3,        0, dim->v3tau3       *np*nd*sizeof(double));
 
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
-      memset(v3rho2lapl,     0, dim->v3rho2lapl    *np*sizeof(double));
-      memset(v3rhosigmalapl, 0, dim->v3rhosigmalapl*np*sizeof(double));      
-      memset(v3rholapl2,     0, dim->v3rholapl2    *np*sizeof(double));
-      memset(v3rholapltau,   0, dim->v3rholapltau  *np*sizeof(double));
-      memset(v3sigma2lapl,   0, dim->v3sigma2lapl  *np*sizeof(double));
-      memset(v3sigmalapl2,   0, dim->v3sigmalapl2  *np*sizeof(double));
-      memset(v3sigmalapltau, 0, dim->v3sigmalapltau*np*sizeof(double));
-      memset(v3lapl3,        0, dim->v3lapl3       *np*sizeof(double));
-      memset(v3lapl2tau,     0, dim->v3lapl2tau    *np*sizeof(double));
+      cudaMemset(v3rho2lapl,     0, dim->v3rho2lapl    *np*nd*sizeof(double));
+      cudaMemset(v3rhosigmalapl, 0, dim->v3rhosigmalapl*np*nd*sizeof(double));      
+      cudaMemset(v3rholapl2,     0, dim->v3rholapl2    *np*nd*sizeof(double));
+      cudaMemset(v3rholapltau,   0, dim->v3rholapltau  *np*nd*sizeof(double));
+      cudaMemset(v3sigma2lapl,   0, dim->v3sigma2lapl  *np*nd*sizeof(double));
+      cudaMemset(v3sigmalapl2,   0, dim->v3sigmalapl2  *np*nd*sizeof(double));
+      cudaMemset(v3sigmalapltau, 0, dim->v3sigmalapltau*np*nd*sizeof(double));
+      cudaMemset(v3lapl3,        0, dim->v3lapl3       *np*nd*sizeof(double));
+      cudaMemset(v3lapl2tau,     0, dim->v3lapl2tau    *np*nd*sizeof(double));
     }
   }
 
@@ -145,11 +147,9 @@ xc_mgga_offload(const xc_func_type *func, int np,
     func->info->mgga_offload(func, np, rho, sigma, lapl, tau, zk, MGGA_OUT_PARAMS_NO_EXC());
 
   /* WARNING: Kxc is not properly mixed */
-  if(func->mix_coef != NULL) {
+  if(func->n_func_aux > 0) {
     fprintf(stderr,"Multi-term functional: %s\n",func->info->name);
-    exit(1);
-    /*
-    xc_mix_func(func, np, rho, sigma, lapl, tau,
+    xc_mix_func_offload(func, np, rho, sigma, lapl, tau,
                 zk, vrho, vsigma, vlapl, vtau,
                 v2rho2, v2rhosigma, v2rholapl, v2rhotau, 
                 v2sigma2, v2sigmalapl, v2sigmatau,
@@ -166,7 +166,6 @@ xc_mgga_offload(const xc_func_type *func, int np,
                 v3lapltau2,
                 v3tau3
                 );
-    */
   }
 
 }
