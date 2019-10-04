@@ -264,8 +264,9 @@ xc_mix_func(const xc_func_type *func, int np,
       if(is_mgga(aux->info->family)) {
         for(ip = 0; ip < np*dim->v3rho2tau; ip++)
           v3rho2tau[ip] += func->mix_coef[ii] * v3rho2tau_[ip];
-        for(ip = 0; ip < np*dim->v3sigmatau2; ip++)
-          v3sigmatau2[ip] += func->mix_coef[ii] * v3sigmatau2_[ip];
+        //Duplicated:
+        //for(ip = 0; ip < np*dim->v3sigmatau2; ip++)
+        //  v3sigmatau2[ip] += func->mix_coef[ii] * v3sigmatau2_[ip];
         for(ip = 0; ip < np*dim->v3rhotau2; ip++)
           v3rhotau2[ip] += func->mix_coef[ii] * v3rhotau2_[ip];
         for(ip = 0; ip < np*dim->v3sigma2tau; ip++)
@@ -278,8 +279,9 @@ xc_mix_func(const xc_func_type *func, int np,
         if(aux->info->flags & XC_FLAGS_NEEDS_LAPLACIAN) {
           for(ip = 0; ip < np*dim->v3rho2lapl; ip++)
             v3rho2lapl[ip] += func->mix_coef[ii] * v3rho2lapl_[ip];
-          for(ip = 0; ip < np*dim->v3sigmalapl2; ip++)
-            v3sigmalapl2[ip] += func->mix_coef[ii] * v3sigmalapl2_[ip];
+          //Duplicated:
+          //for(ip = 0; ip < np*dim->v3sigmalapl2; ip++)
+          //  v3sigmalapl2[ip] += func->mix_coef[ii] * v3sigmalapl2_[ip];
           for(ip = 0; ip < np*dim->v3rholapl2; ip++)
             v3rholapl2[ip] += func->mix_coef[ii] * v3rholapl2_[ip];
           for(ip = 0; ip < np*dim->v3rholapltau; ip++)
