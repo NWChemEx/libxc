@@ -380,8 +380,14 @@ int xc_func_init_all(int nspin)
 
   assert(nspin==XC_UNPOLARIZED || nspin==XC_POLARIZED);
   
-  xc_func_data = (xc_func_type *)malloc(number*sizeof(xc_func_type));
-  func_numbers = (int *)malloc(number*sizeof(int));
+  if (NULL == (xc_func_data = (xc_func_type *)malloc(number*sizeof(xc_func_type)))) {
+    fprintf(stderr,"xc_func_init_all: malloc xc_func_data failed!\n");
+    exit(1);
+  }
+  if (NULL == (func_numbers = (int *)malloc(number*sizeof(int)))) {
+    fprintf(stderr,"xc_func_init_all: malloc func_numbers failed!\n");
+    exit(1);
+  }
   
   xc_available_functional_numbers(func_numbers);
   for (int ii = 0; ii < number; ii++) {
