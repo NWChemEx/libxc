@@ -43,6 +43,11 @@ for dir in $(ls -d $srcdir/regression/*); do
   for i in $(ls $dir/*.bz2 | LANG=C sort); do
     refname=$(basename ${i} .bz2)
     func=${refname%%.*}
+    if [ ${#CHECK_ONLY} -ne 0 ]; then
+        if [[ ! " $CHECK_ONLY " =~ .*\ $func\ .* ]]; then
+            continue
+        fi
+    fi
     testcase=${refname#*.}
     system=${testcase%%.*}
     order=${testcase##*.}
