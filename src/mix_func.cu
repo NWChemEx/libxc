@@ -24,6 +24,7 @@ void
 xc_mix_func_init_cublas()
 {
     checkCublas(cublasCreate(&cublas_handle));
+    checkCublas(cublasSetPointerMode(cublas_handle,CUBLAS_POINTER_MODE_DEVICE));
 }
 
 void
@@ -157,32 +158,49 @@ xc_mix_func_offload(const xc_func_type *func, int np,
   /* we now add the different components */
   for(ii=0; ii<func->n_func_aux; ii++){
     if(zk != NULL)
-      cudaMemset(zk_, 0, dim->zk*np*sizeof(double));
+      checkCuda(cudaMemset(zk_, 0, dim->zk*np*sizeof(double)));
   
     if(vrho != NULL){
       assert(vsigma != NULL);
   
-      cudaMemset(vrho_,   0, dim->vrho  *np*sizeof(double));
-      cudaMemset(vsigma_, 0, dim->vsigma*np*sizeof(double));
+      checkCuda(cudaMemset(vrho_,   0, dim->vrho  *np*sizeof(double)));
+      if(is_gga(func->info->family)){
+        checkCuda(cudaMemset(vsigma_, 0, dim->vsigma*np*sizeof(double)));
+      }
+      if(is_mgga(func->info->family)){
+        checkCuda(cudaMemset(vlapl_,  0, dim->vlapl*np*sizeof(double)));
+        checkCuda(cudaMemset(vtau_,   0, dim->vtau*np*sizeof(double)));
+      }
     }
   
     if(v2rho2 != NULL){
       assert(v2rhosigma!=NULL && v2sigma2!=NULL);
   
-      cudaMemset(v2rho2_,     0, dim->v2rho2    *np*sizeof(double));
-      cudaMemset(v2rhosigma_, 0, dim->v2rhosigma*np*sizeof(double));
-      cudaMemset(v2sigma2_,   0, dim->v2sigma2  *np*sizeof(double));
+      checkCuda(cudaMemset(v2rho2_,        0, dim->v2rho2     *np*sizeof(double)));
+      if(is_gga(func->info->family)){
+        checkCuda(cudaMemset(v2rhosigma_,  0, dim->v2rhosigma *np*sizeof(double)));
+        checkCuda(cudaMemset(v2sigma2_,    0, dim->v2sigma2   *np*sizeof(double)));
+      }
+      if(is_mgga(func->info->family)){
+        checkCuda(cudaMemset(v2rholapl_,   0, dim->v2rholapl  *np*sizeof(double)));
+        checkCuda(cudaMemset(v2rhotau_,    0, dim->v2rhotau   *np*sizeof(double)));
+        checkCuda(cudaMemset(v2sigmalapl_, 0, dim->v2sigmalapl*np*sizeof(double)));
+        checkCuda(cudaMemset(v2sigmatau_,  0, dim->v2sigmatau *np*sizeof(double)));
+        checkCuda(cudaMemset(v2lapl2_,     0, dim->v2lapl2    *np*sizeof(double)));
+        checkCuda(cudaMemset(v2lapltau_,   0, dim->v2lapltau  *np*sizeof(double)));
+        checkCuda(cudaMemset(v2tau2_,      0, dim->v2tau2     *np*sizeof(double)));
+      }
     }
   
     if(v3rho3 != NULL){
       assert(v3rho2sigma!=NULL && v3rhosigma2!=NULL && v3sigma3!=NULL);
   
-      cudaMemset(v3rho3_,      0, dim->v3rho3     *np*sizeof(double));
-      cudaMemset(v3rho2sigma_, 0, dim->v3rho2sigma*np*sizeof(double));
-      cudaMemset(v3rhosigma2_, 0, dim->v3rhosigma2*np*sizeof(double));
-      cudaMemset(v3sigma3_,    0, dim->v3sigma3   *np*sizeof(double));
+      checkCuda(cudaMemset(v3rho3_,      0, dim->v3rho3     *np*sizeof(double)));
+      checkCuda(cudaMemset(v3rho2sigma_, 0, dim->v3rho2sigma*np*sizeof(double)));
+      checkCuda(cudaMemset(v3rhosigma2_, 0, dim->v3rhosigma2*np*sizeof(double)));
+      checkCuda(cudaMemset(v3sigma3_,    0, dim->v3sigma3   *np*sizeof(double)));
     }
-
+    /* cudaMemset is supposed to be blocking
     stat = cudaDeviceSynchronize();
     if (stat != cudaSuccess) {
         fprintf(stderr,"Error: mix_init_offload pre-launch: %s\n",cudaGetErrorString( stat ));
@@ -190,6 +208,7 @@ xc_mix_func_offload(const xc_func_type *func, int np,
     else {
         fprintf(stderr,"Success: pre-launch sync\n");
     }
+    */
     aux = func->func_aux[ii];
     if (aux->n_func_aux > 0) {
       fprintf(stderr,"Nested multi-term functionals in: %s\n",
@@ -230,9 +249,9 @@ xc_mix_func_offload(const xc_func_type *func, int np,
     if (stat != cudaSuccess) {
         fprintf(stderr,"Error: mix_init_offload post-launch: %s\n",cudaGetErrorString( stat ));
     }
-    else {
-        fprintf(stderr,"Success: post-launch sync\n");
-    }
+    //else {
+    //    fprintf(stderr,"Success: post-launch sync\n");
+    //}
 
     /* Sanity checks */
     if(is_gga(aux->info->family))
@@ -243,70 +262,70 @@ xc_mix_func_offload(const xc_func_type *func, int np,
       assert(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN);
 
     if(zk != NULL) {
-      checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),zk_,1,zk,1));
+      checkCublas(cublasDaxpy(cublas_handle,np*dim->zk,func->mix_coef+ii,zk_,1,zk,1));
     }
 
     if(vrho != NULL) {
-      checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),vrho_,1,vrho,1));
+      checkCublas(cublasDaxpy(cublas_handle,np*dim->vrho,func->mix_coef+ii,vrho_,1,vrho,1));
 
       if(is_gga(aux->info->family)) {
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),vsigma_,1,vsigma,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->vsigma,func->mix_coef+ii,vsigma_,1,vsigma,1));
       }
 
       if(is_mgga(aux->info->family)) {
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),vtau_,1,vtau,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->vtau,func->mix_coef+ii,vtau_,1,vtau,1));
         if(aux->info->flags & XC_FLAGS_NEEDS_LAPLACIAN) {
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),vlapl_,1,vlapl,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->lapl,func->mix_coef+ii,vlapl_,1,vlapl,1));
         }
       }
     }
 
     if(v2rho2 != NULL){
-      checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v2rho2_,1,v2rho2,1));
+      checkCublas(cublasDaxpy(cublas_handle,np*dim->v2rho2,func->mix_coef+ii,v2rho2_,1,v2rho2,1));
 
       if(is_gga(aux->info->family)) {
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v2rhosigma_,1,v2rhosigma,1));
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v2sigma2_,1,v2sigma2,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v2rhosigma,func->mix_coef+ii,v2rhosigma_,1,v2rhosigma,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v2sigma2,func->mix_coef+ii,v2sigma2_,1,v2sigma2,1));
       }
 
       if(is_mgga(aux->info->family)) {
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v2rhotau_,1,v2rhotau,1));
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v2sigmatau_,1,v2sigmatau,1));
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v2tau2_,1,v2tau2,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v2rhotau,func->mix_coef+ii,v2rhotau_,1,v2rhotau,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v2sigmatau,func->mix_coef+ii,v2sigmatau_,1,v2sigmatau,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v2tau2,func->mix_coef+ii,v2tau2_,1,v2tau2,1));
         if(aux->info->flags & XC_FLAGS_NEEDS_LAPLACIAN) {
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v2rholapl_,1,v2rholapl,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v2lapl2_,1,v2lapl2,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v2sigmalapl_,1,v2sigmalapl,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v2lapltau_,1,v2lapltau,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v2rholapl,func->mix_coef+ii,v2rholapl_,1,v2rholapl,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v2lapl2,func->mix_coef+ii,v2lapl2_,1,v2lapl2,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v2sigmalapl,func->mix_coef+ii,v2sigmalapl_,1,v2sigmalapl,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v2lapltau,func->mix_coef+ii,v2lapltau_,1,v2lapltau,1));
         }
       }
     }
 
     if(v3rho3 != NULL){
-      checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3rho3_,1,v3rho3,1));
+      checkCublas(cublasDaxpy(cublas_handle,np*dim->v3rho3,func->mix_coef+ii,v3rho3_,1,v3rho3,1));
       
       if(is_gga(aux->info->family)) {
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3rho2sigma_,1,v3rho2sigma,1));
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3rhosigma2_,1,v3rhosigma2,1));
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3sigma3_,1,v3sigma3,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v3rho2sigma,func->mix_coef+ii,v3rho2sigma_,1,v3rho2sigma,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v3rhosigma2,func->mix_coef+ii,v3rhosigma2_,1,v3rhosigma2,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v3sigma3,func->mix_coef+ii,v3sigma3_,1,v3sigma3,1));
       }
       if(is_mgga(aux->info->family)) {
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3rho2tau_,1,v3rho2tau,1));
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3rhotau2_,1,v3rhotau2,1));
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3sigma2tau_,1,v3sigma2tau,1));
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3sigmatau2_,1,v3sigmatau2,1));
-        checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3tau3_,1,v3tau3,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v3rho2tau,func->mix_coef+ii,v3rho2tau_,1,v3rho2tau,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v3rhotau2,func->mix_coef+ii,v3rhotau2_,1,v3rhotau2,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v3sigma2tau,func->mix_coef+ii,v3sigma2tau_,1,v3sigma2tau,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v3sigmatau2,func->mix_coef+ii,v3sigmatau2_,1,v3sigmatau2,1));
+        checkCublas(cublasDaxpy(cublas_handle,np*dim->v3tau3,func->mix_coef+ii,v3tau3_,1,v3tau3,1));
 
         if(aux->info->flags & XC_FLAGS_NEEDS_LAPLACIAN) {
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3rho2lapl_,1,v3rho2lapl,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3rholapl2_,1,v3rholapl2,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3rholapltau_,1,v3rholapltau,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3sigma2lapl_,1,v3sigma2lapl,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3sigmalapl2_,1,v3sigmalapl2,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3sigmalapltau_,1,v3sigmalapltau,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3lapl3_,1,v3lapl3,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3lapl2tau_,1,v3lapl2tau,1));
-          checkCublas(cublasDaxpy(cublas_handle,np,&(func->mix_coef[ii]),v3lapltau2_,1,v3lapltau2,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v3rho2lapl,func->mix_coef+ii,v3rho2lapl_,1,v3rho2lapl,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v3rholapl2,func->mix_coef+ii,v3rholapl2_,1,v3rholapl2,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v3rholapltau,func->mix_coef+ii,v3rholapltau_,1,v3rholapltau,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v3sigma2lapl,func->mix_coef+ii,v3sigma2lapl_,1,v3sigma2lapl,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v3sigmalapl2,func->mix_coef+ii,v3sigmalapl2_,1,v3sigmalapl2,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v3sigmalapltau,func->mix_coef+ii,v3sigmalapltau_,1,v3sigmalapltau,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v3lapl3,func->mix_coef+ii,v3lapl3_,1,v3lapl3,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v3lapl2tau,func->mix_coef+ii,v3lapl2tau_,1,v3lapl2tau,1));
+          checkCublas(cublasDaxpy(cublas_handle,np*dim->v3lapltau2,func->mix_coef+ii,v3lapltau2_,1,v3lapltau2,1));
         }
       }  
     }
@@ -314,9 +333,9 @@ xc_mix_func_offload(const xc_func_type *func, int np,
     if (stat != cudaSuccess) {
         fprintf(stderr,"Error: mix_init_offload post-daxpy: %s\n",cudaGetErrorString( stat ));
     }
-    else {
-        fprintf(stderr,"Success: post-daxpy sync\n");
-    }
+    //else {
+    //    fprintf(stderr,"Success: post-daxpy sync\n");
+    //}
   }
 
 }
