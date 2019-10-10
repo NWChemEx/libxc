@@ -148,7 +148,7 @@ xc_mgga_offload(const xc_func_type *func, int np,
 
   /* WARNING: Kxc is not properly mixed */
   if(func->n_func_aux > 0) {
-    fprintf(stderr,"Multi-term functional: %s\n",func->info->name);
+    //fprintf(stderr,"Multi-term functional: %s\n",func->info->name);
     xc_mix_func_offload(func, np, rho, sigma, lapl, tau,
                 zk, vrho, vsigma, vlapl, vtau,
                 v2rho2, v2rhosigma, v2rholapl, v2rhotau, 
