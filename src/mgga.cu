@@ -16,7 +16,8 @@ extern "C" {
 void 
 xc_mgga_offload(const xc_func_type *func, int np,
         const double *rho, const double *sigma, const double *lapl, const double *tau,
-        double *zk, MGGA_OUT_PARAMS_NO_EXC(double *))
+        double *zk, MGGA_OUT_PARAMS_NO_EXC(double *),
+        cudaStream_t stream)
 {
   assert(func != NULL);
   const xc_dimensions *dim = &(func->dim);
@@ -51,7 +52,7 @@ xc_mgga_offload(const xc_func_type *func, int np,
   int nd = 1;
   if(func->n_func_aux > 0) nd = 2;
   if(zk != NULL)
-    cudaMemset(zk, 0, dim->zk*np*nd*sizeof(double));
+    checkCuda(cudaMemsetAsync(zk, 0, dim->zk*np*nd*sizeof(double), stream));
 
   if(vrho != NULL){
     assert(vsigma != NULL);
@@ -59,11 +60,11 @@ xc_mgga_offload(const xc_func_type *func, int np,
       assert(vlapl != NULL);
     assert(vtau   != NULL);
 
-    cudaMemset(vrho,   0, dim->vrho  *np*nd*sizeof(double));
-    cudaMemset(vsigma, 0, dim->vsigma*np*nd*sizeof(double));
+    checkCuda(cudaMemsetAsync(vrho,   0, dim->vrho  *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(vsigma, 0, dim->vsigma*np*nd*sizeof(double), stream));
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN)
-       cudaMemset(vlapl,  0, dim->vlapl *np*nd*sizeof(double));
-    cudaMemset(vtau,   0, dim->vtau  *np*nd*sizeof(double));
+       checkCuda(cudaMemsetAsync(vlapl,  0, dim->vlapl *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(vtau,   0, dim->vtau  *np*nd*sizeof(double), stream));
   }
 
   if(v2rho2 != NULL){
@@ -80,18 +81,18 @@ xc_mgga_offload(const xc_func_type *func, int np,
       assert(v2lapltau   != NULL);
     }
       
-    cudaMemset(v2rho2,     0, dim->v2rho2     *np*nd*sizeof(double));
-    cudaMemset(v2rhosigma, 0, dim->v2rhosigma *np*nd*sizeof(double));
-    cudaMemset(v2rhotau,   0, dim->v2rhotau   *np*nd*sizeof(double));
-    cudaMemset(v2sigma2,   0, dim->v2sigma2   *np*nd*sizeof(double));
-    cudaMemset(v2sigmatau, 0, dim->v2sigmatau *np*nd*sizeof(double));
-    cudaMemset(v2tau2,     0, dim->v2tau2     *np*nd*sizeof(double));
+    checkCuda(cudaMemsetAsync(v2rho2,     0, dim->v2rho2     *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v2rhosigma, 0, dim->v2rhosigma *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v2rhotau,   0, dim->v2rhotau   *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v2sigma2,   0, dim->v2sigma2   *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v2sigmatau, 0, dim->v2sigmatau *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v2tau2,     0, dim->v2tau2     *np*nd*sizeof(double), stream));
 
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
-      cudaMemset(v2rholapl,   0, dim->v2rholapl  *np*nd*sizeof(double));
-      cudaMemset(v2sigmalapl, 0, dim->v2sigmalapl*np*nd*sizeof(double));
-      cudaMemset(v2lapl2,     0, dim->v2lapl2    *np*nd*sizeof(double));
-      cudaMemset(v2lapltau,   0, dim->v2lapltau  *np*nd*sizeof(double));
+      checkCuda(cudaMemsetAsync(v2rholapl,   0, dim->v2rholapl  *np*nd*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v2sigmalapl, 0, dim->v2sigmalapl*np*nd*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v2lapl2,     0, dim->v2lapl2    *np*nd*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v2lapltau,   0, dim->v2lapltau  *np*nd*sizeof(double), stream));
     }
   }
 
@@ -118,33 +119,33 @@ xc_mgga_offload(const xc_func_type *func, int np,
       assert(v3lapl2tau     != NULL);
     }
 	
-    cudaMemset(v3rho3,        0, dim->v3rho3       *np*nd*sizeof(double));
-    cudaMemset(v3rho2sigma,   0, dim->v3rho2sigma  *np*nd*sizeof(double));
-    cudaMemset(v3rho2tau,     0, dim->v3rho2tau    *np*nd*sizeof(double));
-    cudaMemset(v3rhosigma2,   0, dim->v3rhosigma2  *np*nd*sizeof(double));
-    cudaMemset(v3rhosigmatau, 0, dim->v3rhosigmatau*np*nd*sizeof(double));
-    cudaMemset(v3rhotau2,     0, dim->v3rhotau2    *np*nd*sizeof(double));
-    cudaMemset(v3sigma3,      0, dim->v3sigma3     *np*nd*sizeof(double));
-    cudaMemset(v3sigma2tau,   0, dim->v3sigma2tau  *np*nd*sizeof(double));
-    cudaMemset(v3sigmatau2,   0, dim->v3sigmatau2  *np*nd*sizeof(double));  
-    cudaMemset(v3tau3,        0, dim->v3tau3       *np*nd*sizeof(double));
+    checkCuda(cudaMemsetAsync(v3rho3,        0, dim->v3rho3       *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3rho2sigma,   0, dim->v3rho2sigma  *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3rho2tau,     0, dim->v3rho2tau    *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3rhosigma2,   0, dim->v3rhosigma2  *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3rhosigmatau, 0, dim->v3rhosigmatau*np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3rhotau2,     0, dim->v3rhotau2    *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3sigma3,      0, dim->v3sigma3     *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3sigma2tau,   0, dim->v3sigma2tau  *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3sigmatau2,   0, dim->v3sigmatau2  *np*nd*sizeof(double), stream));  
+    checkCuda(cudaMemsetAsync(v3tau3,        0, dim->v3tau3       *np*nd*sizeof(double), stream));
 
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
-      cudaMemset(v3rho2lapl,     0, dim->v3rho2lapl    *np*nd*sizeof(double));
-      cudaMemset(v3rhosigmalapl, 0, dim->v3rhosigmalapl*np*nd*sizeof(double));      
-      cudaMemset(v3rholapl2,     0, dim->v3rholapl2    *np*nd*sizeof(double));
-      cudaMemset(v3rholapltau,   0, dim->v3rholapltau  *np*nd*sizeof(double));
-      cudaMemset(v3sigma2lapl,   0, dim->v3sigma2lapl  *np*nd*sizeof(double));
-      cudaMemset(v3sigmalapl2,   0, dim->v3sigmalapl2  *np*nd*sizeof(double));
-      cudaMemset(v3sigmalapltau, 0, dim->v3sigmalapltau*np*nd*sizeof(double));
-      cudaMemset(v3lapl3,        0, dim->v3lapl3       *np*nd*sizeof(double));
-      cudaMemset(v3lapl2tau,     0, dim->v3lapl2tau    *np*nd*sizeof(double));
+      checkCuda(cudaMemsetAsync(v3rho2lapl,     0, dim->v3rho2lapl    *np*nd*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v3rhosigmalapl, 0, dim->v3rhosigmalapl*np*nd*sizeof(double), stream));      
+      checkCuda(cudaMemsetAsync(v3rholapl2,     0, dim->v3rholapl2    *np*nd*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v3rholapltau,   0, dim->v3rholapltau  *np*nd*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v3sigma2lapl,   0, dim->v3sigma2lapl  *np*nd*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v3sigmalapl2,   0, dim->v3sigmalapl2  *np*nd*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v3sigmalapltau, 0, dim->v3sigmalapltau*np*nd*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v3lapl3,        0, dim->v3lapl3       *np*nd*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v3lapl2tau,     0, dim->v3lapl2tau    *np*nd*sizeof(double), stream));
     }
   }
 
   /* call functional */
   if(func->info->mgga_offload != NULL)
-    func->info->mgga_offload(func, np, rho, sigma, lapl, tau, zk, MGGA_OUT_PARAMS_NO_EXC());
+    func->info->mgga_offload(func, np, rho, sigma, lapl, tau, zk, MGGA_OUT_PARAMS_NO_EXC(), stream);
 
   /* WARNING: Kxc is not properly mixed */
   if(func->n_func_aux > 0) {
@@ -164,7 +165,8 @@ xc_mgga_offload(const xc_func_type *func, int np,
                 v3sigmatau2,
                 v3lapl3, v3lapl2tau,
                 v3lapltau2,
-                v3tau3
+                v3tau3,
+                stream
                 );
   }
 
@@ -174,34 +176,37 @@ xc_mgga_offload(const xc_func_type *func, int np,
 void
 xc_mgga_exc_offload(const xc_func_type *p, int np, 
             const double *rho, const double *sigma, const double *lapl, const double *tau,
-            double *zk)
+            double *zk, cudaStream_t stream)
 {
   xc_mgga_offload(p, np, rho, sigma, lapl, tau, zk, NULL, NULL, NULL, NULL, 
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+          NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+          stream);
 }
 
 void
 xc_mgga_exc_vxc_offload(const xc_func_type *p, int np,
                 const double *rho, const double *sigma, const double *lapl, const double *tau,
-                double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau)
+                double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau, cudaStream_t stream)
 {
   xc_mgga_offload(p, np, rho, sigma, lapl, tau, zk, vrho, vsigma, vlapl, vtau, 
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+          NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+          stream);
 }
 
 void
 xc_mgga_vxc_offload(const xc_func_type *p, int np,
             const double *rho, const double *sigma, const double *lapl, const double *tau,
-            double *vrho, double *vsigma, double *vlapl, double *vtau)
+            double *vrho, double *vsigma, double *vlapl, double *vtau, cudaStream_t stream)
 {
   xc_mgga_offload(p, np, rho, sigma, lapl, tau, NULL, vrho, vsigma, vlapl, vtau, 
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+          NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+          stream);
 }
 
 void
@@ -210,7 +215,7 @@ xc_mgga_fxc_offload(const xc_func_type *p, int np,
             double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau,
             double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
             double *v2lapl2, double *v2lapltau,
-            double *v2tau2)
+            double *v2tau2, cudaStream_t stream)
 {
   xc_mgga_offload(p, np, rho, sigma, lapl, tau,
           NULL, NULL, NULL, NULL, NULL,
@@ -227,7 +232,8 @@ xc_mgga_fxc_offload(const xc_func_type *p, int np,
           NULL,
           NULL, NULL,
           NULL,
-          NULL);
+          NULL,
+          stream);
 }
 
 void xc_mgga_kxc_offload(const xc_func_type *p, int np,
@@ -241,7 +247,7 @@ void xc_mgga_kxc_offload(const xc_func_type *p, int np,
                  double *v3sigmatau2,
                  double *v3lapl3, double *v3lapl2tau,
                  double *v3lapltau2,
-                 double *v3tau3)
+                 double *v3tau3, cudaStream_t stream)
 {
   xc_mgga_offload(p, np, rho, sigma, lapl, tau,
           NULL, NULL, NULL, NULL, NULL,
@@ -258,7 +264,8 @@ void xc_mgga_kxc_offload(const xc_func_type *p, int np,
           v3sigmatau2,
           v3lapl3, v3lapl2tau,
           v3lapltau2,
-          v3tau3);
+          v3tau3,
+          stream);
 }
 
 #ifdef __cplusplus

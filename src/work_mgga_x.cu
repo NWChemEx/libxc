@@ -162,10 +162,11 @@ work_mgga_x_offload(const XC(func_type) *p, int np,
                   double *v3rholapl2,   double *v3rholapltau,   double *v3rhotau2,
                   double *v3sigma3,     double *v3sigma2lapl,   double *v3sigma2tau,
                   double *v3sigmalapl2, double *v3sigmalapltau, double *v3sigmatau2,
-                  double *v3lapl3,      double *v3lapl2tau,     double *v3lapltau2,   double *v3tau3)
+                  double *v3lapl3,      double *v3lapl2tau,     double *v3lapltau2,   double *v3tau3,
+                  cudaStream_t stream)
 {
     const xc_dimensions *dim = &(p->dim);
-    work_gga_x_device<<<std::ceil(np/1024.),1024>>>
+    work_gga_x_device<<<std::ceil(np/1024.),1024,0,stream>>>
                    (xc_func_data_device+p->func_rank,
                     dim->rho,dim->sigma,dim->lapl,dim->tau,
                     dim->zk,dim->vrho,dim->vsigma,dim->vlapl,dim->vtau,

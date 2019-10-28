@@ -50,12 +50,13 @@ if nspin == 2
 void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const double *sigma,
 	     double *zk, double *vrho, double *vsigma,
 	     double *v2rho2, double *v2rhosigma, double *v2sigma2,
-	     double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
+	     double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3,
+             cudaStream_t stream)
 {
   const xc_dimensions *dim = &(func->dim);
   /* CUDA status */
   cudaError_t stat;
-  
+
   /* sanity check */
   if(zk != NULL && !(func->info->flags & XC_FLAGS_HAVE_EXC)){
     fprintf(stderr, "Functional '%s' does not provide an implementation of Exc\n",
@@ -86,38 +87,39 @@ void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const d
   if(func->n_func_aux > 0) nd = 2;
   
   if(zk != NULL)
-    cudaMemset(zk, 0, dim->zk*np*nd*sizeof(double));
+    checkCuda(cudaMemsetAsync(zk, 0, dim->zk*np*nd*sizeof(double), stream));
 
   if(vrho != NULL){
     assert(vsigma != NULL);
     
-    cudaMemset(vrho,   0, dim->vrho  *np*nd*sizeof(double));
-    cudaMemset(vsigma, 0, dim->vsigma*np*nd*sizeof(double));
+    checkCuda(cudaMemsetAsync(vrho,   0, dim->vrho  *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(vsigma, 0, dim->vsigma*np*nd*sizeof(double), stream));
   }
 
   if(v2rho2 != NULL){
     assert(v2rhosigma!=NULL && v2sigma2!=NULL);
 
-    cudaMemset(v2rho2,     0, dim->v2rho2    *np*nd*sizeof(double));
-    cudaMemset(v2rhosigma, 0, dim->v2rhosigma*np*nd*sizeof(double));
-    cudaMemset(v2sigma2,   0, dim->v2sigma2  *np*nd*sizeof(double));
+    checkCuda(cudaMemsetAsync(v2rho2,     0, dim->v2rho2    *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v2rhosigma, 0, dim->v2rhosigma*np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v2sigma2,   0, dim->v2sigma2  *np*nd*sizeof(double), stream));
   }
 
   if(v3rho3 != NULL){
     assert(v3rho2sigma!=NULL && v3rhosigma2!=NULL && v3sigma3!=NULL);
 
-    cudaMemset(v3rho3,      0, dim->v3rho3     *np*nd*sizeof(double));
-    cudaMemset(v3rho2sigma, 0, dim->v3rho2sigma*np*nd*sizeof(double));
-    cudaMemset(v3rhosigma2, 0, dim->v3rhosigma2*np*nd*sizeof(double));
-    cudaMemset(v3sigma3,    0, dim->v3sigma3   *np*nd*sizeof(double));
+    checkCuda(cudaMemsetAsync(v3rho3,      0, dim->v3rho3     *np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3rho2sigma, 0, dim->v3rho2sigma*np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3rhosigma2, 0, dim->v3rhosigma2*np*nd*sizeof(double), stream));
+    checkCuda(cudaMemsetAsync(v3sigma3,    0, dim->v3sigma3   *np*nd*sizeof(double), stream));
   }
-  stat = cudaDeviceSynchronize();
+  //stat = cudaDeviceSynchronize();
 
   /* call functional */
   if(func->info->gga != NULL)
     func->info->gga_offload(func, np, rho, sigma, zk, vrho, vsigma, 
 		    v2rho2, v2rhosigma, v2sigma2,
-		    v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
+		    v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3,
+                    stream);
 
   if(func->n_func_aux > 0) {
     //fprintf(stderr,"Multi-term functional: %s\n",func->info->name);
@@ -132,7 +134,8 @@ void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const d
                 NULL,
                 NULL, NULL,
                 NULL,
-                NULL);
+                NULL,
+                stream);
   }
 }
 
@@ -140,41 +143,41 @@ void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const d
 /* returns only energy */
 void
 xc_gga_exc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma, 
-	    double *zk)
+	    double *zk, cudaStream_t stream)
 {
-  xc_gga_offload(p, np, rho, sigma, zk, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+  xc_gga_offload(p, np, rho, sigma, zk, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, stream);
 }
 
 /* returns only potential */
 void
 xc_gga_vxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
-	    double *vrho, double *vsigma)
+	    double *vrho, double *vsigma, cudaStream_t stream)
 {
-  xc_gga_offload(p, np, rho, sigma, NULL, vrho, vsigma, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+  xc_gga_offload(p, np, rho, sigma, NULL, vrho, vsigma, NULL, NULL, NULL, NULL, NULL, NULL, NULL, stream);
 }
 
 /* returns both energy and potential (the most common call usually) */
 void
 xc_gga_exc_vxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
-		double *zk, double *vrho, double *vsigma)
+		double *zk, double *vrho, double *vsigma, cudaStream_t stream)
 {
-  xc_gga_offload(p, np, rho, sigma, zk, vrho, vsigma, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+  xc_gga_offload(p, np, rho, sigma, zk, vrho, vsigma, NULL, NULL, NULL, NULL, NULL, NULL, NULL, stream);
 }
 
 /* returns second derivatives */
 void
 xc_gga_fxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
-	    double *v2rho2, double *v2rhosigma, double *v2sigma2)
+	    double *v2rho2, double *v2rhosigma, double *v2sigma2, cudaStream_t stream)
 {
-  xc_gga_offload(p, np, rho, sigma, NULL, NULL, NULL, v2rho2, v2rhosigma, v2sigma2, NULL, NULL, NULL, NULL);
+  xc_gga_offload(p, np, rho, sigma, NULL, NULL, NULL, v2rho2, v2rhosigma, v2sigma2, NULL, NULL, NULL, NULL, stream);
 }
 
 /* returns third derivatives */
 void
 xc_gga_kxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
-	    double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
+	    double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3, cudaStream_t stream)
 {
-  xc_gga_offload(p, np, rho, sigma, NULL, NULL, NULL, NULL, NULL, NULL, v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3);
+  xc_gga_offload(p, np, rho, sigma, NULL, NULL, NULL, NULL, NULL, NULL, v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3, stream);
 }
 
 #ifdef __cplusplus

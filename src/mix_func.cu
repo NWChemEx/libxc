@@ -36,7 +36,8 @@ xc_mix_func_end_cublas()
 void
 xc_mix_func_offload(const xc_func_type *func, int np,
             const double *rho, const double *sigma, const double *lapl, const double *tau,
-            double *zk, MGGA_OUT_PARAMS_NO_EXC(double *))
+            double *zk, MGGA_OUT_PARAMS_NO_EXC(double *),
+            cudaStream_t stream)
 {
   const xc_func_type *aux;
   double *zk_;
@@ -156,49 +157,50 @@ xc_mix_func_offload(const xc_func_type *func, int np,
   }
   
   /* we now add the different components */
+  checkCublas(cublasSetStream(cublas_handle, stream));
   for(ii=0; ii<func->n_func_aux; ii++){
     if(zk != NULL)
-      checkCuda(cudaMemset(zk_, 0, dim->zk*np*sizeof(double)));
+      checkCuda(cudaMemsetAsync(zk_, 0, dim->zk*np*sizeof(double), stream));
   
     if(vrho != NULL){
       assert(vsigma != NULL);
   
-      checkCuda(cudaMemset(vrho_,   0, dim->vrho  *np*sizeof(double)));
+      checkCuda(cudaMemsetAsync(vrho_,   0, dim->vrho  *np*sizeof(double), stream));
       if(is_gga(func->info->family)){
-        checkCuda(cudaMemset(vsigma_, 0, dim->vsigma*np*sizeof(double)));
+        checkCuda(cudaMemsetAsync(vsigma_, 0, dim->vsigma*np*sizeof(double), stream));
       }
       if(is_mgga(func->info->family)){
-        checkCuda(cudaMemset(vlapl_,  0, dim->vlapl*np*sizeof(double)));
-        checkCuda(cudaMemset(vtau_,   0, dim->vtau*np*sizeof(double)));
+        checkCuda(cudaMemsetAsync(vlapl_,  0, dim->vlapl*np*sizeof(double), stream));
+        checkCuda(cudaMemsetAsync(vtau_,   0, dim->vtau*np*sizeof(double), stream));
       }
     }
   
     if(v2rho2 != NULL){
       assert(v2rhosigma!=NULL && v2sigma2!=NULL);
   
-      checkCuda(cudaMemset(v2rho2_,        0, dim->v2rho2     *np*sizeof(double)));
+      checkCuda(cudaMemsetAsync(v2rho2_,        0, dim->v2rho2     *np*sizeof(double), stream));
       if(is_gga(func->info->family)){
-        checkCuda(cudaMemset(v2rhosigma_,  0, dim->v2rhosigma *np*sizeof(double)));
-        checkCuda(cudaMemset(v2sigma2_,    0, dim->v2sigma2   *np*sizeof(double)));
+        checkCuda(cudaMemsetAsync(v2rhosigma_,  0, dim->v2rhosigma *np*sizeof(double), stream));
+        checkCuda(cudaMemsetAsync(v2sigma2_,    0, dim->v2sigma2   *np*sizeof(double), stream));
       }
       if(is_mgga(func->info->family)){
-        checkCuda(cudaMemset(v2rholapl_,   0, dim->v2rholapl  *np*sizeof(double)));
-        checkCuda(cudaMemset(v2rhotau_,    0, dim->v2rhotau   *np*sizeof(double)));
-        checkCuda(cudaMemset(v2sigmalapl_, 0, dim->v2sigmalapl*np*sizeof(double)));
-        checkCuda(cudaMemset(v2sigmatau_,  0, dim->v2sigmatau *np*sizeof(double)));
-        checkCuda(cudaMemset(v2lapl2_,     0, dim->v2lapl2    *np*sizeof(double)));
-        checkCuda(cudaMemset(v2lapltau_,   0, dim->v2lapltau  *np*sizeof(double)));
-        checkCuda(cudaMemset(v2tau2_,      0, dim->v2tau2     *np*sizeof(double)));
+        checkCuda(cudaMemsetAsync(v2rholapl_,   0, dim->v2rholapl  *np*sizeof(double), stream));
+        checkCuda(cudaMemsetAsync(v2rhotau_,    0, dim->v2rhotau   *np*sizeof(double), stream));
+        checkCuda(cudaMemsetAsync(v2sigmalapl_, 0, dim->v2sigmalapl*np*sizeof(double), stream));
+        checkCuda(cudaMemsetAsync(v2sigmatau_,  0, dim->v2sigmatau *np*sizeof(double), stream));
+        checkCuda(cudaMemsetAsync(v2lapl2_,     0, dim->v2lapl2    *np*sizeof(double), stream));
+        checkCuda(cudaMemsetAsync(v2lapltau_,   0, dim->v2lapltau  *np*sizeof(double), stream));
+        checkCuda(cudaMemsetAsync(v2tau2_,      0, dim->v2tau2     *np*sizeof(double), stream));
       }
     }
   
     if(v3rho3 != NULL){
       assert(v3rho2sigma!=NULL && v3rhosigma2!=NULL && v3sigma3!=NULL);
   
-      checkCuda(cudaMemset(v3rho3_,      0, dim->v3rho3     *np*sizeof(double)));
-      checkCuda(cudaMemset(v3rho2sigma_, 0, dim->v3rho2sigma*np*sizeof(double)));
-      checkCuda(cudaMemset(v3rhosigma2_, 0, dim->v3rhosigma2*np*sizeof(double)));
-      checkCuda(cudaMemset(v3sigma3_,    0, dim->v3sigma3   *np*sizeof(double)));
+      checkCuda(cudaMemsetAsync(v3rho3_,      0, dim->v3rho3     *np*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v3rho2sigma_, 0, dim->v3rho2sigma*np*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v3rhosigma2_, 0, dim->v3rhosigma2*np*sizeof(double), stream));
+      checkCuda(cudaMemsetAsync(v3sigma3_,    0, dim->v3sigma3   *np*sizeof(double), stream));
     }
     /* cudaMemset is supposed to be blocking
     stat = cudaDeviceSynchronize();
@@ -217,12 +219,12 @@ xc_mix_func_offload(const xc_func_type *func, int np,
     }
     switch(aux->info->family){
     case XC_FAMILY_LDA:
-      xc_lda_offload(aux, np, rho, zk_, vrho_, v2rho2_, NULL);
+      xc_lda_offload(aux, np, rho, zk_, vrho_, v2rho2_, NULL, stream);
       break;
     case XC_FAMILY_GGA:
       xc_gga_offload(aux, np, rho, sigma, zk_, vrho_, vsigma_,
              v2rho2_, v2rhosigma_, v2sigma2_,
-             v3rho3_, v3rho2sigma_, v3rhosigma2_, v3sigma3_);
+             v3rho3_, v3rho2sigma_, v3rhosigma2_, v3sigma3_, stream);
       break;
     case XC_FAMILY_MGGA:
       xc_mgga_offload(aux, np, rho, sigma, lapl, tau,
@@ -241,14 +243,14 @@ xc_mix_func_offload(const xc_func_type *func, int np,
               v3sigmatau2_,
               v3lapl3_, v3lapl2tau_,
               v3lapltau2_,
-              v3tau3_
-              );
+              v3tau3_,
+              stream);
       break;
     }
-    stat = cudaDeviceSynchronize();
-    if (stat != cudaSuccess) {
-        fprintf(stderr,"Error: mix_init_offload post-launch: %s\n",cudaGetErrorString( stat ));
-    }
+    //stat = cudaDeviceSynchronize();
+    //if (stat != cudaSuccess) {
+    //    fprintf(stderr,"Error: mix_init_offload post-launch: %s\n",cudaGetErrorString( stat ));
+    //}
     //else {
     //    fprintf(stderr,"Success: post-launch sync\n");
     //}
@@ -329,13 +331,14 @@ xc_mix_func_offload(const xc_func_type *func, int np,
         }
       }  
     }
-    stat = cudaDeviceSynchronize();
-    if (stat != cudaSuccess) {
-        fprintf(stderr,"Error: mix_init_offload post-daxpy: %s\n",cudaGetErrorString( stat ));
-    }
+    //stat = cudaDeviceSynchronize();
+    //if (stat != cudaSuccess) {
+    //    fprintf(stderr,"Error: mix_init_offload post-daxpy: %s\n",cudaGetErrorString( stat ));
+    //}
     //else {
     //    fprintf(stderr,"Success: post-daxpy sync\n");
     //}
   }
+  checkCublas(cublasSetStream(cublas_handle,NULL));
 
 }

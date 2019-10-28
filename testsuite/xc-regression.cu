@@ -314,6 +314,7 @@ int main(int argc, char *argv[])
   char *fname;
   /* CUDA status */
   cudaError_t stat;
+  cudaStream_t stream;
 
   /* Read in data */
   d = read_data(argv[4], nspin, order);
@@ -335,22 +336,23 @@ int main(int argc, char *argv[])
   v3rho3 = (flags & XC_FLAGS_HAVE_KXC) ? d.v3rho3 : NULL;
 
   /* Evaluate xc functional */
+  checkCuda(cudaStreamCreate(&stream));
   switch(family) {
   case XC_FAMILY_LDA:
-    xc_lda_offload(&xc_func_data[func_rank], d.n, d.rho, zk, vrho, v2rho2, v3rho3);
-    stat = cudaDeviceSynchronize();
-    if (stat != cudaSuccess) {
-        fprintf(stderr,"Launch xc_lda_offload: %s\n",cudaGetErrorString( stat ));
-    }
+    xc_lda_offload(&xc_func_data[func_rank], d.n, d.rho, zk, vrho, v2rho2, v3rho3, stream);
+    //stat = cudaDeviceSynchronize();
+    //if (stat != cudaSuccess) {
+    //    fprintf(stderr,"Launch xc_lda_offload: %s\n",cudaGetErrorString( stat ));
+    //}
     break;
   case XC_FAMILY_GGA:
   case XC_FAMILY_HYB_GGA:
     xc_gga_offload(&xc_func_data[func_rank], d.n, d.rho, d.sigma, zk, vrho, d.vsigma,
-                   v2rho2, d.v2rhosigma, d.v2sigma2, NULL, NULL, NULL, NULL);
-    stat = cudaDeviceSynchronize();
-    if (stat != cudaSuccess) {
-        fprintf(stderr,"Launch xc_gga_offload: %s\n",cudaGetErrorString( stat ));
-    }
+                   v2rho2, d.v2rhosigma, d.v2sigma2, NULL, NULL, NULL, NULL, stream);
+    //stat = cudaDeviceSynchronize();
+    //if (stat != cudaSuccess) {
+    //    fprintf(stderr,"Launch xc_gga_offload: %s\n",cudaGetErrorString( stat ));
+    //}
     break;
   case XC_FAMILY_MGGA:
   case XC_FAMILY_HYB_MGGA:
@@ -361,11 +363,11 @@ int main(int argc, char *argv[])
             d.v2lapl2, d.v2lapltau,
             d.v2tau2,
             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-            NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-    stat = cudaDeviceSynchronize();
-    if (stat != cudaSuccess) {
-        fprintf(stderr,"Launch xc_mgga_offload: %s\n",cudaGetErrorString( stat ));
-    }
+            NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, stream);
+    //stat = cudaDeviceSynchronize();
+    //if (stat != cudaSuccess) {
+    //    fprintf(stderr,"Launch xc_mgga_offload: %s\n",cudaGetErrorString( stat ));
+    //}
     break;
 
   default:
@@ -373,6 +375,8 @@ int main(int argc, char *argv[])
     free_memory(d);
     exit(1);
   }
+  checkCuda(cudaStreamSynchronize(stream));
+  checkCuda(cudaStreamDestroy(stream));
 
   /* Open output file */
   fname = argv[5];

@@ -2,7 +2,7 @@
 #BSUB -P      chm136                    # Project ID
 #BSUB -o      libxc.oe%J                # Job output name
 #BSUB -J      libxc_all                 # Job name
-#BSUB -W      00:10                     # Walltime
+#BSUB -W      02:00                     # Walltime
 #BSUB -nnodes 1                         # Number of nodes
 #pwd
 #ls
