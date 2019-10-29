@@ -14,8 +14,8 @@ xc_func_type *xc_func_data_device;
 __host__ void xc_func_init_device(xc_func_type *p)
 {
     int number = xc_number_of_functionals();
-    checkCuda(cudaMalloc(&xc_func_data_device,number*sizeof(xc_func_type)));
-    checkCuda(cudaMemcpy(xc_func_data_device,p,number*sizeof(xc_func_type),cudaMemcpyHostToDevice));
+    checkCuda(__FILE__,__LINE__,cudaMalloc(&xc_func_data_device,number*sizeof(xc_func_type)));
+    checkCuda(__FILE__,__LINE__,cudaMemcpy(xc_func_data_device,p,number*sizeof(xc_func_type),cudaMemcpyHostToDevice));
     xc_mix_func_init_cublas();
 }
 
@@ -24,5 +24,5 @@ __host__ void xc_func_init_device(xc_func_type *p)
 __host__ void xc_func_end_device()
 {
     xc_mix_func_end_cublas();
-    checkCuda(cudaFree(xc_func_data_device));
+    checkCuda(__FILE__,__LINE__,cudaFree(xc_func_data_device));
 }

@@ -55,7 +55,7 @@ typedef struct {
   double *v3rho3;
 } values_t;
 
-void allocate_memory(values_t *data, int nspin, int order)
+void allocate_memory_host(values_t *data, int nspin, int order)
 {
   data->zk = NULL;
   data->vrho = NULL;
@@ -76,106 +76,326 @@ void allocate_memory(values_t *data, int nspin, int order)
 
   switch(nspin) {
     case (XC_UNPOLARIZED):
-      checkCuda(cudaMallocManaged(&(data->rho), data->n*sizeof(double)));
-      checkCuda(cudaMallocManaged(&(data->sigma), data->n*sizeof(double)));
-      checkCuda(cudaMallocManaged(&(data->lapl), data->n*sizeof(double)));
-      checkCuda(cudaMallocManaged(&(data->tau), data->n*sizeof(double)));
+      data->rho = (double *)calloc(data->n, sizeof(double));
+      data->sigma = (double *)calloc(data->n, sizeof(double));
+      data->lapl = (double *)calloc(data->n, sizeof(double));
+      data->tau = (double *)calloc(data->n, sizeof(double));
       switch (order) {
         case (0):
-          checkCuda(cudaMallocManaged(&(data->zk), 2*data->n*sizeof(double)));
+          data->zk = (double *)calloc(2*data->n, sizeof(double));
           break;
         case (1):
-          checkCuda(cudaMallocManaged(&(data->vrho), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vsigma), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vlapl), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vtau), 2*data->n*sizeof(double)));
+          data->vrho = (double *)calloc(2*data->n, sizeof(double));
+          data->vsigma = (double *)calloc(2*data->n, sizeof(double));
+          data->vlapl = (double *)calloc(2*data->n, sizeof(double));
+          data->vtau = (double *)calloc(2*data->n, sizeof(double));
           break;
         case (2):
-          checkCuda(cudaMallocManaged(&(data->v2rho2), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2tau2), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2lapl2), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rhotau), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rholapl), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2lapltau), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigma2), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rhosigma), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigmatau), 2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigmalapl), 2*data->n*sizeof(double)));
+          data->v2rho2 = (double *)calloc(2*data->n, sizeof(double));
+          data->v2tau2 = (double *)calloc(2*data->n, sizeof(double));
+          data->v2lapl2 = (double *)calloc(2*data->n, sizeof(double));
+          data->v2rhotau = (double *)calloc(2*data->n, sizeof(double));
+          data->v2rholapl = (double *)calloc(2*data->n, sizeof(double));
+          data->v2lapltau = (double *)calloc(2*data->n, sizeof(double));
+          data->v2sigma2 = (double *)calloc(2*data->n, sizeof(double));
+          data->v2rhosigma = (double *)calloc(2*data->n, sizeof(double));
+          data->v2sigmatau = (double *)calloc(2*data->n, sizeof(double));
+          data->v2sigmalapl = (double *)calloc(2*data->n, sizeof(double));
           break;
         case (3):
-          checkCuda(cudaMallocManaged(&(data->v3rho3), 2*data->n*sizeof(double)));
+          data->v3rho3 = (double *)calloc(2*data->n, sizeof(double));
           break;
         default:
-          fprintf(stderr, "order = %i not recognized.\n", order);
+          fprintf(stderr, "allocate_memory_host: order = %i not recognized.\n", order);
           exit(2);
       }
       break;
 
     case (XC_POLARIZED):
-      checkCuda(cudaMallocManaged(&(data->rho), 2*2*data->n*sizeof(double)));
-      checkCuda(cudaMallocManaged(&(data->sigma), 2*3*data->n*sizeof(double)));
-      checkCuda(cudaMallocManaged(&(data->lapl), 2*2*data->n*sizeof(double)));
-      checkCuda(cudaMallocManaged(&(data->tau), 2*2*data->n*sizeof(double)));
+      data->rho = (double *)calloc(2*data->n, sizeof(double));
+      data->sigma = (double *)calloc(3*data->n, sizeof(double));
+      data->lapl = (double *)calloc(2*data->n, sizeof(double));
+      data->tau = (double *)calloc(2*data->n, sizeof(double));
       switch (order) {
         case (0):
-          checkCuda(cudaMallocManaged(&(data->zk), 2*data->n*sizeof(double)));
+          data->zk = (double *)calloc(2*data->n, sizeof(double));
           break;
         case (1):
-          checkCuda(cudaMallocManaged(&(data->vrho), 2*2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vsigma), 2*3*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vlapl), 2*2*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->vtau), 2*2*data->n*sizeof(double)));
+          data->vrho = (double *)calloc(2*2*data->n, sizeof(double));
+          data->vsigma = (double *)calloc(2*3*data->n, sizeof(double));
+          data->vlapl = (double *)calloc(2*2*data->n, sizeof(double));
+          data->vtau = (double *)calloc(2*2*data->n, sizeof(double));
           break;
         case (2):
-          checkCuda(cudaMallocManaged(&(data->v2rho2), 2*3*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2tau2), 2*3*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2lapl2), 2*3*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rhotau), 2*4*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rholapl), 2*4*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2lapltau), 2*4*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigma2), 2*6*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2rhosigma), 2*6*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigmatau), 2*6*data->n*sizeof(double)));
-          checkCuda(cudaMallocManaged(&(data->v2sigmalapl), 2*6*data->n*sizeof(double)));
+          data->v2rho2 = (double *)calloc(2*3*data->n, sizeof(double));
+          data->v2tau2 = (double *)calloc(2*3*data->n, sizeof(double));
+          data->v2lapl2 = (double *)calloc(2*3*data->n, sizeof(double));
+          data->v2rhotau = (double *)calloc(2*4*data->n, sizeof(double));
+          data->v2rholapl = (double *)calloc(2*4*data->n, sizeof(double));
+          data->v2lapltau = (double *)calloc(2*4*data->n, sizeof(double));
+          data->v2sigma2 = (double *)calloc(2*6*data->n, sizeof(double));
+          data->v2rhosigma = (double *)calloc(2*6*data->n, sizeof(double));
+          data->v2sigmatau = (double *)calloc(2*6*data->n, sizeof(double));
+          data->v2sigmalapl = (double *)calloc(2*6*data->n, sizeof(double));
           break;
         case (3):
-          checkCuda(cudaMallocManaged(&(data->v3rho3), 2*4*data->n*sizeof(double)));
+          data->v3rho3 = (double *)calloc(2*4*data->n, sizeof(double));
           break;
         default:
-          fprintf(stderr, "order = %i not recognized.\n", order);
+          fprintf(stderr, "allocate_memory_host: order = %i not recognized.\n", order);
           exit(2);
       }
       break;
 
     default:
-      fprintf(stderr, "nspin = %i not recognized.\n", nspin);
+      fprintf(stderr, "allocate_memory_host: nspin = %i not recognized.\n", nspin);
       exit(2);
   }
 
 }
 
-void free_memory(values_t val)
+void allocate_memory_device(values_t *data, int nspin, int order)
 {
-  checkCuda(cudaFree(val.rho));
-  checkCuda(cudaFree(val.sigma));
-  checkCuda(cudaFree(val.lapl));
-  checkCuda(cudaFree(val.tau));
-  checkCuda(cudaFree(val.zk));
-  checkCuda(cudaFree(val.vrho));
-  checkCuda(cudaFree(val.vsigma));
-  checkCuda(cudaFree(val.vlapl));
-  checkCuda(cudaFree(val.vtau));
-  checkCuda(cudaFree(val.v2rho2));
-  checkCuda(cudaFree(val.v2tau2));
-  checkCuda(cudaFree(val.v2lapl2));
-  checkCuda(cudaFree(val.v2rhotau));
-  checkCuda(cudaFree(val.v2rholapl));
-  checkCuda(cudaFree(val.v2lapltau));
-  checkCuda(cudaFree(val.v2sigma2));
-  checkCuda(cudaFree(val.v2rhosigma));
-  checkCuda(cudaFree(val.v2sigmatau));
-  checkCuda(cudaFree(val.v2sigmalapl));
-  checkCuda(cudaFree(val.v3rho3));
+  data->zk = NULL;
+  data->vrho = NULL;
+  data->vsigma = NULL;
+  data->vlapl = NULL;
+  data->vtau = NULL;
+  data->v2rho2 = NULL;
+  data->v2tau2 = NULL;
+  data->v2lapl2 = NULL;
+  data->v2rhotau = NULL;
+  data->v2rholapl = NULL;
+  data->v2lapltau = NULL;
+  data->v2sigma2 = NULL;
+  data->v2rhosigma = NULL;
+  data->v2sigmatau = NULL;
+  data->v2sigmalapl = NULL;
+  data->v3rho3 = NULL;
+
+  switch(nspin) {
+    case (XC_UNPOLARIZED):
+      checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->rho), data->n*sizeof(double)));
+      checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->sigma), data->n*sizeof(double)));
+      checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->lapl), data->n*sizeof(double)));
+      checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->tau), data->n*sizeof(double)));
+      switch (order) {
+        case (0):
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->zk), 2*data->n*sizeof(double)));
+          break;
+        case (1):
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->vrho), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->vsigma), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->vlapl), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->vtau), 2*data->n*sizeof(double)));
+          break;
+        case (2):
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2rho2), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2tau2), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2lapl2), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2rhotau), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2rholapl), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2lapltau), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2sigma2), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2rhosigma), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2sigmatau), 2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2sigmalapl), 2*data->n*sizeof(double)));
+          break;
+        case (3):
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v3rho3), 2*data->n*sizeof(double)));
+          break;
+        default:
+          fprintf(stderr, "allocate_memory_device: order = %i not recognized.\n", order);
+          exit(2);
+      }
+      break;
+
+    case (XC_POLARIZED):
+      checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->rho), 2*data->n*sizeof(double)));
+      checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->sigma), 3*data->n*sizeof(double)));
+      checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->lapl), 2*data->n*sizeof(double)));
+      checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->tau), 2*data->n*sizeof(double)));
+      switch (order) {
+        case (0):
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->zk), 2*data->n*sizeof(double)));
+          break;
+        case (1):
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->vrho), 2*2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->vsigma), 2*3*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->vlapl), 2*2*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->vtau), 2*2*data->n*sizeof(double)));
+          break;
+        case (2):
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2rho2), 2*3*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2tau2), 2*3*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2lapl2), 2*3*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2rhotau), 2*4*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2rholapl), 2*4*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2lapltau), 2*4*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2sigma2), 2*6*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2rhosigma), 2*6*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2sigmatau), 2*6*data->n*sizeof(double)));
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v2sigmalapl), 2*6*data->n*sizeof(double)));
+          break;
+        case (3):
+          checkCuda(__FILE__,__LINE__,cudaMalloc(&(data->v3rho3), 2*4*data->n*sizeof(double)));
+          break;
+        default:
+          fprintf(stderr, "allocate_memory_device: order = %i not recognized.\n", order);
+          exit(2);
+      }
+      break;
+
+    default:
+      fprintf(stderr, "allocate_memory_device: nspin = %i not recognized.\n", nspin);
+      exit(2);
+  }
+
+}
+
+void copy_host_2_device(values_t data_host, values_t data_device, int nspin)
+{
+  // checkCuda(cudaMemcpy(&(data_device.n), &(data_host.n), sizeof(int), cudaMemcpyHostToDevice));
+  switch(nspin) {
+    case (XC_UNPOLARIZED):
+      checkCuda(__FILE__,__LINE__,cudaMemcpy(data_device.rho, data_host.rho, data_host.n*sizeof(double), cudaMemcpyHostToDevice));
+      checkCuda(__FILE__,__LINE__,cudaMemcpy(data_device.sigma, data_host.sigma, data_host.n*sizeof(double), cudaMemcpyHostToDevice));
+      checkCuda(__FILE__,__LINE__,cudaMemcpy(data_device.lapl, data_host.lapl, data_host.n*sizeof(double), cudaMemcpyHostToDevice));
+      checkCuda(__FILE__,__LINE__,cudaMemcpy(data_device.tau, data_host.tau, data_host.n*sizeof(double), cudaMemcpyHostToDevice));
+      break;
+
+    case (XC_POLARIZED):
+      checkCuda(__FILE__,__LINE__,cudaMemcpy(data_device.rho, data_host.rho, 2*data_host.n*sizeof(double), cudaMemcpyHostToDevice));
+      checkCuda(__FILE__,__LINE__,cudaMemcpy(data_device.sigma, data_host.sigma, 3*data_host.n*sizeof(double), cudaMemcpyHostToDevice));
+      checkCuda(__FILE__,__LINE__,cudaMemcpy(data_device.lapl, data_host.lapl, 2*data_host.n*sizeof(double), cudaMemcpyHostToDevice));
+      checkCuda(__FILE__,__LINE__,cudaMemcpy(data_device.tau, data_host.tau, 2*data_host.n*sizeof(double), cudaMemcpyHostToDevice));
+      break;
+
+    default:
+      fprintf(stderr, "copy_host_2_device: nspin = %i not recognized.\n", nspin);
+      exit(3);
+  }
+}
+
+void copy_device_2_host(values_t data_device, values_t data_host, int nspin, int order)
+{
+  switch(nspin) {
+    case (XC_UNPOLARIZED):
+    switch(order) {
+      case(0):
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.zk, data_device.zk, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        break;
+      case(1):
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.vrho, data_device.vrho, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.vsigma, data_device.vsigma, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.vlapl, data_device.vlapl, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.vtau, data_device.vtau, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        break;
+      case(2):
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2rho2, data_device.v2rho2, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2rhosigma, data_device.v2rhosigma, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2rhotau, data_device.v2rhotau, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2rholapl, data_device.v2rholapl, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2sigma2, data_device.v2sigma2, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2sigmatau, data_device.v2sigmatau, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2sigmalapl, data_device.v2sigmalapl, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2lapl2, data_device.v2lapl2, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2lapltau, data_device.v2lapltau, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2tau2, data_device.v2tau2, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        break;
+      case(3):
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v3rho3, data_device.v3rho3, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        break;
+      default:
+        fprintf(stderr, "order = %i not recognized.\n", order);
+        exit(5);
+    }
+    break;
+
+    case (XC_POLARIZED):
+    switch(order) {
+      case(0):
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.zk, data_device.zk, data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        break;
+      case(1):
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.vrho, data_device.vrho, 2*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.vsigma, data_device.vsigma, 3*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.vlapl, data_device.vlapl, 2*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.vtau, data_device.vtau, 2*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        break;
+      case(2):
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2rho2, data_device.v2rho2, 3*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2rhosigma, data_device.v2rhosigma, 6*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2rhotau, data_device.v2rhotau, 4*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2rholapl, data_device.v2rholapl, 4*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2sigma2, data_device.v2sigma2, 6*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2sigmatau, data_device.v2sigmatau, 6*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2sigmalapl, data_device.v2sigmalapl, 6*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2lapl2, data_device.v2lapl2, 3*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2lapltau, data_device.v2lapltau, 4*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2tau2, data_device.v2tau2, 3*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        break;
+      case(3):
+        checkCuda(__FILE__,__LINE__,cudaMemcpy(data_host.v2rho2, data_device.v2rho2, 4*data_host.n*sizeof(double), cudaMemcpyDeviceToHost));
+        break;
+      default:
+        fprintf(stderr, "order = %i not recognized.\n", order);
+        exit(6);
+    }
+    break;
+
+    default:
+      fprintf(stderr, "copy_device_2_host: nspin = %i not recognized.\n", nspin);
+      exit(4);
+  }
+}
+
+void free_memory_host(values_t val)
+{
+  free(val.rho);
+  free(val.sigma);
+  free(val.lapl);
+  free(val.tau);
+  free(val.zk);
+  free(val.vrho);
+  free(val.vsigma);
+  free(val.vlapl);
+  free(val.vtau);
+  free(val.v2rho2);
+  free(val.v2tau2);
+  free(val.v2lapl2);
+  free(val.v2rhotau);
+  free(val.v2rholapl);
+  free(val.v2lapltau);
+  free(val.v2sigma2);
+  free(val.v2rhosigma);
+  free(val.v2sigmatau);
+  free(val.v2sigmalapl);
+  free(val.v3rho3);
+}
+
+void free_memory_device(values_t val)
+{
+  checkCuda(__FILE__,__LINE__,cudaFree(val.rho));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.sigma));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.lapl));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.tau));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.zk));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.vrho));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.vsigma));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.vlapl));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.vtau));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v2rho2));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v2tau2));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v2lapl2));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v2rhotau));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v2rholapl));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v2lapltau));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v2sigma2));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v2rhosigma));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v2sigmatau));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v2sigmalapl));
+  checkCuda(__FILE__,__LINE__,cudaFree(val.v3rho3));
 }
 
 values_t read_data(const char *file, int nspin, int order) {
@@ -220,14 +440,14 @@ values_t read_data(const char *file, int nspin, int order) {
   }
 
   /* Allocate memory */
-  allocate_memory(&data, nspin, order);
+  allocate_memory_host(&data, nspin, order);
 
   for(i=0;i<data.n;i++) {
     /* Next line of input */
     cp=fgets(buf,BUFSIZE,in);
     if(cp!=buf) {
       fprintf(stderr,"Read error on line %i.\n",i+1);
-      free_memory(data);
+      free_memory_host(data);
       exit(5);
     }
     /* Read data */
@@ -237,7 +457,7 @@ values_t read_data(const char *file, int nspin, int order) {
     /* Error control */
     if(nsucc!=9) {
       fprintf(stderr,"Read error on line %i: only %i entries read.\n",i+1,nsucc);
-      free_memory(data);
+      free_memory_host(data);
       exit(5);
     }
 
@@ -301,7 +521,7 @@ int main(int argc, char *argv[])
   order = atoi(argv[3]);
 
   /* Data array */
-    values_t d;
+  values_t d_dev, d_host;
   /* Functional evaluator */
   //xc_func_type func;
   /* Flags for functional */
@@ -313,11 +533,14 @@ int main(int argc, char *argv[])
   /* Output file name */
   char *fname;
   /* CUDA status */
-  cudaError_t stat;
+  //cudaError_t stat;
   cudaStream_t stream;
 
   /* Read in data */
-  d = read_data(argv[4], nspin, order);
+  d_host = read_data(argv[4], nspin, order);
+  d_dev.n = d_host.n;
+  allocate_memory_device(&d_dev, nspin, order);
+  copy_host_2_device(d_host, d_dev, nspin);
 
   /* Initialize functional */
   xc_func_init_all(nspin);
@@ -330,16 +553,16 @@ int main(int argc, char *argv[])
   family = xc_func_data[func_rank].info->family;
 
   /* Set helpers */
-  zk     = (flags & XC_FLAGS_HAVE_EXC) ? d.zk     : NULL;
-  vrho   = (flags & XC_FLAGS_HAVE_VXC) ? d.vrho   : NULL;
-  v2rho2 = (flags & XC_FLAGS_HAVE_FXC) ? d.v2rho2 : NULL;
-  v3rho3 = (flags & XC_FLAGS_HAVE_KXC) ? d.v3rho3 : NULL;
+  zk     = (flags & XC_FLAGS_HAVE_EXC) ? d_dev.zk     : NULL;
+  vrho   = (flags & XC_FLAGS_HAVE_VXC) ? d_dev.vrho   : NULL;
+  v2rho2 = (flags & XC_FLAGS_HAVE_FXC) ? d_dev.v2rho2 : NULL;
+  v3rho3 = (flags & XC_FLAGS_HAVE_KXC) ? d_dev.v3rho3 : NULL;
 
   /* Evaluate xc functional */
-  checkCuda(cudaStreamCreate(&stream));
+  checkCuda(__FILE__,__LINE__,cudaStreamCreate(&stream));
   switch(family) {
   case XC_FAMILY_LDA:
-    xc_lda_offload(&xc_func_data[func_rank], d.n, d.rho, zk, vrho, v2rho2, v3rho3, stream);
+    xc_lda_offload(&xc_func_data[func_rank], d_host.n, d_dev.rho, zk, vrho, v2rho2, v3rho3, stream);
     //stat = cudaDeviceSynchronize();
     //if (stat != cudaSuccess) {
     //    fprintf(stderr,"Launch xc_lda_offload: %s\n",cudaGetErrorString( stat ));
@@ -347,8 +570,8 @@ int main(int argc, char *argv[])
     break;
   case XC_FAMILY_GGA:
   case XC_FAMILY_HYB_GGA:
-    xc_gga_offload(&xc_func_data[func_rank], d.n, d.rho, d.sigma, zk, vrho, d.vsigma,
-                   v2rho2, d.v2rhosigma, d.v2sigma2, NULL, NULL, NULL, NULL, stream);
+    xc_gga_offload(&xc_func_data[func_rank], d_host.n, d_dev.rho, d_dev.sigma, zk, vrho, d_dev.vsigma,
+                   v2rho2, d_dev.v2rhosigma, d_dev.v2sigma2, NULL, NULL, NULL, NULL, stream);
     //stat = cudaDeviceSynchronize();
     //if (stat != cudaSuccess) {
     //    fprintf(stderr,"Launch xc_gga_offload: %s\n",cudaGetErrorString( stat ));
@@ -356,12 +579,12 @@ int main(int argc, char *argv[])
     break;
   case XC_FAMILY_MGGA:
   case XC_FAMILY_HYB_MGGA:
-    xc_mgga_offload(&xc_func_data[func_rank], d.n, d.rho, d.sigma, d.lapl, d.tau,
-            zk, vrho, d.vsigma, d.vlapl, d.vtau,
-            v2rho2, d.v2rhosigma, d.v2rholapl, d.v2rhotau, 
-            d.v2sigma2, d.v2sigmalapl, d.v2sigmatau,
-            d.v2lapl2, d.v2lapltau,
-            d.v2tau2,
+    xc_mgga_offload(&xc_func_data[func_rank], d_host.n, d_dev.rho, d_dev.sigma, d_dev.lapl, d_dev.tau,
+            zk, vrho, d_dev.vsigma, d_dev.vlapl, d_dev.vtau,
+            v2rho2, d_dev.v2rhosigma, d_dev.v2rholapl, d_dev.v2rhotau, 
+            d_dev.v2sigma2, d_dev.v2sigmalapl, d_dev.v2sigmatau,
+            d_dev.v2lapl2, d_dev.v2lapltau,
+            d_dev.v2tau2,
             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, stream);
     //stat = cudaDeviceSynchronize();
@@ -372,23 +595,26 @@ int main(int argc, char *argv[])
 
   default:
     fprintf(stderr,"Support for family %i not implemented.\n",family);
-    free_memory(d);
+    free_memory_device(d_dev);
+    free_memory_host(d_host);
     exit(1);
   }
-  checkCuda(cudaStreamSynchronize(stream));
-  checkCuda(cudaStreamDestroy(stream));
+  checkCuda(__FILE__,__LINE__,cudaStreamSynchronize(stream));
+  checkCuda(__FILE__,__LINE__,cudaStreamDestroy(stream));
+  copy_device_2_host(d_dev, d_host, nspin, order);
 
   /* Open output file */
   fname = argv[5];
   out = fopen(fname,"w");
   if(!out) {
     fprintf(stderr,"Error opening output file %s.\n",fname);
-    free_memory(d);
+    free_memory_device(d_dev);
+    free_memory_host(d_host);
     exit(1);
   }
 
   /* Functional id and amount of lines in output */
-  fprintf(out, "%i %i %i\n", func_id, d.n, order);
+  fprintf(out, "%i %i %i\n", func_id, d_host.n, order);
 
   switch (order) {
     case (0): /* energy */
@@ -460,66 +686,66 @@ int main(int argc, char *argv[])
   fprintf(out,"\n");
 
   /* Loop over data points */
-  for(i=0;i<d.n;i++) {
+  for(i=0;i<d_host.n;i++) {
 
     switch (order) {
       case (0): /* energy */
-        fprintf(out, efmt, d.zk[i]);
+        fprintf(out, efmt, d_host.zk[i]);
         break;
       case (1): /* first order derivatives */
         if (nspin == XC_POLARIZED) {
-          fprintf(out, efmt2, d.vrho[2 * i], d.vrho[2 * i + 1]);
+          fprintf(out, efmt2, d_host.vrho[2 * i], d_host.vrho[2 * i + 1]);
           if (family & (XC_FAMILY_GGA | XC_FAMILY_HYB_GGA | XC_FAMILY_MGGA | XC_FAMILY_HYB_MGGA))
-            fprintf(out, efmt3, d.vsigma[3 * i], d.vsigma[3 * i + 1], d.vsigma[3 * i + 2]);
+            fprintf(out, efmt3, d_host.vsigma[3 * i], d_host.vsigma[3 * i + 1], d_host.vsigma[3 * i + 2]);
           if (family & (XC_FAMILY_MGGA | XC_FAMILY_HYB_MGGA)) {
-            fprintf(out, efmt2, d.vlapl[2 * i], d.vlapl[2 * i + 1]);
-            fprintf(out, efmt2, d.vtau[2 * i], d.vtau[2 * i + 1]);
+            fprintf(out, efmt2, d_host.vlapl[2 * i], d_host.vlapl[2 * i + 1]);
+            fprintf(out, efmt2, d_host.vtau[2 * i], d_host.vtau[2 * i + 1]);
           }
         } else {
-          fprintf(out, efmt, d.vrho[i]);
+          fprintf(out, efmt, d_host.vrho[i]);
           if (family & (XC_FAMILY_GGA | XC_FAMILY_HYB_GGA | XC_FAMILY_MGGA | XC_FAMILY_HYB_MGGA))
-            fprintf(out, efmt, d.vsigma[i]);
+            fprintf(out, efmt, d_host.vsigma[i]);
           if (family & (XC_FAMILY_MGGA | XC_FAMILY_HYB_MGGA)) {
-            fprintf(out, efmt, d.vlapl[i]);
-            fprintf(out, efmt, d.vtau[i]);
+            fprintf(out, efmt, d_host.vlapl[i]);
+            fprintf(out, efmt, d_host.vtau[i]);
           }
         }
         break;
 
       case (2): /* second order derivatives */
         if (nspin == XC_POLARIZED) {
-          fprintf(out, efmt3, d.v2rho2[3*i], d.v2rho2[3*i + 1], d.v2rho2[3*i + 2]);
+          fprintf(out, efmt3, d_host.v2rho2[3*i], d_host.v2rho2[3*i + 1], d_host.v2rho2[3*i + 2]);
           if(family & (XC_FAMILY_GGA | XC_FAMILY_HYB_GGA | XC_FAMILY_MGGA | XC_FAMILY_HYB_MGGA)) {
-            fprintf(out, efmt3, d.v2sigma2[6*i], d.v2sigma2[6*i + 1], d.v2sigma2[6*i + 2]);
-            fprintf(out, efmt3, d.v2sigma2[6*i + 3], d.v2sigma2[6*i + 4], d.v2sigma2[6*i + 5]);
-            fprintf(out, efmt3, d.v2rhosigma[6*i], d.v2rhosigma[6*i + 1], d.v2rhosigma[6*i + 2]);
-            fprintf(out, efmt3, d.v2rhosigma[6*i + 3], d.v2rhosigma[6*i + 4], d.v2rhosigma[6*i + 5]);
+            fprintf(out, efmt3, d_host.v2sigma2[6*i], d_host.v2sigma2[6*i + 1], d_host.v2sigma2[6*i + 2]);
+            fprintf(out, efmt3, d_host.v2sigma2[6*i + 3], d_host.v2sigma2[6*i + 4], d_host.v2sigma2[6*i + 5]);
+            fprintf(out, efmt3, d_host.v2rhosigma[6*i], d_host.v2rhosigma[6*i + 1], d_host.v2rhosigma[6*i + 2]);
+            fprintf(out, efmt3, d_host.v2rhosigma[6*i + 3], d_host.v2rhosigma[6*i + 4], d_host.v2rhosigma[6*i + 5]);
           }
           if(family & (XC_FAMILY_MGGA | XC_FAMILY_HYB_MGGA)) {
-            fprintf(out, efmt3, d.v2lapl2[3*i], d.v2lapl2[3*i + 1], d.v2lapl2[3*i + 2]);
-            fprintf(out, efmt3, d.v2tau2[3*i], d.v2tau2[3*i + 1], d.v2tau2[3*i + 2]);
-            fprintf(out, efmt3, d.v2rholapl[3*i], d.v2rholapl[3*i + 1], d.v2rholapl[3*i + 2]);
-            fprintf(out, efmt3, d.v2rhotau[3*i], d.v2rhotau[3*i + 1], d.v2rhotau[3*i + 2]);
-            fprintf(out, efmt3, d.v2lapltau[3*i], d.v2lapltau[3*i + 1], d.v2lapltau[3*i + 2]);
-            fprintf(out, efmt3, d.v2sigmatau[3*i], d.v2sigmatau[3*i + 1], d.v2sigmatau[3*i + 2]);
-            fprintf(out, efmt3, d.v2sigmatau[3*i + 3], d.v2sigmatau[3*i + 4], d.v2sigmatau[3*i + 5]);
-            fprintf(out, efmt3, d.v2sigmalapl[3*i], d.v2sigmalapl[3*i + 1], d.v2sigmalapl[3*i + 2]);
-            fprintf(out, efmt3, d.v2sigmalapl[3*i + 3], d.v2sigmalapl[3*i + 4], d.v2sigmalapl[3*i + 5]);
+            fprintf(out, efmt3, d_host.v2lapl2[3*i], d_host.v2lapl2[3*i + 1], d_host.v2lapl2[3*i + 2]);
+            fprintf(out, efmt3, d_host.v2tau2[3*i], d_host.v2tau2[3*i + 1], d_host.v2tau2[3*i + 2]);
+            fprintf(out, efmt3, d_host.v2rholapl[3*i], d_host.v2rholapl[3*i + 1], d_host.v2rholapl[3*i + 2]);
+            fprintf(out, efmt3, d_host.v2rhotau[3*i], d_host.v2rhotau[3*i + 1], d_host.v2rhotau[3*i + 2]);
+            fprintf(out, efmt3, d_host.v2lapltau[3*i], d_host.v2lapltau[3*i + 1], d_host.v2lapltau[3*i + 2]);
+            fprintf(out, efmt3, d_host.v2sigmatau[3*i], d_host.v2sigmatau[3*i + 1], d_host.v2sigmatau[3*i + 2]);
+            fprintf(out, efmt3, d_host.v2sigmatau[3*i + 3], d_host.v2sigmatau[3*i + 4], d_host.v2sigmatau[3*i + 5]);
+            fprintf(out, efmt3, d_host.v2sigmalapl[3*i], d_host.v2sigmalapl[3*i + 1], d_host.v2sigmalapl[3*i + 2]);
+            fprintf(out, efmt3, d_host.v2sigmalapl[3*i + 3], d_host.v2sigmalapl[3*i + 4], d_host.v2sigmalapl[3*i + 5]);
           }
         } else {
-          fprintf(out, efmt, d.v2rho2[i]);
+          fprintf(out, efmt, d_host.v2rho2[i]);
           if(family & (XC_FAMILY_GGA | XC_FAMILY_HYB_GGA | XC_FAMILY_MGGA | XC_FAMILY_HYB_MGGA)) {
-            fprintf(out, efmt, d.v2sigma2[i]);
-            fprintf(out, efmt, d.v2rhosigma[i]);
+            fprintf(out, efmt, d_host.v2sigma2[i]);
+            fprintf(out, efmt, d_host.v2rhosigma[i]);
           }
           if(family & (XC_FAMILY_MGGA | XC_FAMILY_HYB_MGGA)) {
-            fprintf(out, efmt, d.v2lapl2[i]);
-            fprintf(out, efmt, d.v2tau2[i]);
-            fprintf(out, efmt, d.v2rholapl[i]);
-            fprintf(out, efmt, d.v2rhotau[i]);
-            fprintf(out, efmt, d.v2lapltau[i]);
-            fprintf(out, efmt, d.v2sigmatau[i]);
-            fprintf(out, efmt, d.v2sigmalapl[i]);
+            fprintf(out, efmt, d_host.v2lapl2[i]);
+            fprintf(out, efmt, d_host.v2tau2[i]);
+            fprintf(out, efmt, d_host.v2rholapl[i]);
+            fprintf(out, efmt, d_host.v2rhotau[i]);
+            fprintf(out, efmt, d_host.v2lapltau[i]);
+            fprintf(out, efmt, d_host.v2sigmatau[i]);
+            fprintf(out, efmt, d_host.v2sigmalapl[i]);
           }
         }
         break;
@@ -534,7 +760,8 @@ int main(int argc, char *argv[])
 
   //xc_func_end(&func);
   xc_func_end_all();
-  free_memory(d);
+  free_memory_device(d_dev);
+  free_memory_host(d_host);
   fclose(out);
 
   return 0;

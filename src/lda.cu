@@ -47,16 +47,16 @@ xc_lda_offload(const xc_func_type *func, int np, const double *rho,
 
   /* initialize output */
   if(zk != NULL)
-    checkCuda(cudaMemsetAsync(zk,     0, np*sizeof(double)*dim->zk, stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(zk,     0, np*sizeof(double)*dim->zk, stream));
 
   if(vrho != NULL)
-    checkCuda(cudaMemsetAsync(vrho,   0, np*sizeof(double)*dim->vrho, stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(vrho,   0, np*sizeof(double)*dim->vrho, stream));
 
   if(v2rho2 != NULL)
-    checkCuda(cudaMemsetAsync(v2rho2, 0, np*sizeof(double)*dim->v2rho2, stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2rho2, 0, np*sizeof(double)*dim->v2rho2, stream));
 
   if(v3rho3 != NULL)
-    checkCuda(cudaMemsetAsync(v3rho3, 0, np*sizeof(double)*dim->v3rho3, stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rho3, 0, np*sizeof(double)*dim->v3rho3, stream));
 
 
   assert(func->info!=NULL && func->info->lda!=NULL);

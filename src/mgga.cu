@@ -52,7 +52,7 @@ xc_mgga_offload(const xc_func_type *func, int np,
   int nd = 1;
   if(func->n_func_aux > 0) nd = 2;
   if(zk != NULL)
-    checkCuda(cudaMemsetAsync(zk, 0, dim->zk*np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(zk, 0, dim->zk*np*nd*sizeof(double), stream));
 
   if(vrho != NULL){
     assert(vsigma != NULL);
@@ -60,11 +60,11 @@ xc_mgga_offload(const xc_func_type *func, int np,
       assert(vlapl != NULL);
     assert(vtau   != NULL);
 
-    checkCuda(cudaMemsetAsync(vrho,   0, dim->vrho  *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(vsigma, 0, dim->vsigma*np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(vrho,   0, dim->vrho  *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(vsigma, 0, dim->vsigma*np*nd*sizeof(double), stream));
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN)
-       checkCuda(cudaMemsetAsync(vlapl,  0, dim->vlapl *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(vtau,   0, dim->vtau  *np*nd*sizeof(double), stream));
+       checkCuda(__FILE__,__LINE__,cudaMemsetAsync(vlapl,  0, dim->vlapl *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(vtau,   0, dim->vtau  *np*nd*sizeof(double), stream));
   }
 
   if(v2rho2 != NULL){
@@ -81,18 +81,18 @@ xc_mgga_offload(const xc_func_type *func, int np,
       assert(v2lapltau   != NULL);
     }
       
-    checkCuda(cudaMemsetAsync(v2rho2,     0, dim->v2rho2     *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v2rhosigma, 0, dim->v2rhosigma *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v2rhotau,   0, dim->v2rhotau   *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v2sigma2,   0, dim->v2sigma2   *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v2sigmatau, 0, dim->v2sigmatau *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v2tau2,     0, dim->v2tau2     *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2rho2,     0, dim->v2rho2     *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2rhosigma, 0, dim->v2rhosigma *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2rhotau,   0, dim->v2rhotau   *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2sigma2,   0, dim->v2sigma2   *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2sigmatau, 0, dim->v2sigmatau *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2tau2,     0, dim->v2tau2     *np*nd*sizeof(double), stream));
 
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
-      checkCuda(cudaMemsetAsync(v2rholapl,   0, dim->v2rholapl  *np*nd*sizeof(double), stream));
-      checkCuda(cudaMemsetAsync(v2sigmalapl, 0, dim->v2sigmalapl*np*nd*sizeof(double), stream));
-      checkCuda(cudaMemsetAsync(v2lapl2,     0, dim->v2lapl2    *np*nd*sizeof(double), stream));
-      checkCuda(cudaMemsetAsync(v2lapltau,   0, dim->v2lapltau  *np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2rholapl,   0, dim->v2rholapl  *np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2sigmalapl, 0, dim->v2sigmalapl*np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2lapl2,     0, dim->v2lapl2    *np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2lapltau,   0, dim->v2lapltau  *np*nd*sizeof(double), stream));
     }
   }
 
@@ -119,27 +119,27 @@ xc_mgga_offload(const xc_func_type *func, int np,
       assert(v3lapl2tau     != NULL);
     }
 	
-    checkCuda(cudaMemsetAsync(v3rho3,        0, dim->v3rho3       *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3rho2sigma,   0, dim->v3rho2sigma  *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3rho2tau,     0, dim->v3rho2tau    *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3rhosigma2,   0, dim->v3rhosigma2  *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3rhosigmatau, 0, dim->v3rhosigmatau*np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3rhotau2,     0, dim->v3rhotau2    *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3sigma3,      0, dim->v3sigma3     *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3sigma2tau,   0, dim->v3sigma2tau  *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3sigmatau2,   0, dim->v3sigmatau2  *np*nd*sizeof(double), stream));  
-    checkCuda(cudaMemsetAsync(v3tau3,        0, dim->v3tau3       *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rho3,        0, dim->v3rho3       *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rho2sigma,   0, dim->v3rho2sigma  *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rho2tau,     0, dim->v3rho2tau    *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rhosigma2,   0, dim->v3rhosigma2  *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rhosigmatau, 0, dim->v3rhosigmatau*np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rhotau2,     0, dim->v3rhotau2    *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3sigma3,      0, dim->v3sigma3     *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3sigma2tau,   0, dim->v3sigma2tau  *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3sigmatau2,   0, dim->v3sigmatau2  *np*nd*sizeof(double), stream));  
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3tau3,        0, dim->v3tau3       *np*nd*sizeof(double), stream));
 
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
-      checkCuda(cudaMemsetAsync(v3rho2lapl,     0, dim->v3rho2lapl    *np*nd*sizeof(double), stream));
-      checkCuda(cudaMemsetAsync(v3rhosigmalapl, 0, dim->v3rhosigmalapl*np*nd*sizeof(double), stream));      
-      checkCuda(cudaMemsetAsync(v3rholapl2,     0, dim->v3rholapl2    *np*nd*sizeof(double), stream));
-      checkCuda(cudaMemsetAsync(v3rholapltau,   0, dim->v3rholapltau  *np*nd*sizeof(double), stream));
-      checkCuda(cudaMemsetAsync(v3sigma2lapl,   0, dim->v3sigma2lapl  *np*nd*sizeof(double), stream));
-      checkCuda(cudaMemsetAsync(v3sigmalapl2,   0, dim->v3sigmalapl2  *np*nd*sizeof(double), stream));
-      checkCuda(cudaMemsetAsync(v3sigmalapltau, 0, dim->v3sigmalapltau*np*nd*sizeof(double), stream));
-      checkCuda(cudaMemsetAsync(v3lapl3,        0, dim->v3lapl3       *np*nd*sizeof(double), stream));
-      checkCuda(cudaMemsetAsync(v3lapl2tau,     0, dim->v3lapl2tau    *np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rho2lapl,     0, dim->v3rho2lapl    *np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rhosigmalapl, 0, dim->v3rhosigmalapl*np*nd*sizeof(double), stream));      
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rholapl2,     0, dim->v3rholapl2    *np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rholapltau,   0, dim->v3rholapltau  *np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3sigma2lapl,   0, dim->v3sigma2lapl  *np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3sigmalapl2,   0, dim->v3sigmalapl2  *np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3sigmalapltau, 0, dim->v3sigmalapltau*np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3lapl3,        0, dim->v3lapl3       *np*nd*sizeof(double), stream));
+      checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3lapl2tau,     0, dim->v3lapl2tau    *np*nd*sizeof(double), stream));
     }
   }
 

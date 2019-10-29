@@ -87,30 +87,30 @@ void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const d
   if(func->n_func_aux > 0) nd = 2;
   
   if(zk != NULL)
-    checkCuda(cudaMemsetAsync(zk, 0, dim->zk*np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(zk, 0, dim->zk*np*nd*sizeof(double), stream));
 
   if(vrho != NULL){
     assert(vsigma != NULL);
     
-    checkCuda(cudaMemsetAsync(vrho,   0, dim->vrho  *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(vsigma, 0, dim->vsigma*np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(vrho,   0, dim->vrho  *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(vsigma, 0, dim->vsigma*np*nd*sizeof(double), stream));
   }
 
   if(v2rho2 != NULL){
     assert(v2rhosigma!=NULL && v2sigma2!=NULL);
 
-    checkCuda(cudaMemsetAsync(v2rho2,     0, dim->v2rho2    *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v2rhosigma, 0, dim->v2rhosigma*np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v2sigma2,   0, dim->v2sigma2  *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2rho2,     0, dim->v2rho2    *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2rhosigma, 0, dim->v2rhosigma*np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2sigma2,   0, dim->v2sigma2  *np*nd*sizeof(double), stream));
   }
 
   if(v3rho3 != NULL){
     assert(v3rho2sigma!=NULL && v3rhosigma2!=NULL && v3sigma3!=NULL);
 
-    checkCuda(cudaMemsetAsync(v3rho3,      0, dim->v3rho3     *np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3rho2sigma, 0, dim->v3rho2sigma*np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3rhosigma2, 0, dim->v3rhosigma2*np*nd*sizeof(double), stream));
-    checkCuda(cudaMemsetAsync(v3sigma3,    0, dim->v3sigma3   *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rho3,      0, dim->v3rho3     *np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rho2sigma, 0, dim->v3rho2sigma*np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rhosigma2, 0, dim->v3rhosigma2*np*nd*sizeof(double), stream));
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3sigma3,    0, dim->v3sigma3   *np*nd*sizeof(double), stream));
   }
   //stat = cudaDeviceSynchronize();
 
