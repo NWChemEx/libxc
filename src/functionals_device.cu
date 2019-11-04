@@ -48,6 +48,11 @@ __host__ void xc_func_init_device(xc_func_type *p)
 
     for (int ii=0; ii < number; ii++) {
       xc_func_data_host[ii].info = xc_func_info_data_device+ii;
+      // Next replace the host pointers for the auxilary functionals with device pointer to the same
+      for (int jj=0; jj < xc_func_data_host[ii].n_func_aux; jj++) {
+        int rank = xc_func_data_host[ii].func_aux[jj]->func_rank;
+        xc_func_data_host[ii].func_aux[jj] = xc_func_data_device+rank;
+      }
     }
 
     checkCuda(__FILE__,__LINE__,cudaMemcpy(xc_func_data_device,xc_func_data_host,
