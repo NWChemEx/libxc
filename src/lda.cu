@@ -49,7 +49,7 @@ xc_lda_offload(const xc_func_type *func, int np, const double *rho,
   if(zk != NULL)
     checkCuda(__FILE__,__LINE__,cudaMemsetAsync(zk,     0, np*sizeof(double)*dim->zk, stream));
 
-  if(vrho != NULL)
+  if(vrho != NULL) 
     checkCuda(__FILE__,__LINE__,cudaMemsetAsync(vrho,   0, np*sizeof(double)*dim->vrho, stream));
 
   if(v2rho2 != NULL)
@@ -58,8 +58,12 @@ xc_lda_offload(const xc_func_type *func, int np, const double *rho,
   if(v3rho3 != NULL)
     checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rho3, 0, np*sizeof(double)*dim->v3rho3, stream));
 
-
-  assert(func->info!=NULL && func->info->lda!=NULL);
+  if (func->info->lda != NULL) {
+    if (func->info->lda_offload == NULL) {
+      fprintf(stderr,"GPU port of %s not supported\n",func->info->name);
+    }
+    assert(func->info!=NULL && func->info->lda_offload!=NULL);
+  }
 
   /* call the LDA offload routines */
   func->info->lda_offload(func, np, rho, zk, vrho, v2rho2, v3rho3, stream);

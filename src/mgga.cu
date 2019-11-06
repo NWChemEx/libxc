@@ -144,8 +144,13 @@ xc_mgga_offload(const xc_func_type *func, int np,
   }
 
   /* call functional */
-  if(func->info->mgga_offload != NULL)
+  if(func->info->mgga != NULL) {
+    if(func->info->mgga_offload == NULL) {
+      fprintf(stderr,"GPU port of %s not supported\n",func->info->name);
+    }
+    assert(func->info->mgga_offload != NULL);
     func->info->mgga_offload(func, np, rho, sigma, lapl, tau, zk, MGGA_OUT_PARAMS_NO_EXC(), stream);
+  }
 
   /* WARNING: Kxc is not properly mixed */
   if(func->n_func_aux > 0) {

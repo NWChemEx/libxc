@@ -36,8 +36,9 @@ __host__ void xc_func_init_device(xc_func_type *p)
     xc_func_info_data_host = (xc_func_info_type *)malloc(number*sizeof(xc_func_info_type));
 
     for (int ii=0; ii < number; ii++) {
-      xc_func_info_data_host[ii].flags  = p[ii].info->flags;
-      xc_func_info_data_host[ii].family = p[ii].info->family;
+      xc_func_info_data_host[ii] = *(p[ii].info);
+      //xc_func_info_data_host[ii].flags  = p[ii].info->flags;
+      //xc_func_info_data_host[ii].family = p[ii].info->family;
     }
     for (int ii=0; ii < number; ii++) xc_func_data_host[ii] = p[ii];
 

@@ -115,11 +115,16 @@ void xc_gga_offload(const xc_func_type *func, int np, const double *rho, const d
   //stat = cudaDeviceSynchronize();
 
   /* call functional */
-  if(func->info->gga != NULL)
+  if(func->info->gga != NULL) {
+    if(func->info->gga_offload == NULL) {
+      fprintf(stderr,"GPU port of %s not supported\n",func->info->name);
+    }
+    assert(func->info->gga_offload != NULL);
     func->info->gga_offload(func, np, rho, sigma, zk, vrho, vsigma, 
 		    v2rho2, v2rhosigma, v2sigma2,
 		    v3rho3, v3rho2sigma, v3rhosigma2, v3sigma3,
                     stream);
+  }
 
   if(func->n_func_aux > 0) {
     //fprintf(stderr,"Multi-term functional: %s\n",func->info->name);
