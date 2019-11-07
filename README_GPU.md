@@ -25,7 +25,9 @@ For the GPU implementation `lda`, `gga`, and `mgga` will remain the same
 except that they will now point to `__host__` versions of the functional code.
 To deal with the device code we add `lda_offload`, `gga_offload`, and
 `mgga_offload` that point to `__global__` functions that invoke the device
-implementations of the functional. 
+implementations of the functional. If the code is compiled without GPU 
+support the pointers `lda_offload`, `gga_offload`, and `mgga_offload` will
+point to `NULL`. 
 
 ## Extending the functional implementations
 
@@ -43,7 +45,7 @@ original code. However we cannot do the same for the GPU code. Instead we
 need to add a `__host__ work_lda_offload` function that will launch the 
 device code on the GPU through a call to `__global__ work_lda_device`.
 The pointer to this offload function will be stored
-in `xc_func_info_type`. 
+in `xc_func_info_type.lda_offload`. 
 
 ## Dealing with xc_func_type
 
@@ -61,26 +63,43 @@ well.
 
 The approach taken here was to remove most of the pointers from 
 `xc_func_type` by replacing them with fixed size arrays. This
-makes that `xc_func_type` contains all information needed on the device
-without any pointers. Then we build an array of `xc_func_type` with
-an entry for every functional. A new function `xc_func_init_all` 
-initializes all functionals (`xc_func_end_all` finalizes all functionals).
-This function also creates a full table of all functional definitions on
-the device.
+makes that `xc_func_type` contains most information needed on the device
+without any pointers. In the function `xc_func_init_device` we build an array
+`xc_func_data_host` of `xc_func_type` with an entry for every functional.
+We also build another array `xc_func_info_data_host` of `xc_func_info_type`
+that holds a copy of all functional info for all functionals. Memory for 
+copies of `xc_func_data_host` and `xc_func_info_data_host` are allocated on 
+the device with the obvious names `xc_func_data_device` and 
+`xc_func_info_data_device`. The pointers to the functional info in
+`xc_func_data_host` are changed to that they are correct on the device
+side by making them point into `xc_func_info_data_device`.
+After that `xc_func_data_host` and `xc_func_info_data_host` can be copied
+to their device counter parts `xc_func_data_device` and 
+`xc_func_info_data_device`, and now all relevant data is available on the
+device.
 
-For the GPU implementation we can make use of the fact that the functional is
-fixed when `xc_func_init` completes. As we know that the functional is 
-evaluated by a depth-first traversing of the tree we can flatten the tree
-into an array. This array can be send to the device in an small extension
-of the `xc_func_init` function. When we traverse the tree to evaluate the
-functional we just need to pass the number of the term to the device with
-every kernel invocation to pick the correct parameters.
+A new function `xc_func_init_all` initializes all functionals (`xc_func_end_all`
+finalizes all functionals). This function also ensures that all relevant data
+is copied to the device.
 
-One of the things we need to do this is a function that take the functional
-identifier and returns the corresponding rank of the identifier in 
-`xc_functional_keys`, and we need to store this rank in `xc_func_type`
-for easy retrieval (finding the rank during the functional evaluation is 
-likely to be very costly).
+In order to make manipulating these tables of functionals easy a new 
+function `xc_functional_get_rank` was created that returns the position
+of a functional in the `xc_functional_keys` table. This rank is
+stored in a new `xc_func_type.func_rank` field.
+
+## Mixing functionals
+
+A significant number of functionals consist out of a number of terms 
+that are each functionals in their own right. Each functional term
+needs to be evaluated and added onto the total functional. In the CPU
+code memory for the functional terms is allocated. On the GPU such 
+memory allocation operations are device synchronizing operations
+with significant performance consequences. Hence, in the function
+`xc_mix_func_offload` we assume that all the buffers for the results
+are twice as long as what is needed for the results alone. The second
+half of each array is used as the buffer to store the results for
+each term. This way the memory allocation is moved out of the functional
+evaluation.
 
 ## Building the code for the GPU
 
