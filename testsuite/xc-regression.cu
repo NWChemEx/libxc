@@ -13,9 +13,6 @@
 #include <string.h>
 
 #include <xc.h>
-#include <xc_device.h>
-#include <functionals.cuh>
-#include <functionals_device.cuh>
 
 /* Buffer size (line length) for file reads */
 #define BUFSIZE 1024
@@ -542,12 +539,8 @@ int main(int argc, char *argv[])
   allocate_memory_device(&d_dev, nspin, order);
   copy_host_2_device(d_host, d_dev, nspin);
 
-  /* Initialize functional */
+  /* Initialize all functionals */
   xc_func_init_all(nspin);
-  //if(xc_func_init(&func, func_id, nspin)) {
-  //  fprintf(stderr, "Functional '%d' (%s) not found.\nPlease report a bug against functional_get_number.\n", func_id, argv[1]);
-  //  exit(1);
-  //}
   /* Get flags */
   flags  = xc_func_data[func_rank].info->flags;
   family = xc_func_data[func_rank].info->family;
@@ -563,19 +556,11 @@ int main(int argc, char *argv[])
   switch(family) {
   case XC_FAMILY_LDA:
     xc_lda_offload(&xc_func_data[func_rank], d_host.n, d_dev.rho, zk, vrho, v2rho2, v3rho3, stream);
-    //stat = cudaDeviceSynchronize();
-    //if (stat != cudaSuccess) {
-    //    fprintf(stderr,"Launch xc_lda_offload: %s\n",cudaGetErrorString( stat ));
-    //}
     break;
   case XC_FAMILY_GGA:
   case XC_FAMILY_HYB_GGA:
     xc_gga_offload(&xc_func_data[func_rank], d_host.n, d_dev.rho, d_dev.sigma, zk, vrho, d_dev.vsigma,
                    v2rho2, d_dev.v2rhosigma, d_dev.v2sigma2, NULL, NULL, NULL, NULL, stream);
-    //stat = cudaDeviceSynchronize();
-    //if (stat != cudaSuccess) {
-    //    fprintf(stderr,"Launch xc_gga_offload: %s\n",cudaGetErrorString( stat ));
-    //}
     break;
   case XC_FAMILY_MGGA:
   case XC_FAMILY_HYB_MGGA:
@@ -587,10 +572,6 @@ int main(int argc, char *argv[])
             d_dev.v2tau2,
             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, stream);
-    //stat = cudaDeviceSynchronize();
-    //if (stat != cudaSuccess) {
-    //    fprintf(stderr,"Launch xc_mgga_offload: %s\n",cudaGetErrorString( stat ));
-    //}
     break;
 
   default:
@@ -758,8 +739,9 @@ int main(int argc, char *argv[])
     fprintf(out,"\n");
   }
 
-  //xc_func_end(&func);
+  /* Finalize all functionals */
   xc_func_end_all();
+  /* Free all memory buffers */
   free_memory_device(d_dev);
   free_memory_host(d_host);
   fclose(out);

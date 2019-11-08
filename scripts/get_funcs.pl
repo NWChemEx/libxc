@@ -95,6 +95,8 @@ EOF
 
 open(OUT, ">$builddir/xc_func_data_include.cu") or die("Could not open '$builddir/xc_func_data_include.cu'.\n");
 print OUT <<EOF
+#define _FUNCTIONALS_CUH
+#define _FUNCTIONALS_DEVICE_CUH
 #include "util.h"
 
 /* xc_func_type can hold more data than we need. However, we need to use this data type
@@ -109,6 +111,8 @@ open(OUT, ">$builddir/xc_func_data.cuh") or die("Could not open '$builddir/xc_fu
 print OUT <<EOF
 #ifndef _XC_FUNC_DATA_H
 #define _XC_FUNC_DATA_H
+#define _FUNCTIONALS_CUH
+#define _FUNCTIONALS_DEVICE_CUH
 
 #include "util.h"
 

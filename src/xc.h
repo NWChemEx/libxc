@@ -428,4 +428,10 @@ void xc_mgga_kxc_offload    (const xc_func_type *p, int np,
 }
 #endif
 
+#ifdef __CUDACC__
+#include <xc_device.h>
+#include <functionals.cuh>
+#include <functionals_device.cuh>
+#endif
+
 #endif
