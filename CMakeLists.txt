@@ -621,7 +621,11 @@ endif()
 
 set(CMAKE_C_FLAGS    "${CMAKE_C_FLAGS} -std=c99")
 add_library(xc ${sources_list})
-target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY} ${CUDA_cublas_LIBRARY})
+if(CUDA_FOUND)
+    target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY} ${CUDA_cublas_LIBRARY})
+else()
+    target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY})
+endif()
 set_target_properties(xc PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
                                     SOVERSION ${${PROJECT_NAME}_SOMAJOR})
 if(${BUILD_SHARED_LIBS})

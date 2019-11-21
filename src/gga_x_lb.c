@@ -8,12 +8,6 @@
 
 
 #include "util.h"
-#include "xc_device.h"
-#include "xc_extern.h"
-
-#ifdef __CUDACC__
-extern xc_func_type *xc_func_data_device;
-#endif
 
 #define MIN_GRAD             5.0e-13
 
@@ -53,12 +47,9 @@ gga_lb_init(xc_func_type *p)
   assert(p != NULL);
 
   p->n_func_aux  = 1;
-  //p->func_aux    = (xc_func_type **) malloc(1*sizeof(xc_func_type *));
   p->func_aux[0] = (xc_func_type *)  malloc(  sizeof(xc_func_type));
 
   xc_func_init(p->func_aux[0], XC_LDA_X, p->nspin);
-
-  //p->params = malloc(sizeof(xc_gga_x_lb_params));
 
   params = (xc_gga_x_lb_params *) (p->params);
   switch(p->info->number){
@@ -74,7 +65,7 @@ gga_lb_init(xc_func_type *p)
 }
 
 
-DEVICE void static inline
+void static inline
 xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const double *sigma, double r, double *vrho)
 {
   int ip, is, is2;
@@ -84,7 +75,6 @@ xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const do
 
   assert(func != NULL);
 
-  //assert(func->params != NULL);
   params = (xc_gga_x_lb_params *) (func->params);
 
   xc_lda_vxc(func->func_aux[0], np, rho, vrho);
@@ -146,43 +136,6 @@ gga_x_lb(const xc_func_type *p, int np, const double *rho, const double *sigma,
     xc_gga_lb_modified(p, np, rho, sigma, 0.0, vrho);
 }
 
-#ifdef __CUDACC__
-__global__ static void 
-gga_x_lb_device(const xc_func_type *p, 
-         int dim_rho, int dim_sigma, int dim_vrho, 
-         int np, const double *rho, const double *sigma,
-	 double zk, double *vrho)
-{
-    int tid = threadIdx.x + blockIdx.x * blockDim.x;
-    if( tid < np ) {
-        const double *rho_         = NULL;
-        const double *sigma_       = NULL;
-        double       *vrho_        = NULL;
-        rho_   = rho   + tid*dim_rho;
-        sigma_ = sigma + tid*dim_sigma;
-        if (vrho        != NULL) vrho_        = vrho        + tid*dim_vrho;
-        xc_gga_lb_modified(p, 1, rho_, sigma_, 0.0, vrho_);
-    }
-}
-
-static void 
-gga_x_lb_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
-	 double *zk, double *vrho, double *vsigma,
-	 double *v2rho2, double *v2rhosigma, double *v2sigma2,
-	 double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
-{
-  const xc_dimensions *dim = &(p->dim);
-  if (vrho != NULL)
-    gga_x_lb_device<<<std::ceil(np/1024.),1024>>>
-       (xc_func_data_device+p->func_rank, dim->rho, dim->sigma,
-        dim->vrho, np, rho, sigma, 0.0, vrho);
-}
-#endif
-
-/*
-Need to add a work_gga_offload equivalent of gga_x_lb here.
-*/
-
 
 static const func_params_type ext_params[] = {
   {"mode", 0, "Modified: 0 (no) | 1 (yes)"},
@@ -216,7 +169,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 }
 
 
-EXTERN const xc_func_info_type xc_func_info_gga_x_lb = {
+const xc_func_info_type xc_func_info_gga_x_lb = {
   XC_GGA_X_LB,
   XC_EXCHANGE,
   "van Leeuwen & Baerends",
@@ -227,15 +180,11 @@ EXTERN const xc_func_info_type xc_func_info_gga_x_lb = {
   4, ext_params, set_ext_params,
   gga_lb_init, NULL,
   NULL, gga_x_lb, NULL,
-#ifndef __CUDACC__
   NULL, NULL, NULL
-#else
-  NULL, gga_x_lb_offload, NULL
-#endif
 };
 
 
-EXTERN const xc_func_info_type xc_func_info_gga_x_lbm = {
+const xc_func_info_type xc_func_info_gga_x_lbm = {
   XC_GGA_X_LBM,
   XC_EXCHANGE,
   "van Leeuwen & Baerends modified",
@@ -246,10 +195,6 @@ EXTERN const xc_func_info_type xc_func_info_gga_x_lbm = {
   4, ext_params, set_ext_params,
   gga_lb_init, NULL,
   NULL, gga_x_lb, NULL,
-#ifndef __CUDACC__
   NULL, NULL, NULL
-#else
-  NULL, gga_x_lb_offload, NULL
-#endif
 };
 

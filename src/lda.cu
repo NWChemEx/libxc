@@ -16,10 +16,10 @@ extern "C" {
 /* get the lda functional */
 void 
 xc_lda_offload(const xc_func_type *func, int np, const double *rho, 
-	       double *zk, double *vrho, double *v2rho2, double *v3rho3)
+	       double *zk, double *vrho, double *v2rho2, double *v3rho3, cudaStream_t stream)
 {
   const xc_dimensions *dim = &(func->dim);
-  
+
   /* sanity check */
   if(zk != NULL && !(func->info->flags & XC_FLAGS_HAVE_EXC)){
     fprintf(stderr, "Functional '%s' does not provide an implementation of Exc\n",
@@ -47,54 +47,58 @@ xc_lda_offload(const xc_func_type *func, int np, const double *rho,
 
   /* initialize output */
   if(zk != NULL)
-    cudaMemset(zk,     0, np*sizeof(double)*dim->zk);
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(zk,     0, np*sizeof(double)*dim->zk, stream));
 
-  if(vrho != NULL)
-    cudaMemset(vrho,   0, np*sizeof(double)*dim->vrho);
+  if(vrho != NULL) 
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(vrho,   0, np*sizeof(double)*dim->vrho, stream));
 
   if(v2rho2 != NULL)
-    cudaMemset(v2rho2, 0, np*sizeof(double)*dim->v2rho2);
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v2rho2, 0, np*sizeof(double)*dim->v2rho2, stream));
 
   if(v3rho3 != NULL)
-    cudaMemset(v3rho3, 0, np*sizeof(double)*dim->v3rho3);
+    checkCuda(__FILE__,__LINE__,cudaMemsetAsync(v3rho3, 0, np*sizeof(double)*dim->v3rho3, stream));
 
-
-  assert(func->info!=NULL && func->info->lda!=NULL);
+  if (func->info->lda != NULL) {
+    if (func->info->lda_offload == NULL) {
+      fprintf(stderr,"GPU port of %s not supported\n",func->info->name);
+    }
+    assert(func->info!=NULL && func->info->lda_offload!=NULL);
+  }
 
   /* call the LDA offload routines */
-  func->info->lda_offload(func, np, rho, zk, vrho, v2rho2, v3rho3);
+  func->info->lda_offload(func, np, rho, zk, vrho, v2rho2, v3rho3, stream);
 }
 
 
 /* specializations */
 void
-xc_lda_exc_offload(const xc_func_type *p, int np, const double *rho, double *zk)
+xc_lda_exc_offload(const xc_func_type *p, int np, const double *rho, double *zk, cudaStream_t stream)
 {
-  xc_lda_offload(p, np, rho, zk, NULL, NULL, NULL);
+  xc_lda_offload(p, np, rho, zk, NULL, NULL, NULL, stream);
 }
 
 void
-xc_lda_exc_vxc_offload(const xc_func_type *p, int np, const double *rho, double *zk, double *vrho)
+xc_lda_exc_vxc_offload(const xc_func_type *p, int np, const double *rho, double *zk, double *vrho, cudaStream_t stream)
 {
-  xc_lda_offload(p, np, rho, zk, vrho, NULL, NULL);
+  xc_lda_offload(p, np, rho, zk, vrho, NULL, NULL, stream);
 }
 
 void
-xc_lda_vxc_offload(const xc_func_type *p, int np, const double *rho, double *vrho)
+xc_lda_vxc_offload(const xc_func_type *p, int np, const double *rho, double *vrho, cudaStream_t stream)
 {
-  xc_lda_offload(p, np, rho, NULL, vrho, NULL, NULL);
+  xc_lda_offload(p, np, rho, NULL, vrho, NULL, NULL, stream);
 }
 
 void
-xc_lda_fxc_offload(const xc_func_type *p, int np, const double *rho, double *v2rho2)
+xc_lda_fxc_offload(const xc_func_type *p, int np, const double *rho, double *v2rho2, cudaStream_t stream)
 {
-  xc_lda_offload(p, np, rho, NULL, NULL, v2rho2, NULL);
+  xc_lda_offload(p, np, rho, NULL, NULL, v2rho2, NULL, stream);
 }
 
 void
-xc_lda_kxc_offload(const xc_func_type *p, int np, const double *rho, double *v3rho3)
+xc_lda_kxc_offload(const xc_func_type *p, int np, const double *rho, double *v3rho3, cudaStream_t stream)
 {
-  xc_lda_offload(p, np, rho, NULL, NULL, NULL, v3rho3);
+  xc_lda_offload(p, np, rho, NULL, NULL, NULL, v3rho3, stream);
 }
 
 #ifdef __cplusplus

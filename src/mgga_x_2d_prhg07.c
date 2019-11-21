@@ -14,6 +14,34 @@
 #define XC_MGGA_X_2D_PRHG07         210   /* Pittalis, Rasanen, Helbig, Gross Exchange Functional */
 #define XC_MGGA_X_2D_PRHG07_PRP10   211   /* PRGH07 with PRP10 correction */
 
+#ifdef __CUDACC__
+DEVICE inline static double expk(double x)
+{
+   return exp(x);
+}
+DEVICE inline static double logk(double x)
+{
+   return log(x);
+}
+DEVICE inline static double fabsk(double x)
+{
+   return fabs(x);
+}
+#else
+inline static long double expk(long double x)
+{
+   return expl(x);
+}
+inline static long double logk(long double x)
+{
+   return logl(x);
+}
+inline static long double fabsk(long double x)
+{
+   return fabsl(x);
+}
+#endif
+
 typedef struct xc_mgga_work_x_t {
   int   order; /* to which order should I return the derivatives */
   double rs, zeta, x, t, u;
@@ -25,7 +53,7 @@ typedef struct xc_mgga_work_x_t {
 } xc_mgga_work_x_t;
 
 /* Standard Newton's method */
-static double
+DEVICE static double
 prhg_newt(double c, double tol, double * res, int *ierr)
 {
   int count;
@@ -45,35 +73,35 @@ prhg_newt(double c, double tol, double * res, int *ierr)
    if (c < 4.0) {
      y = 2.0;
      do {
-       ey = expl(y);
+       ey = expk(y);
        yf = (y-1.0)*ey;
        f = yf - c;
        fp = ey*y;
        
        step = f/fp;
        
-       y -= fabsl(step) < 1.0 ? step : (step)/fabsl(step);
-       y  = fabsl(y);
+       y -= fabsk(step) < 1.0 ? step : (step)/fabsk(step);
+       y  = fabsk(y);
        
        count ++;
-       *res = fabsl(f);
+       *res = fabsk(f);
      } while((*res > tol) && (count < max_iter));
    }
    else {
      y = 6.0;
-     c = logl(c);
+     c = logk(c);
      do {
-       yf = logl(y-1.0)+y;
+       yf = logk(y-1.0)+y;
        f = yf - c;
        fp = 1.0 + 1.0/(-1.0 + y);
        
        step = f/fp;
        
-       y -= fabsl(step) < 1.0 ? step : (step)/fabsl(step);
-       y  = fabsl(y);
+       y -= fabsk(step) < 1.0 ? step : (step)/fabsk(step);
+       y  = fabsk(y);
        
        count ++;
-       *res = fabsl(f);
+       *res = fabsk(f);
      } while((*res > tol) && (count < max_iter));
    }
    
@@ -82,7 +110,7 @@ prhg_newt(double c, double tol, double * res, int *ierr)
    return y;
 }
 
-double xc_mgga_x_2d_prhg_get_y(double C)
+DEVICE double xc_mgga_x_2d_prhg_get_y(double C)
 {
   double rhs, res, y, tol;
   int ierr;
@@ -93,15 +121,17 @@ double xc_mgga_x_2d_prhg_get_y(double C)
 
   y = prhg_newt(rhs, tol, &res, &ierr);
   if(ierr == 0){
+#ifndef __CUDACC__
     fprintf(stderr, 
 	    "Warning: Convergence not reached in PRHG functional\n"
 	    "For c = %e (residual = %e)\n", C, res);
+#endif
   }
 
   return y;
 }
 
-static void 
+DEVICE static void 
 func(const xc_func_type *p, xc_mgga_work_x_t *r)
 {
   double y;

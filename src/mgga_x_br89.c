@@ -32,8 +32,8 @@ typedef struct{
   double c;
 } mgga_x_tb09_params;
 
-static double br89_gamma = 0.8;
-static double b00_at     = 0.928;
+#define br89_gamma 0.8
+#define b00_at     0.928
 
 static void
 mgga_x_tb09_init(xc_func_type *p)
@@ -66,7 +66,7 @@ mgga_x_tb09_init(xc_func_type *p)
 
 
 /* This code follows the inversion done in the PINY_MD package */
-static double
+DEVICE static double
 br_newt_raph(double a, double tol,  double * res, int *ierr)
 {
   int count;
@@ -102,7 +102,7 @@ br_newt_raph(double a, double tol,  double * res, int *ierr)
    return x;
 }
 
-static double
+DEVICE static double
 br_bisect(double a, double tol, int *ierr) {
   int count;
   double f, x, x1, x2;
@@ -141,7 +141,7 @@ br_bisect(double a, double tol, int *ierr) {
   return x;
 }
 
-double xc_mgga_x_br89_get_x(double Q)
+DEVICE double xc_mgga_x_br89_get_x(double Q)
 {
   double rhs, br_x, tol, res;
   int ierr;
@@ -156,9 +156,11 @@ double xc_mgga_x_br89_get_x(double Q)
   if(ierr == 0){
     br_x = br_bisect(rhs, tol, &ierr);
     if(ierr == 0){
+#ifndef __CUDACC__
       fprintf(stderr,
 	      "Warning: Convergence not reached in Becke-Roussel functional\n"
 	      "For rhs = %e (residual = %e)\n", rhs, res);
+#endif
     }
   }
 
@@ -166,7 +168,7 @@ double xc_mgga_x_br89_get_x(double Q)
 }
 
 /* Eq. (22) */
-void
+DEVICE void
 xc_mgga_b00_fw(int order, double t, double *fw, double *dfwdt)
 {
   double w, w2;
@@ -183,7 +185,7 @@ xc_mgga_b00_fw(int order, double t, double *fw, double *dfwdt)
 }
 
 
-static void
+DEVICE static void
 func(const xc_func_type *pt, xc_mgga_work_x_t *r)
 {
   double Q, br_x, v_BR, dv_BRdbx, d2v_BRdbx2, dxdQ, d2xdQ2, ff, dffdx, d2ffdx2;

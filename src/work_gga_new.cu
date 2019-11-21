@@ -74,10 +74,11 @@ static void
 work_gga_offload(const XC(func_type) *p, int np, const double *rho, const double *sigma,
                  double *zk, double *vrho, double *vsigma,
                  double *v2rho2, double *v2rhosigma,  double *v2sigma2,
-                 double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
+                 double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3,
+                 cudaStream_t stream)
 {
     const xc_dimensions *dim = &(p->dim);
-    work_gga_device<<<std::ceil(np/1024.),1024>>>
+    work_gga_device<<<std::ceil(np/1024.),1024,0,stream>>>
                    (xc_func_data_device+p->func_rank,dim->rho,dim->sigma,
                     dim->zk,dim->vrho,dim->vsigma,
                     dim->v2rho2,dim->v2rhosigma,dim->v2sigma2,

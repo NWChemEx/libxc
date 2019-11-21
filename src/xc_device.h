@@ -18,12 +18,12 @@
 // Convenience function for checking CUDA runtime API results
 // can be wrapped around any runtime API call. No-op in release builds.
 inline static
-cudaError_t checkCuda(cudaError_t result)
+cudaError_t checkCuda(char *file, int line, cudaError_t result)
 {
 #if defined(DEBUG) || defined(_DEBUG)
   if (result != cudaSuccess) {
-    fprintf(stderr, "CUDA Runtime Error: %s\n", 
-            cudaGetErrorString(result));
+    fprintf(stderr, "%s,%d: CUDA Runtime Error: %s\n", 
+            file,line,cudaGetErrorString(result));
     assert(result == cudaSuccess);
   }
 #endif
@@ -32,11 +32,11 @@ cudaError_t checkCuda(cudaError_t result)
 
 
 inline static
-cublasStatus_t checkCublas(cublasStatus_t result)
+cublasStatus_t checkCublas(char *file, int line, cublasStatus_t result)
 {
 #if defined(DEBUG) || defined(_DEBUG)
   if (result != CUBLAS_STATUS_SUCCESS) {
-    fprintf(stderr, "cuBlas failure.\n");
+    fprintf(stderr, "%s,%d: cuBlas failure.\n",file,line);
     assert(result == CUBLAS_STATUS_SUCCESS);
   }
 #endif

@@ -78,11 +78,11 @@ gga_x_ssb_init(xc_func_type *p)
 {
   static const double u = -1.205643, F = 0.995010, B = 0.137574;
 
-  static int   funcs_id  [3] = {XC_LDA_X, XC_GGA_X_SSB_SW, XC_GGA_X_KT1};
+  static int    funcs_id  [3] = {XC_LDA_X, XC_GGA_X_SSB_SW, XC_GGA_X_KT1};
   static double funcs_coef[3] = {-1.0, 1.0, 1.0};
 
   static double par_x_ssb_sw[] = {1.071769, 0.137574, 0.187883, 0.137574*(1.0 + 1.205643), 6.635315};
-  static double par_x_kt[] = {-1, 0.1};
+  static double par_x_kt[] = {-1.0, 0.1};
   par_x_kt[0] = u*F*X_FACTOR_C*B*(X2S*X2S);
   
   xc_mix_init(p, 3, funcs_id, funcs_coef);  

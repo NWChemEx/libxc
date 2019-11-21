@@ -78,7 +78,11 @@ for dir in $(ls -d $srcdir/regression/*); do
 
     $EXEC $builddir/xc-regression $func $nspin $order $srcdir/input/$system $workdir/$refname > /dev/null
   
-    res=$($builddir/xc-error $workdir/$refname $workdir/${refname}_ref $tol)
+    if [ ${#QUIET_CHECK} -ne 0 ]; then
+      res=$($builddir/xc-error $workdir/$refname $workdir/${refname}_ref $tol 2>&1 /dev/null)
+    else
+      res=$($builddir/xc-error $workdir/$refname $workdir/${refname}_ref $tol)
+    fi
     if [ "x$res" = "x1" ]; then
       echo -e "      ${GREEN}OK"
       rm $workdir/$refname $workdir/${refname}_ref
