@@ -20,7 +20,7 @@
 
 #include "maple2c/lda_exc/lda_c_2d_amgb.c"
 #include "work_lda_new.c"
-#include "work_lda_new.cu"
+#include "work_lda_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_lda_c_2d_amgb = {
   XC_LDA_C_2D_AMGB,

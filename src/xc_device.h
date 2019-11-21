@@ -42,6 +42,40 @@ cublasStatus_t checkCublas(char *file, int line, cublasStatus_t result)
 #endif
   return result;
 }
+#elif __HIPCC__ 
+#define DEVICE __host__ __device__
+
+#include <stdio.h>
+#include <assert.h>
+#include <hipblas.h>
+
+// Convenience function for checking CUDA runtime API results
+// can be wrapped around any runtime API call. No-op in release builds.
+inline static
+hipError_t checkHip(char *file, int line, hipError_t result)
+{
+#if defined(DEBUG) || defined(_DEBUG)
+  if (result != hipSuccess) {
+    fprintf(stderr, "%s,%d: HIP Runtime Error: %s\n", 
+            file,line,hipGetErrorString(result));
+    assert(result == hipSuccess);
+  }
+#endif
+  return result;
+}
+
+
+inline static
+hipblasStatus_t checkHipblas(char *file, int line, hipblasStatus_t result)
+{
+#if defined(DEBUG) || defined(_DEBUG)
+  if (result != HIPBLAS_STATUS_SUCCESS) {
+    fprintf(stderr, "%s,%d: hipBlas failure.\n",file,line);
+    assert(result == HIPBLAS_STATUS_SUCCESS);
+  }
+#endif
+  return result;
+}
 #else
 #define DEVICE 
 #endif

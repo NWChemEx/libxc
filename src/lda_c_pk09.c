@@ -14,7 +14,7 @@
 
 #include "maple2c/lda_exc/lda_c_pk09.c"
 #include "work_lda_new.c"
-#include "work_lda_new.cu"
+#include "work_lda_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_lda_c_pk09 = {
   XC_LDA_C_PK09,

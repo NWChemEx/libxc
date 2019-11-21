@@ -44,7 +44,7 @@ lda_c_1d_csc_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_c_1d_csc.c"
 #include "work_lda_new.c"
-#include "work_lda_new.cu"
+#include "work_lda_new.cpp"
 
 static const func_params_type ext_params[] = {
   {"interaction",  1, "0 (exponentially screened) | 1 (soft-Coulomb)"},

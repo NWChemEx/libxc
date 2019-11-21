@@ -15,7 +15,7 @@
 #include "maple2c/lda_vxc/lda_xc_tih.c"
 #define XC_NO_EXC
 #include "work_lda_new.c"
-#include "work_lda_new.cu"
+#include "work_lda_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_lda_xc_tih = {
   XC_LDA_XC_TIH,

@@ -18,7 +18,7 @@
 
 #include "maple2c/lda_exc/lda_c_gk72.c"
 #include "work_lda_new.c"
-#include "work_lda_new.cu"
+#include "work_lda_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_lda_c_gk72 = {
   XC_LDA_C_GK72,

@@ -15,7 +15,7 @@
 
 #include "maple2c/lda_exc/lda_x_2d.c"
 #include "work_lda_new.c"
-#include "work_lda_new.cu"
+#include "work_lda_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_lda_x_2d = {
   XC_LDA_X_2D,

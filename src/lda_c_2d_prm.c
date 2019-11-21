@@ -35,7 +35,7 @@ lda_c_2d_prm_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_c_2d_prm.c"
 #include "work_lda_new.c"
-#include "work_lda_new.cu"
+#include "work_lda_new.cpp"
 
 static const func_params_type ext_params[] = {
   {"N", 2.0, "Number of electrons"},

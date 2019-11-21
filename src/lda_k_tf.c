@@ -45,7 +45,7 @@ lda_k_tf_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_k_tf.c"
 #include "work_lda_new.c"
-#include "work_lda_new.cu"
+#include "work_lda_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_lda_k_tf = {
   XC_LDA_K_TF,
