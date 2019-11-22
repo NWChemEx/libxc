@@ -14,7 +14,7 @@
 
 #include "maple2c/gga_exc/gga_c_scan_e0.c"
 #include "work_gga_new.c"
-#include "work_gga_new.cu"
+#include "work_gga_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_gga_c_scan_e0 = {
   XC_GGA_C_SCAN_E0,

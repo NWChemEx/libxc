@@ -69,7 +69,7 @@ gga_k_apbe_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_k_apbe.c"
 #include "work_gga_new.c"
-#include "work_gga_new.cu"
+#include "work_gga_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_gga_k_apbe = {
   XC_GGA_K_APBE,

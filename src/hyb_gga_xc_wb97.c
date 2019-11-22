@@ -89,7 +89,7 @@ gga_xc_wb97_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/hyb_gga_xc_wb97.c"
 #include "work_gga_new.c"
-#include "work_gga_new.cu"
+#include "work_gga_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_wb97 = {
   XC_HYB_GGA_XC_WB97,

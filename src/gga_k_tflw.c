@@ -129,7 +129,7 @@ gga_k_tflw_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_k_tflw.c"
 #include "work_gga_new.c"
-#include "work_gga_new.cu"
+#include "work_gga_new.cpp"
 
 static const func_params_type tfvw_ext_params[] = {
   {"Lambda", 1.0, "Lambda"},

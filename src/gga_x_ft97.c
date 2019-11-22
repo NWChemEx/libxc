@@ -53,7 +53,7 @@ gga_x_ft97_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_x_ft97.c"
 #include "work_gga_new.c"
-#include "work_gga_new.cu"
+#include "work_gga_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_gga_x_ft97_a = {
   XC_GGA_X_FT97_A,

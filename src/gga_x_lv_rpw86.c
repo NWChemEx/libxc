@@ -14,7 +14,7 @@
 
 #include "maple2c/gga_exc/gga_x_lv_rpw86.c"
 #include "work_gga_new.c"
-#include "work_gga_new.cu"
+#include "work_gga_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_gga_x_lv_rpw86 = {
   XC_GGA_X_LV_RPW86,

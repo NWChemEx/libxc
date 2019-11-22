@@ -14,7 +14,7 @@
 
 #include "maple2c/gga_exc/gga_x_chachiyo.c"
 #include "work_gga_new.c"
-#include "work_gga_new.cu"
+#include "work_gga_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_gga_x_chachiyo = {
   XC_GGA_X_CHACHIYO,

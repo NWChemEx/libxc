@@ -14,7 +14,7 @@
 
 #include "maple2c/gga_exc/gga_xc_th2.c"
 #include "work_gga_new.c"
-#include "work_gga_new.cu"
+#include "work_gga_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_gga_xc_th2 = {
   XC_GGA_XC_TH2,
