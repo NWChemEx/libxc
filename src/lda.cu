@@ -60,7 +60,7 @@ xc_lda_offload(const xc_func_type *func, int np, const double *rho,
 
   if (func->info->lda != NULL) {
     if (func->info->lda_offload == NULL) {
-      fprintf(stderr,"GPU port of %s not supported\n",func->info->name);
+      fprintf(stderr,"CUDA GPU port of %s not supported\n",func->info->name);
     }
     assert(func->info!=NULL && func->info->lda_offload!=NULL);
   }

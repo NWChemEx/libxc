@@ -72,7 +72,7 @@ DEVICE  double xc_bessel_I0(const double x)
     r = 2.75 + xc_cheb_eval(y*y/4.5 - 1.0, bi0_data, 12);
   else if(y < LOG_DBL_MAX - 1.0)
     r = exp(y) * xc_bessel_I0_scaled(x);
-#ifndef __CUDACC__
+#if !(defined(__CUDACC__) || defined(__HIPCC__))
   else
     fprintf(stderr, "Overflow in bessel_I0\n");
 #endif
@@ -109,7 +109,7 @@ DEVICE double xc_bessel_I1_scaled(const double x)
   if(y == 0.0)
     r = 0.0;
   else if(y < xmin) {
-#ifndef __CUDACC__
+#if !(defined(__CUDACC__) || defined(__HIPCC__))
     fprintf(stderr, "Underflow error in bessel_I1_scaled\n");
 #endif
   }
@@ -144,7 +144,7 @@ DEVICE double xc_bessel_I1(const double x)
   if(y == 0.0)
     r = 0.0;
   else if(y < xmin) {
-#ifndef __CUDACC__
+#if !(defined(__CUDACC__) || defined(__HIPCC__))
     fprintf(stderr, "Underflow error in bessel_I1\n");
 #endif
     r = 0.0;
@@ -180,7 +180,7 @@ DEVICE double xc_bessel_K0_scaled(const double x)
   double r = 0.0;
 
   if(x <= 0.0) {
-#ifndef __CUDACC__
+#if !(defined(__CUDACC__) || defined(__HIPCC__))
     fprintf(stderr, "Domain error in bessel_K0_scaled\n");
 #endif
     r = 1.0e+50;
@@ -205,7 +205,7 @@ DEVICE double xc_bessel_K0(const double x)
   double r = 0.0;
 
   if(x <= 0.0) {
-#ifndef __CUDACC__
+#if !(defined(__CUDACC__) || defined(__HIPCC__))
     fprintf(stderr, "Domain error in bessel_K0\n");
 #endif
     r = 1.0e+50;
@@ -239,7 +239,7 @@ DEVICE double xc_bessel_K1_scaled(const double x)
   double r = 0.0;
 
   if(x <= 0.0) {
-#ifndef __CUDACC__
+#if !(defined(__CUDACC__) || defined(__HIPCC__))
     fprintf(stderr, "Domain error in bessel_K1_scaled\n");
 #endif
     r = 1.0e+50;
@@ -266,13 +266,13 @@ DEVICE double xc_bessel_K1(const double x)
   double r = 0.0;
 
   if(x <= 0.0) {
-#ifndef __CUDACC__
+#if !(defined(__CUDACC__) || defined(__HIPCC__))
     fprintf(stderr, "Domain error in bessel_K1\n");
 #endif
     r = 1.0e+50;
   }
   else if(x<2.0*DBL_MIN) {
-#ifndef __CUDACC__
+#if !(defined(__CUDACC__) || defined(__HIPCC__))
     fprintf(stderr, "Overflow error in bessel_K1\n");
 #endif
     r = 1.0e+50;

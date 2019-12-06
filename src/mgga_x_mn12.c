@@ -121,7 +121,7 @@ mgga_x_mn12_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_x_mn12.c"
 #include "work_mgga_new.c"
-#include "work_mgga_new.cu"
+#include "work_mgga_new.cpp"
 
 
 EXTERN const xc_func_info_type xc_func_info_mgga_x_mn12_l = {

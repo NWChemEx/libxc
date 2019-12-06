@@ -15,7 +15,7 @@
 
 #include "maple2c/mgga_exc/mgga_xc_cc06.c"
 #include "work_mgga_new.c"
-#include "work_mgga_new.cu"
+#include "work_mgga_new.cpp"
 
 
 EXTERN const xc_func_info_type xc_func_info_mgga_xc_cc06 = {

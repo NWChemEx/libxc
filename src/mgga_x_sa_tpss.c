@@ -15,7 +15,7 @@
 
 #include "maple2c/mgga_exc/mgga_x_sa_tpss.c"
 #include "work_mgga_new.c"
-#include "work_mgga_new.cu"
+#include "work_mgga_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_mgga_x_sa_tpss = {
   XC_MGGA_X_SA_TPSS,

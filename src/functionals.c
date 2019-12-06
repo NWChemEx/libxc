@@ -6,6 +6,9 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+#ifdef __HIPCC__
+#include <hip/hip_runtime.h>
+#endif
 #include <stdlib.h>
 #include "xc.h"
 #include "funcs_key.c"
@@ -13,6 +16,9 @@
 #include <string.h>
 #ifdef __CUDACC__
 #include "functionals_device.cuh"
+#endif
+#ifdef __HIPCC__
+#include "functionals_device.hiph"
 #endif
 #ifdef _MSC_VER
 #define strcasecmp _stricmp
@@ -397,6 +403,9 @@ int xc_func_init_all(int nspin)
 #ifdef __CUDACC__
   xc_func_init_device(xc_func_data);
 #endif
+#ifdef __HIPCC__
+  xc_func_init_device(xc_func_data);
+#endif
 
   return 0;
 }
@@ -411,6 +420,9 @@ void xc_func_end_all()
   }
   free(xc_func_data);
 #ifdef __CUDACC__
+  xc_func_end_device();
+#endif
+#ifdef __HIPCC__
   xc_func_end_device();
 #endif
 }

@@ -290,7 +290,7 @@ func(const xc_func_type *pt, xc_mgga_work_x_t *r)
 }
 
 #include "work_mgga_x.c"
-#include "work_mgga_x.cu"
+#include "work_mgga_x.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_mgga_x_br89 = {
   XC_MGGA_X_BR89,

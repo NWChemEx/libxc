@@ -160,7 +160,7 @@ func(const xc_func_type *p, xc_mgga_work_x_t *r)
 }
 #define XC_DIMENSIONS 2
 #include "work_mgga_x.c"
-#include "work_mgga_x.cu"
+#include "work_mgga_x.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_mgga_x_2d_prhg07 = {
   XC_MGGA_X_2D_PRHG07,

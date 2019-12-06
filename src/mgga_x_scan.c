@@ -48,7 +48,7 @@ mgga_x_scan_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_x_scan.c"
 #include "work_mgga_new.c"
-#include "work_mgga_new.cu"
+#include "work_mgga_new.cpp"
 
 EXTERN const xc_func_info_type xc_func_info_mgga_x_scan = {
   XC_MGGA_X_SCAN,

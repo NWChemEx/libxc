@@ -7,10 +7,10 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-
+#include <hip/hip_runtime.h>
 #include "util.h"
 #include "xc_device.h"
-#include "cublas_v2.h"
+#include "hipblas.h"
 
 
 #define is_mgga(id)   ((id) == XC_FAMILY_MGGA || (id) == XC_FAMILY_HYB_MGGA)
@@ -162,48 +162,48 @@ xc_mix_func_offload(const xc_func_type *func, int np,
   checkHipblas(__FILE__,__LINE__,hipblasSetStream(hipblas_handle, stream));
   for(ii=0; ii<func->n_func_aux; ii++){
     if(zk != NULL)
-      checkHipda(__FILE__,__LINE__,hipMemsetAsync(zk_, 0, dim->zk*np*sizeof(double), stream));
+      checkHip(__FILE__,__LINE__,hipMemsetAsync(zk_, 0, dim->zk*np*sizeof(double), stream));
   
     if(vrho != NULL){
       assert(vsigma != NULL);
   
-      checkHipda(__FILE__,__LINE__,hipMemsetAsync(vrho_,   0, dim->vrho  *np*sizeof(double), stream));
+      checkHip(__FILE__,__LINE__,hipMemsetAsync(vrho_,   0, dim->vrho  *np*sizeof(double), stream));
       if(is_gga(func->info->family)){
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(vsigma_, 0, dim->vsigma*np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(vsigma_, 0, dim->vsigma*np*sizeof(double), stream));
       }
       if(is_mgga(func->info->family)){
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(vlapl_,  0, dim->vlapl*np*sizeof(double), stream));
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(vtau_,   0, dim->vtau*np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(vlapl_,  0, dim->vlapl*np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(vtau_,   0, dim->vtau*np*sizeof(double), stream));
       }
     }
   
     if(v2rho2 != NULL){
       assert(v2rhosigma!=NULL && v2sigma2!=NULL);
   
-      checkHipda(__FILE__,__LINE__,hipMemsetAsync(v2rho2_,        0, dim->v2rho2     *np*sizeof(double), stream));
+      checkHip(__FILE__,__LINE__,hipMemsetAsync(v2rho2_,        0, dim->v2rho2     *np*sizeof(double), stream));
       if(is_gga(func->info->family)){
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v2rhosigma_,  0, dim->v2rhosigma *np*sizeof(double), stream));
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v2sigma2_,    0, dim->v2sigma2   *np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v2rhosigma_,  0, dim->v2rhosigma *np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v2sigma2_,    0, dim->v2sigma2   *np*sizeof(double), stream));
       }
       if(is_mgga(func->info->family)){
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v2rholapl_,   0, dim->v2rholapl  *np*sizeof(double), stream));
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v2rhotau_,    0, dim->v2rhotau   *np*sizeof(double), stream));
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v2sigmalapl_, 0, dim->v2sigmalapl*np*sizeof(double), stream));
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v2sigmatau_,  0, dim->v2sigmatau *np*sizeof(double), stream));
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v2lapl2_,     0, dim->v2lapl2    *np*sizeof(double), stream));
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v2lapltau_,   0, dim->v2lapltau  *np*sizeof(double), stream));
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v2tau2_,      0, dim->v2tau2     *np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v2rholapl_,   0, dim->v2rholapl  *np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v2rhotau_,    0, dim->v2rhotau   *np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v2sigmalapl_, 0, dim->v2sigmalapl*np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v2sigmatau_,  0, dim->v2sigmatau *np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v2lapl2_,     0, dim->v2lapl2    *np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v2lapltau_,   0, dim->v2lapltau  *np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v2tau2_,      0, dim->v2tau2     *np*sizeof(double), stream));
       }
     }
   
     if(v3rho3 != NULL){
       assert(v3rho2sigma!=NULL && v3rhosigma2!=NULL && v3sigma3!=NULL);
   
-      checkHipda(__FILE__,__LINE__,hipMemsetAsync(v3rho3_,      0, dim->v3rho3     *np*sizeof(double), stream));
+      checkHip(__FILE__,__LINE__,hipMemsetAsync(v3rho3_,      0, dim->v3rho3     *np*sizeof(double), stream));
       if(is_gga(func->info->family)){
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v3rho2sigma_, 0, dim->v3rho2sigma*np*sizeof(double), stream));
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v3rhosigma2_, 0, dim->v3rhosigma2*np*sizeof(double), stream));
-        checkHipda(__FILE__,__LINE__,hipMemsetAsync(v3sigma3_,    0, dim->v3sigma3   *np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v3rho2sigma_, 0, dim->v3rho2sigma*np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v3rhosigma2_, 0, dim->v3rhosigma2*np*sizeof(double), stream));
+        checkHip(__FILE__,__LINE__,hipMemsetAsync(v3sigma3_,    0, dim->v3sigma3   *np*sizeof(double), stream));
       }
     }
     /* hipMemset is supposed to be blocking

@@ -1,4 +1,3 @@
-#include "hip/hip_runtime.h"
 /*
  Copyright (C) 2006-2018 M.A.L. Marques
 
@@ -16,6 +15,7 @@
  */
 #ifdef __HIPCC__
 
+#include "hip/hip_runtime.h"
 #include <stdio.h>
 extern xc_func_type *xc_func_data_device;
 

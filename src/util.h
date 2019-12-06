@@ -265,6 +265,14 @@ void xc_mix_func_offload
    const double *rho, const double *sigma, const double *lapl, const double *tau,
    double *zk, MGGA_OUT_PARAMS_NO_EXC(double *), cudaStream_t stream);
 #endif
+#ifdef __HIPCC__
+void xc_mix_func_init_hipblas();
+void xc_mix_func_end_hipblas();
+void xc_mix_func_offload
+  (const xc_func_type *func, int np,
+   const double *rho, const double *sigma, const double *lapl, const double *tau,
+   double *zk, MGGA_OUT_PARAMS_NO_EXC(double *), hipStream_t stream);
+#endif
 
 /* Some useful functions */
 const char *get_kind(const xc_func_type *func);
