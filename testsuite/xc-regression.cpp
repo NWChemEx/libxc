@@ -7,6 +7,8 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+#include <hipblas.h>
+#include <hip/hip_runtime.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
