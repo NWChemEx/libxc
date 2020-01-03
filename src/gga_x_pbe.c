@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_PBE          101 /* Perdew, Burke & Ernzerhof exchange             */
 #define XC_GGA_X_PBE_R        102 /* Perdew, Burke & Ernzerhof exchange (revised)   */
@@ -34,8 +36,9 @@ gga_x_pbe_init(xc_func_type *p)
 {
   gga_x_pbe_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_pbe_params));
+  assert(sizeof(gga_x_pbe_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(gga_x_pbe_params));
   params = (gga_x_pbe_params *) (p->params);
  
   params->lambda = 0.0;
@@ -116,7 +119,8 @@ set_ext_params_PBE(xc_func_type *p, const double *ext_params)
 {
   gga_x_pbe_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_x_pbe_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (gga_x_pbe_params *) (p->params);
 
   params->kappa = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -125,9 +129,10 @@ set_ext_params_PBE(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_pbe.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
 
-const xc_func_info_type xc_func_info_gga_x_pbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pbe = {
   XC_GGA_X_PBE,
   XC_EXCHANGE,
   "Perdew, Burke & Ernzerhof",
@@ -137,10 +142,15 @@ const xc_func_info_type xc_func_info_gga_x_pbe = {
   1e-32,
   2, ext_params_PBE, set_ext_params_PBE,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_pbe_r = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pbe_r = {
   XC_GGA_X_PBE_R,
   XC_EXCHANGE,
   "Revised PBE from Zhang & Yang",
@@ -150,10 +160,15 @@ const xc_func_info_type xc_func_info_gga_x_pbe_r = {
   1e-32,
   0, NULL, NULL,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_pbe_sol = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pbe_sol = {
   XC_GGA_X_PBE_SOL,
   XC_EXCHANGE,
   "Perdew, Burke & Ernzerhof SOL",
@@ -163,10 +178,15 @@ const xc_func_info_type xc_func_info_gga_x_pbe_sol = {
   1e-32,
   0, NULL, NULL,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_xpbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_xpbe = {
   XC_GGA_X_XPBE,
   XC_EXCHANGE,
   "Extended PBE by Xu & Goddard III",
@@ -176,10 +196,15 @@ const xc_func_info_type xc_func_info_gga_x_xpbe = {
   1e-32,
   0, NULL, NULL,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_pbe_jsjr = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pbe_jsjr = {
   XC_GGA_X_PBE_JSJR,
   XC_EXCHANGE,
   "Reparametrized PBE by Pedroza, Silva & Capelle",
@@ -189,10 +214,15 @@ const xc_func_info_type xc_func_info_gga_x_pbe_jsjr = {
   1e-32,
   0, NULL, NULL,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_pbek1_vdw = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pbek1_vdw = {
   XC_GGA_X_PBEK1_VDW,
   XC_EXCHANGE,
   "Reparametrized PBE for vdW",
@@ -202,10 +232,15 @@ const xc_func_info_type xc_func_info_gga_x_pbek1_vdw = {
   1e-32,
   0, NULL, NULL,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_apbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_apbe = {
   XC_GGA_X_APBE,
   XC_EXCHANGE,
   "mu fixed from the semiclassical neutral atom",
@@ -215,10 +250,15 @@ const xc_func_info_type xc_func_info_gga_x_apbe = {
   1e-32,
   0, NULL, NULL,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_pbe_tca = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pbe_tca = {
   XC_GGA_X_PBE_TCA,
   XC_EXCHANGE,
   "PBE revised by Tognetti et al",
@@ -228,7 +268,12 @@ const xc_func_info_type xc_func_info_gga_x_pbe_tca = {
   1e-32,
   0, NULL, NULL,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
 static const func_params_type ext_params_N[] = {
@@ -243,7 +288,7 @@ set_ext_params_N(xc_func_type *p, const double *ext_params)
   gga_x_pbe_params *params;
   double lambda, ff;
 
-  assert(p != NULL && p->params != NULL);
+  assert(p != NULL);
   params = (gga_x_pbe_params *) (p->params);
 
   ff = (ext_params == NULL) ? p->info->ext_params[0].value : ext_params[0];
@@ -253,7 +298,7 @@ set_ext_params_N(xc_func_type *p, const double *ext_params)
 }
 
 
-const xc_func_info_type xc_func_info_gga_x_lambda_lo_n = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_lambda_lo_n = {
   XC_GGA_X_LAMBDA_LO_N,
   XC_EXCHANGE,
   "lambda_LO(N) version of PBE",
@@ -263,10 +308,15 @@ const xc_func_info_type xc_func_info_gga_x_lambda_lo_n = {
   1e-32,
   1, ext_params_N, set_ext_params_N,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_lambda_ch_n = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_lambda_ch_n = {
   XC_GGA_X_LAMBDA_CH_N,
   XC_EXCHANGE,
   "lambda_CH(N) version of PBE",
@@ -276,10 +326,15 @@ const xc_func_info_type xc_func_info_gga_x_lambda_ch_n = {
   1e-32,
   1, ext_params_N, set_ext_params_N,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_lambda_oc2_n = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_lambda_oc2_n = {
   XC_GGA_X_LAMBDA_OC2_N,
   XC_EXCHANGE,
   "lambda_OC2(N) version of PBE",
@@ -289,10 +344,15 @@ const xc_func_info_type xc_func_info_gga_x_lambda_oc2_n = {
   1e-32,
   1, ext_params_N, set_ext_params_N,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_pbe_mol = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pbe_mol = {
   XC_GGA_X_PBE_MOL,
   XC_EXCHANGE,
   "Reparametrized PBE by del Campo, Gazquez, Trickey & Vela",
@@ -302,10 +362,15 @@ const xc_func_info_type xc_func_info_gga_x_pbe_mol = {
   1e-32,
   0, NULL, NULL,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_bcgp = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_bcgp = {
   XC_GGA_X_BCGP,
   XC_EXCHANGE,
   "Burke, Cancio, Gould, and Pittalis",
@@ -315,10 +380,15 @@ const xc_func_info_type xc_func_info_gga_x_bcgp = {
   1e-32,
   0, NULL, NULL,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_pbefe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pbefe = {
   XC_GGA_X_PBEFE,
   XC_EXCHANGE,
   "PBE for formation energies",
@@ -328,5 +398,10 @@ const xc_func_info_type xc_func_info_gga_x_pbefe = {
   1e-32,
   0, NULL, NULL,
   gga_x_pbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

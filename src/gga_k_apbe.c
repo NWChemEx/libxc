@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_K_APBE         185 /* mu fixed from the semiclassical neutral atom   */
 #define XC_GGA_K_TW1          187 /* Tran and Wesolowski set 1 (Table II)           */
@@ -27,8 +29,9 @@ gga_k_apbe_init(xc_func_type *p)
 {
   gga_k_apbe_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_k_apbe_params));
+  assert(sizeof(gga_k_apbe_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(gga_k_apbe_params));
   params = (gga_k_apbe_params *) (p->params);
  
   params->lambda = 0.0;
@@ -66,8 +69,9 @@ gga_k_apbe_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_k_apbe.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_apbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_apbe = {
   XC_GGA_K_APBE,
   XC_KINETIC,
   "mu fixed from the semiclassical neutral atom",
@@ -77,10 +81,15 @@ const xc_func_info_type xc_func_info_gga_k_apbe = {
   1e-32,
   0, NULL, NULL,
   gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_revapbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_revapbe = {
   XC_GGA_K_REVAPBE,
   XC_KINETIC,
   "revised APBE",
@@ -90,10 +99,15 @@ const xc_func_info_type xc_func_info_gga_k_revapbe = {
   1e-32,
   0, NULL, NULL,
   gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_tw1 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_tw1 = {
   XC_GGA_K_TW1,
   XC_KINETIC,
   "Tran and Wesolowski set 1 (Table II)",
@@ -103,10 +117,15 @@ const xc_func_info_type xc_func_info_gga_k_tw1 = {
   1e-32,
   0, NULL, NULL,
   gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_tw2 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_tw2 = {
   XC_GGA_K_TW2,
   XC_KINETIC,
   "Tran and Wesolowski set 2 (Table II)",
@@ -116,10 +135,15 @@ const xc_func_info_type xc_func_info_gga_k_tw2 = {
   1e-32,
   0, NULL, NULL,
   gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_tw3 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_tw3 = {
   XC_GGA_K_TW3,
   XC_KINETIC,
   "Tran and Wesolowski set 3 (Table II)",
@@ -129,10 +153,15 @@ const xc_func_info_type xc_func_info_gga_k_tw3 = {
   1e-32,
   0, NULL, NULL,
   gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_tw4 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_tw4 = {
   XC_GGA_K_TW4,
   XC_KINETIC,
   "Tran and Wesolowski set 4 (Table II)",
@@ -142,5 +171,10 @@ const xc_func_info_type xc_func_info_gga_k_tw4 = {
   1e-32,
   0, NULL, NULL,
   gga_k_apbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

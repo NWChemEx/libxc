@@ -7,12 +7,14 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_XC_TH3          156 /* Tozer and Handy v. 3 */
 #define XC_GGA_XC_TH4          157 /* Tozer and Handy v. 4 */
 
 typedef struct{
-  double *omega;
+  double omega[19];
 } gga_xc_th3_params;
 
 
@@ -36,17 +38,18 @@ gga_xc_th3_init(xc_func_type *p)
 {
   gga_xc_th3_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_xc_th3_params));
+  assert(sizeof(gga_xc_th3_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_xc_th3_params));
   params = (gga_xc_th3_params *)p->params;
 
   switch(p->info->number){
   case XC_GGA_XC_TH3:
-    params->omega = omega_TH3;
+    memcpy(params->omega, omega_TH3, sizeof(omega_TH3));
     break;
 
   case XC_GGA_XC_TH4:
-    params->omega = omega_TH4;
+    memcpy(params->omega, omega_TH4, sizeof(omega_TH4));
     break;
 
   default:
@@ -57,8 +60,9 @@ gga_xc_th3_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_xc_th3.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_xc_th3 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th3 = {
   XC_GGA_XC_TH3,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. 3",
@@ -68,10 +72,15 @@ const xc_func_info_type xc_func_info_gga_xc_th3 = {
   1e-18,
   0, NULL, NULL,
   gga_xc_th3_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_th4 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th4 = {
   XC_GGA_XC_TH4,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. 4",
@@ -81,5 +90,10 @@ const xc_func_info_type xc_func_info_gga_xc_th4 = {
   1e-15,
   0, NULL, NULL,
   gga_xc_th3_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

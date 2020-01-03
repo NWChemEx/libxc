@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_GGA_XC_WB97    463 /* Chai and Head-Gordon                     */
 #define XC_HYB_GGA_XC_WB97X   464 /* Chai and Head-Gordon                     */
@@ -46,8 +48,9 @@ gga_xc_wb97_init(xc_func_type *p)
 {
   gga_xc_wb97_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_xc_wb97_params));
+  assert(sizeof(gga_xc_wb97_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_xc_wb97_params));
   params = (gga_xc_wb97_params *)(p->params);
 
   switch(p->info->number){
@@ -86,8 +89,9 @@ gga_xc_wb97_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/hyb_gga_xc_wb97.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_wb97 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_wb97 = {
   XC_HYB_GGA_XC_WB97,
   XC_EXCHANGE_CORRELATION,
   "wB97 range-separated functional",
@@ -97,10 +101,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_wb97 = {
   1e-23,
   0, NULL, NULL,
   gga_xc_wb97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_wb97x = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_wb97x = {
   XC_HYB_GGA_XC_WB97X,
   XC_EXCHANGE_CORRELATION,
   "wB97X range-separated functional",
@@ -110,10 +119,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_wb97x = {
   1e-23,
   0, NULL, NULL,
   gga_xc_wb97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_wb97x_v = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_wb97x_v = {
   XC_HYB_GGA_XC_WB97X_V,
   XC_EXCHANGE_CORRELATION,
   "wB97X-V range-separated functional",
@@ -123,10 +137,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_wb97x_v = {
   1e-23,
   0, NULL, NULL,
   gga_xc_wb97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_wb97x_d = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_wb97x_d = {
   XC_HYB_GGA_XC_WB97X_D,
   XC_EXCHANGE_CORRELATION,
   "wB97D range-separated functional",
@@ -136,5 +155,10 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_wb97x_d = {
   1e-23,
   0, NULL, NULL,
   gga_xc_wb97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

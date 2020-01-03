@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_BR89         206 /* Becke-Roussel 89, gamma = 0.8 */
 #define XC_MGGA_X_BR89_1       214 /* Becke-Roussel 89, gamma = 1.0 */
@@ -30,15 +32,16 @@ typedef struct{
   double c;
 } mgga_x_tb09_params;
 
-static double br89_gamma = 0.8;
-static double b00_at     = 0.928;
+#define br89_gamma 0.8
+#define b00_at     0.928
 
 static void
 mgga_x_tb09_init(xc_func_type *p)
 {
   mgga_x_tb09_params *params;
 
-  p->params = malloc(sizeof(mgga_x_tb09_params));
+  assert(sizeof(mgga_x_tb09_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //p->params = malloc(sizeof(mgga_x_tb09_params));
   params = (mgga_x_tb09_params *)p->params;
 
   params->c = 0;
@@ -63,7 +66,7 @@ mgga_x_tb09_init(xc_func_type *p)
 
 
 /* This code follows the inversion done in the PINY_MD package */
-static double
+DEVICE static double
 br_newt_raph(double a, double tol,  double * res, int *ierr)
 {
   int count;
@@ -99,7 +102,7 @@ br_newt_raph(double a, double tol,  double * res, int *ierr)
    return x;
 }
 
-static double
+DEVICE static double
 br_bisect(double a, double tol, int *ierr) {
   int count;
   double f, x, x1, x2;
@@ -138,7 +141,7 @@ br_bisect(double a, double tol, int *ierr) {
   return x;
 }
 
-double xc_mgga_x_br89_get_x(double Q)
+DEVICE double xc_mgga_x_br89_get_x(double Q)
 {
   double rhs, br_x, tol, res;
   int ierr;
@@ -153,9 +156,11 @@ double xc_mgga_x_br89_get_x(double Q)
   if(ierr == 0){
     br_x = br_bisect(rhs, tol, &ierr);
     if(ierr == 0){
+#ifndef __CUDACC__
       fprintf(stderr,
 	      "Warning: Convergence not reached in Becke-Roussel functional\n"
 	      "For rhs = %e (residual = %e)\n", rhs, res);
+#endif
     }
   }
 
@@ -163,7 +168,7 @@ double xc_mgga_x_br89_get_x(double Q)
 }
 
 /* Eq. (22) */
-void
+DEVICE void
 xc_mgga_b00_fw(int order, double t, double *fw, double *dfwdt)
 {
   double w, w2;
@@ -180,7 +185,7 @@ xc_mgga_b00_fw(int order, double t, double *fw, double *dfwdt)
 }
 
 
-static void
+DEVICE static void
 func(const xc_func_type *pt, xc_mgga_work_x_t *r)
 {
   double Q, br_x, v_BR, dv_BRdbx, d2v_BRdbx2, dxdQ, d2xdQ2, ff, dffdx, d2ffdx2;
@@ -285,8 +290,9 @@ func(const xc_func_type *pt, xc_mgga_work_x_t *r)
 }
 
 #include "work_mgga_x.c"
+#include "work_mgga_x.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_br89 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_br89 = {
   XC_MGGA_X_BR89,
   XC_EXCHANGE,
   "Becke-Roussel 89, gamma = 0.8",
@@ -298,9 +304,14 @@ const xc_func_info_type xc_func_info_mgga_x_br89 = {
   NULL, NULL,
   NULL, NULL,        /* this is not an LDA                   */
   work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_br89_1 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_br89_1 = {
   XC_MGGA_X_BR89_1,
   XC_EXCHANGE,
   "Becke-Roussel 89, gamma = 1.0",
@@ -312,9 +323,14 @@ const xc_func_info_type xc_func_info_mgga_x_br89_1 = {
   NULL, NULL,
   NULL, NULL,        /* this is not an LDA                   */
   work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_bj06 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_bj06 = {
   XC_MGGA_X_BJ06,
   XC_EXCHANGE,
   "Becke & Johnson 06",
@@ -325,6 +341,11 @@ const xc_func_info_type xc_func_info_mgga_x_bj06 = {
   0, NULL, NULL,
   mgga_x_tb09_init, NULL,
   NULL, NULL, work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
 static const func_params_type ext_params[] = {
@@ -336,13 +357,13 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_x_tb09_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(p != NULL);
   params = (mgga_x_tb09_params *) (p->params);
 
   params->c = get_ext_param(p->info->ext_params, ext_params, 0);
 }
 
-const xc_func_info_type xc_func_info_mgga_x_tb09 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_tb09 = {
   XC_MGGA_X_TB09,
   XC_EXCHANGE,
   "Tran & Blaha 09",
@@ -353,9 +374,14 @@ const xc_func_info_type xc_func_info_mgga_x_tb09 = {
   1, ext_params, set_ext_params,
   mgga_x_tb09_init, NULL,
   NULL, NULL, work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_rpp09 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_rpp09 = {
   XC_MGGA_X_RPP09,
   XC_EXCHANGE,
   "Rasanen, Pittalis & Proetto 09",
@@ -366,9 +392,14 @@ const xc_func_info_type xc_func_info_mgga_x_rpp09 = {
   0, NULL, NULL,
   mgga_x_tb09_init, NULL,
   NULL, NULL, work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_b00 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_b00 = {
   XC_MGGA_X_B00,
   XC_EXCHANGE,
   "Becke 2000",
@@ -379,4 +410,9 @@ const xc_func_info_type xc_func_info_mgga_x_b00 = {
   0, NULL, NULL,
   mgga_x_tb09_init, NULL,
   NULL, NULL, work_mgga_x,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_x_offload
+#endif
 };

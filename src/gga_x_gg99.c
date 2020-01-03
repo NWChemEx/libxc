@@ -7,14 +7,17 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_GG99   535 /* Gilbert and Gill 1999 */
 #define XC_GGA_X_KGG99  544 /* Gilbert and Gill 1999 (mixed) */
 
 #include "maple2c/gga_exc/gga_x_gg99.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_gg99 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_gg99 = {
   XC_GGA_X_GG99,
   XC_EXCHANGE,
   "Gilbert and Gill 1999",
@@ -24,7 +27,12 @@ const xc_func_info_type xc_func_info_gga_x_gg99 = {
   5e-7,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
 
@@ -39,7 +47,7 @@ gga_x_kgg_init(xc_func_type *p)
   xc_mix_init(p, 2, funcs_id, funcs_coef);
 }
 
-const xc_func_info_type xc_func_info_gga_x_kgg99 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_kgg99 = {
   XC_GGA_X_KGG99,
   XC_EXCHANGE,
   "Gilbert and Gill 1999 (mixed)",
@@ -49,6 +57,11 @@ const xc_func_info_type xc_func_info_gga_x_kgg99 = {
   5e-7,
   0, NULL, NULL,
   gga_x_kgg_init, NULL, 
+  NULL, NULL, NULL,
+#ifndef __CUDACC__
   NULL, NULL, NULL
+#else
+  NULL, NULL, NULL
+#endif
 };
 

@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_W94 561 /* Wilson 94 (Eq. 25) */
 
 #include "maple2c/gga_exc/gga_c_w94.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_w94 = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_w94 = {
   XC_GGA_C_W94,
   XC_CORRELATION,
   "Wilson 94 (Eq. 25)",
@@ -24,5 +27,10 @@ const xc_func_info_type xc_func_info_gga_c_w94 = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

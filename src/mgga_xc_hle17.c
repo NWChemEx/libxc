@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_XC_HLE17      288  /* high local exchange 2017   */
 
@@ -19,7 +21,7 @@ mgga_xc_hle17_init(xc_func_type *p)
   xc_mix_init(p, 2, funcs_id, funcs_coef);
 }
 
-const xc_func_info_type xc_func_info_mgga_xc_hle17 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_xc_hle17 = {
   XC_MGGA_XC_HLE17,
   XC_EXCHANGE_CORRELATION,
   "high local exchange 2017",
@@ -29,5 +31,6 @@ const xc_func_info_type xc_func_info_mgga_xc_hle17 = {
   1e-23,
   0, NULL, NULL,
   mgga_xc_hle17_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };

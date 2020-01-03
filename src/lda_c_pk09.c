@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_PK09   554   /* Proynov and Kong 2009 */
 
 #include "maple2c/lda_exc/lda_c_pk09.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_pk09 = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_pk09 = {
   XC_LDA_C_PK09,
   XC_CORRELATION,
   "Proynov and Kong 2009",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_lda_c_pk09 = {
   5e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

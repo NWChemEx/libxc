@@ -13,7 +13,9 @@
  *        routine performs the necessary conversions between this and a functional
  *        of rho.
  */
-
+#ifndef DEVICE
+#define DEVICE
+#endif
 
 #ifdef XC_NO_EXC
 #define OUT_PARAMS vrho, v2rho2, v3rho3
@@ -24,7 +26,7 @@
 /**
  * @param[in,out] func_type: pointer to functional structure
  */
-static void 
+DEVICE static void 
 work_lda(const XC(func_type) *p, int np, const double *rho, 
 	 double *zk, double *vrho, double *v2rho2, double *v3rho3)
 {

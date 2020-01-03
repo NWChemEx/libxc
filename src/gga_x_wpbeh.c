@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_WPBEH 524 /* short-range version of the PBE */
 
@@ -17,8 +19,8 @@ typedef struct{
 static void
 gga_x_wpbeh_init(xc_func_type *p)
 {
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_x_wpbeh_params));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_x_wpbeh_params));
 }
 
 /* The default value is actually PBEh */
@@ -31,7 +33,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_wpbeh_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_x_wpbeh_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (gga_x_wpbeh_params *) (p->params);
 
   params->omega = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -60,8 +63,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_wpbeh.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_wpbeh = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_wpbeh = {
   XC_GGA_X_WPBEH,
   XC_EXCHANGE,
   "short-range part of the PBE (default w=0 gives PBEh)",
@@ -71,5 +75,10 @@ const xc_func_info_type xc_func_info_gga_x_wpbeh = {
   1e-32,
   1, ext_params, set_ext_params,
   gga_x_wpbeh_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

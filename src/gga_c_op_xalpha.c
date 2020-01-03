@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_OP_XALPHA   84 /* one-parameter progressive functional (XALPHA version)  */
 
 #include "maple2c/gga_exc/gga_c_op_xalpha.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_op_xalpha = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_op_xalpha = {
   XC_GGA_C_OP_XALPHA,
   XC_CORRELATION,
   "one-parameter progressive functional (Xalpha version)",
@@ -24,5 +27,10 @@ const xc_func_info_type xc_func_info_gga_c_op_xalpha = {
   1e-32,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

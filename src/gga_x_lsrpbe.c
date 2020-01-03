@@ -8,6 +8,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_LSRPBE  169 /* PW91-like modification of RPBE */
 
@@ -20,8 +22,9 @@ typedef struct{
 static void 
 gga_x_lsrpbe_init(xc_func_type *p)
 {
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_lsrpbe_params));
+  assert(sizeof(gga_x_lsrpbe_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_x_lsrpbe_params));
 }
 
 static const func_params_type ext_params[] = {
@@ -35,7 +38,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_lsrpbe_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_x_lsrpbe_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (gga_x_lsrpbe_params *) (p->params);
 
   params->kappa = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -44,14 +48,13 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
   /* adapt used mu value to yield wanted mu near origin (eq 9) */
   params-> mu += params->alpha*(1.0 + params->kappa);
-
-  printf("mu = %.10f\n",params->mu);
 }
 
 #include "maple2c/gga_exc/gga_x_lsrpbe.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_lsrpbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_lsrpbe = {
   XC_GGA_X_LSRPBE,
   XC_EXCHANGE,
   "lsRPBE, a PW91-like modification of RPBE",
@@ -61,5 +64,10 @@ const xc_func_info_type xc_func_info_gga_x_lsrpbe = {
   1e-32,
   3, ext_params, set_ext_params,
   gga_x_lsrpbe_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

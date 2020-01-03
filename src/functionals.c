@@ -6,15 +6,26 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+#include <stdlib.h>
 #include "xc.h"
 #include "funcs_key.c"
+#include "xc_extern.h"
 #include <string.h>
+#ifdef __CUDACC__
+#include "functionals_device.cuh"
+#endif
 #ifdef _MSC_VER
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp
 #else
 #include <strings.h>
 #endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+EXTERN xc_func_type *xc_func_data; /* host table of all functionals */
 
 extern xc_func_info_type 
   *xc_lda_known_funct[], 
@@ -63,9 +74,30 @@ char *xc_functional_get_name(int number)
     if(xc_functional_keys[ii].number == number) {
       /* return duplicated: caller has the responsibility to dealloc string.
          Do this the old way since strdup and strndup aren't C standard. */
-      p=malloc(strlen(xc_functional_keys[ii].name)+1);
+      p=(char *)malloc(strlen(xc_functional_keys[ii].name)+1);
       strcpy(p,xc_functional_keys[ii].name);
       return p;
+    }
+  }
+}
+
+/*------------------------------------------------------*/
+/* Given the functional identifier find the rank of this
+ * functional in xc_functional_keys. We need this to be
+ * able to tell a GPU which parameters it is supposed to
+ * use with a functional kernel. 
+ *
+ * The function returns -1 if the functional was not found.
+ */
+int xc_functional_get_rank(int number)
+{
+  int ii;
+
+  for(ii=0;;ii++){
+    if(xc_functional_keys[ii].number == -1)
+      return -1;
+    if(xc_functional_keys[ii].number == number) {
+      return ii;
     }
   }
 }
@@ -191,14 +223,17 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
   assert(nspin==XC_UNPOLARIZED || nspin==XC_POLARIZED);
 
   /* initialize structure */
-  func->nspin       = nspin;
+  func->func_rank  = xc_functional_get_rank(functional);
+  assert(func->func_rank >= 0);
 
-  func->params     = NULL;
+  func->nspin      = nspin;
+
+  //func->params     = NULL;
 
   func->n_func_aux = 0;
-  func->func_aux   = NULL;
-  func->mix_coef   = NULL;
-  func->cam_omega = func->cam_alpha = func->cam_beta = 0.0;
+  //func->func_aux   = NULL;
+  //func->mix_coef   = NULL;
+  func->cam_omega  = func->cam_alpha = func->cam_beta = 0.0;
   func->nlc_b = func->nlc_C = 0.0;
 
   switch(xc_family_from_id(functional, NULL, &number)){
@@ -262,20 +297,20 @@ void xc_func_end(xc_func_type *func)
       xc_func_end(func->func_aux[ii]);
       free(func->func_aux[ii]);
     }
-    free(func->func_aux);
+    //free(func->func_aux);
     func->n_func_aux = 0;
   }
 
-  if(func->mix_coef != NULL){
-    free(func->mix_coef);
-    func->mix_coef = NULL;
-  }
+  //if(func->mix_coef != NULL){
+  //  free(func->mix_coef);
+  //  func->mix_coef = NULL;
+  //}
 
   /* deallocate any used parameter */
-  if(func->params != NULL){
-    free(func->params);
-    func->params = NULL;
-  }
+  //if(func->params != NULL){
+  //  free(func->params);
+  //  func->params = NULL;
+  //}
 
   func->info = NULL;  
 }
@@ -337,3 +372,49 @@ void xc_nlc_coef(const xc_func_type *p, double *nlc_b, double *nlc_C)
   *nlc_b = p->nlc_b;
   *nlc_C = p->nlc_C;
 }
+/*------------------------------------------------------*/
+int xc_func_init_all(int nspin)
+{
+  int *func_numbers; 
+  int number = xc_number_of_functionals();
+
+  assert(nspin==XC_UNPOLARIZED || nspin==XC_POLARIZED);
+  
+  if (NULL == (xc_func_data = (xc_func_type *)malloc(number*sizeof(xc_func_type)))) {
+    fprintf(stderr,"xc_func_init_all: malloc xc_func_data failed!\n");
+    exit(1);
+  }
+  if (NULL == (func_numbers = (int *)malloc(number*sizeof(int)))) {
+    fprintf(stderr,"xc_func_init_all: malloc func_numbers failed!\n");
+    exit(1);
+  }
+  
+  xc_available_functional_numbers(func_numbers);
+  for (int ii = 0; ii < number; ii++) {
+      xc_func_init(&(xc_func_data[ii]),func_numbers[ii],nspin);
+  }
+  free(func_numbers);
+#ifdef __CUDACC__
+  xc_func_init_device(xc_func_data);
+#endif
+
+  return 0;
+}
+
+
+/*------------------------------------------------------*/
+void xc_func_end_all()
+{
+  int number = xc_number_of_functionals();
+  for (int ii = 0; ii < number; ii++) {
+      xc_func_end(&(xc_func_data[ii]));
+  }
+  free(xc_func_data);
+#ifdef __CUDACC__
+  xc_func_end_device();
+#endif
+}
+
+#ifdef __cplusplus
+}
+#endif

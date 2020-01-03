@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_WI0 153 /* Wilson & Ivanov initial version */
 #define XC_GGA_C_WI  148 /* Wilson & Ivanov */
@@ -29,8 +31,9 @@ gga_c_wi_init(xc_func_type *p)
 {
   gga_c_wi_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_c_wi_params));
+  assert(sizeof(gga_c_wi_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p!=NULL && p->params == NULL);
+  //p->params = malloc(sizeof(gga_c_wi_params));
   params = (gga_c_wi_params *) (p->params);
 
   switch(p->info->number){
@@ -48,8 +51,9 @@ gga_c_wi_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_c_wi.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_wi0 = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_wi0 = {
   XC_GGA_C_WI0,
   XC_CORRELATION,
   "Wilson & Ivanov initial version",
@@ -59,10 +63,15 @@ const xc_func_info_type xc_func_info_gga_c_wi0 = {
   1e-14,
   0, NULL, NULL,
   gga_c_wi_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_wi = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_wi = {
   XC_GGA_C_WI,
   XC_CORRELATION,
   "Wilson & Ivanov",
@@ -72,5 +81,10 @@ const xc_func_info_type xc_func_info_gga_c_wi = {
   1e-10,
   0, NULL, NULL,
   gga_c_wi_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

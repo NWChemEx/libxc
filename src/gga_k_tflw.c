@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /* for a review on the values of lambda and gamma, please see EV
 Ludena and VV Karasiev, in "Reviews of Modern Quantum Chemistry: a
@@ -41,8 +43,9 @@ gga_k_tflw_set_params(xc_func_type *p, double gamma, double lambda, double N)
   gga_k_tflw_params *params;
   double C0 = CBRT(M_PI/3.0);
   double C1 = CBRT(M_PI*M_PI/36.0)/6.0 - CBRT(M_PI*M_PI/9.0)/4.0;
-  
-  assert(p != NULL && p->params != NULL);
+
+  assert(sizeof(gga_k_tflw_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL );
   params = (gga_k_tflw_params *) (p->params);
 
   params->gamma = 1.0;
@@ -116,8 +119,8 @@ static void
 gga_k_tflw_init(xc_func_type *p)
 {
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_k_tflw_params));
+  //assert(p->params == NULL);
+  //p->params = malloc(sizeof(gga_k_tflw_params));
 
   /* This automatically sets gamma and lambda depending on the functional chosen.
      We put by default N = 1.0 */
@@ -126,6 +129,7 @@ gga_k_tflw_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_k_tflw.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
 static const func_params_type tfvw_ext_params[] = {
   {"Lambda", 1.0, "Lambda"},
@@ -143,7 +147,7 @@ tfvw_set_ext_params(xc_func_type *p, const double *ext_params)
   gga_k_tflw_set_params(p, gamma, lambda, 1.0);
 }
 
-const xc_func_info_type xc_func_info_gga_k_tfvw = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_tfvw = {
   XC_GGA_K_TFVW,
   XC_KINETIC,
   "Thomas-Fermi plus von Weiszaecker correction",
@@ -153,10 +157,15 @@ const xc_func_info_type xc_func_info_gga_k_tfvw = {
   1e-25,
   2, tfvw_ext_params, tfvw_set_ext_params,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_vw = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_vw = {
   XC_GGA_K_VW,
   XC_KINETIC,
   "von Weiszaecker correction to Thomas-Fermi",
@@ -166,10 +175,15 @@ const xc_func_info_type xc_func_info_gga_k_vw = {
   1e-32,
   0, NULL, NULL,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_ge2 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_ge2 = {
   XC_GGA_K_GE2,
   XC_KINETIC,
   "Second-order gradient expansion of the kinetic energy density",
@@ -179,10 +193,15 @@ const xc_func_info_type xc_func_info_gga_k_ge2 = {
   1e-25,
   0, NULL, NULL,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_golden = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_golden = {
   XC_GGA_K_GOLDEN,
   XC_KINETIC,
   "TF-lambda-vW form by Golden (l = 13/45)",
@@ -192,10 +211,15 @@ const xc_func_info_type xc_func_info_gga_k_golden = {
   1e-25,
   0, NULL, NULL,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_yt65 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_yt65 = {
   XC_GGA_K_YT65,
   XC_KINETIC,
   "TF-lambda-vW form by Yonei and Tomishima (l = 1/5)",
@@ -205,10 +229,15 @@ const xc_func_info_type xc_func_info_gga_k_yt65 = {
   1e-25,
   0, NULL, NULL,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_baltin = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_baltin = {
   XC_GGA_K_BALTIN,
   XC_KINETIC,
   "TF-lambda-vW form by Baltin (l = 5/9)",
@@ -218,10 +247,15 @@ const xc_func_info_type xc_func_info_gga_k_baltin = {
   1e-25,
   0, NULL, NULL,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_lieb = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_lieb = {
   XC_GGA_K_LIEB,
   XC_KINETIC,
   "TF-lambda-vW form by Lieb (l = 0.185909191)",
@@ -231,7 +265,12 @@ const xc_func_info_type xc_func_info_gga_k_lieb = {
   1e-25,
   0, NULL, NULL,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
 static const func_params_type N_ext_params[] = {
@@ -248,7 +287,7 @@ N_set_ext_params(xc_func_type *p, const double *ext_params)
 }
 
 
-const xc_func_info_type xc_func_info_gga_k_absp1 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_absp1 = {
   XC_GGA_K_ABSP1,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = 1 - 1.412/N^(1/3)]",
@@ -258,10 +297,15 @@ const xc_func_info_type xc_func_info_gga_k_absp1 = {
   1e-25,
   1, N_ext_params, N_set_ext_params,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_absp2 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_absp2 = {
   XC_GGA_K_ABSP2,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = 1 - 1.332/N^(1/3)]",
@@ -271,10 +315,15 @@ const xc_func_info_type xc_func_info_gga_k_absp2 = {
   1e-25,
   1, N_ext_params, N_set_ext_params,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_absp3 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_absp3 = {
   XC_GGA_K_ABSP3,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = 1 - 1.513/N^0.35]",
@@ -284,10 +333,15 @@ const xc_func_info_type xc_func_info_gga_k_absp3 = {
   1e-25,
   1, N_ext_params, N_set_ext_params,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_absp4 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_absp4 = {
   XC_GGA_K_ABSP4,
   XC_KINETIC,
   "gamma-TFvW form by Acharya et al [g = l = 1/(1 + 1.332/N^(1/3))]",
@@ -297,10 +351,15 @@ const xc_func_info_type xc_func_info_gga_k_absp4 = {
   1e-25,
   1, N_ext_params, N_set_ext_params,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_gr = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_gr = {
   XC_GGA_K_GR,
   XC_KINETIC,
   "gamma-TFvW form by Gazquez and Robles",
@@ -310,10 +369,15 @@ const xc_func_info_type xc_func_info_gga_k_gr = {
   1e-25,
   1, N_ext_params, N_set_ext_params,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_ludena = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_ludena = {
   XC_GGA_K_LUDENA,
   XC_KINETIC,
   "gamma-TFvW form by Ludena",
@@ -323,10 +387,15 @@ const xc_func_info_type xc_func_info_gga_k_ludena = {
   1e-32,
   1, N_ext_params, N_set_ext_params,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_gp85 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_gp85 = {
   XC_GGA_K_GP85,
   XC_KINETIC,
   "gamma-TFvW form by Ghosh and Parr",
@@ -336,5 +405,10 @@ const xc_func_info_type xc_func_info_gga_k_gp85 = {
   1e-32,
   1, N_ext_params, N_set_ext_params,
   gga_k_tflw_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

@@ -22,12 +22,12 @@
 #define XC_GGA_X_LBM 182 /* van Leeuwen & Baerends modified*/
 
 typedef struct{
-  int    modified; /* shall we use a modified version */
+  int    modified;  /* shall we use a modified version */
   double threshold; /* when to start using the analytic form */
   double ip;        /* ionization potential of the species */
   double qtot;      /* total charge in the region */
 
-  double aa;     /* the parameters of LB94 */
+  double aa;        /* the parameters of LB94 */
   double gamm;
 
   double alpha;
@@ -43,15 +43,13 @@ gga_lb_init(xc_func_type *p)
 {
   xc_gga_x_lb_params *params;
 
-  assert(p->params == NULL);
+  assert(sizeof(xc_gga_x_lb_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
 
   p->n_func_aux  = 1;
-  p->func_aux    = (xc_func_type **) malloc(1*sizeof(xc_func_type *));
   p->func_aux[0] = (xc_func_type *)  malloc(  sizeof(xc_func_type));
 
   xc_func_init(p->func_aux[0], XC_LDA_X, p->nspin);
-
-  p->params = malloc(sizeof(xc_gga_x_lb_params));
 
   params = (xc_gga_x_lb_params *) (p->params);
   switch(p->info->number){
@@ -67,7 +65,7 @@ gga_lb_init(xc_func_type *p)
 }
 
 
-void 
+void static inline
 xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const double *sigma, double r, double *vrho)
 {
   int ip, is, is2;
@@ -77,7 +75,6 @@ xc_gga_lb_modified(const xc_func_type *func, int np, const double *rho, const do
 
   assert(func != NULL);
 
-  assert(func->params != NULL);
   params = (xc_gga_x_lb_params *) (func->params);
 
   xc_lda_vxc(func->func_aux[0], np, rho, vrho);
@@ -153,7 +150,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   xc_gga_x_lb_params *params;
 
-  assert(p!=NULL && p->params!=NULL);
+  assert(sizeof(xc_gga_x_lb_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (xc_gga_x_lb_params *) (p->params);
 
   params->modified  = (int)round(get_ext_param(p->info->ext_params, ext_params, 0));
@@ -181,7 +179,8 @@ const xc_func_info_type xc_func_info_gga_x_lb = {
   1e-32,
   4, ext_params, set_ext_params,
   gga_lb_init, NULL,
-  NULL, gga_x_lb, NULL
+  NULL, gga_x_lb, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -195,6 +194,7 @@ const xc_func_info_type xc_func_info_gga_x_lbm = {
   1e-32,
   4, ext_params, set_ext_params,
   gga_lb_init, NULL,
-  NULL, gga_x_lb, NULL
+  NULL, gga_x_lb, NULL,
+  NULL, NULL, NULL
 };
 

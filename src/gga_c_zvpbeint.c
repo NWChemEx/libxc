@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_ZVPBEINT       557 /* another spin-dependent correction to PBEint       */
 #define XC_GGA_C_ZVPBESOL       558 /* another spin-dependent correction to PBEsol       */
@@ -20,8 +22,9 @@ gga_c_zvpbeint_init(xc_func_type *p)
 {
   gga_c_zvpbeint_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_c_zvpbeint_params));
+  assert(sizeof(gga_c_zvpbeint_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p!=NULL && p->params == NULL);
+  //p->params = malloc(sizeof(gga_c_zvpbeint_params));
   params = (gga_c_zvpbeint_params *) (p->params);
  
   switch(p->info->number){
@@ -43,8 +46,9 @@ gga_c_zvpbeint_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_c_zvpbeint.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_zvpbeint = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_zvpbeint = {
   XC_GGA_C_ZVPBEINT,
   XC_CORRELATION,
   "another spin-dependent correction to PBEint",
@@ -54,10 +58,15 @@ const xc_func_info_type xc_func_info_gga_c_zvpbeint = {
   1e-10,
   0, NULL, NULL,
   gga_c_zvpbeint_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_zvpbesol = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_zvpbesol = {
   XC_GGA_C_ZVPBESOL,
   XC_CORRELATION,
   "another spin-dependent correction to PBEsol",
@@ -67,5 +76,10 @@ const xc_func_info_type xc_func_info_gga_c_zvpbesol = {
   1e-10,
   0, NULL, NULL,
   gga_c_zvpbeint_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

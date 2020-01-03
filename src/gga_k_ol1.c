@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_K_OL1          512 /* Ou-Yang and Levy v.1 */
 
 #include "maple2c/gga_exc/gga_k_ol1.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_ol1 = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_ol1 = {
   XC_GGA_K_OL1,
   XC_KINETIC,
   "Ou-Yang and Levy v.1",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_k_ol1 = {
   5e-26,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_ML1    22   /* Modified LSD (version 1) of Proynov and Salahub */
 #define XC_LDA_C_ML2    23   /* Modified LSD (version 2) of Proynov and Salahub */
@@ -21,8 +23,9 @@ lda_c_ml1_init(xc_func_type *p)
 {
   lda_c_ml1_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_c_ml1_params));
+  assert(sizeof(lda_c_ml1_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(lda_c_ml1_params));
   params = (lda_c_ml1_params *) (p->params);
 
   switch(p->info->number){
@@ -42,8 +45,9 @@ lda_c_ml1_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_c_ml1.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_ml1 = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_ml1 = {
   XC_LDA_C_ML1,
   XC_CORRELATION,
   "Modified LSD (version 1) of Proynov and Salahub",
@@ -53,10 +57,15 @@ const xc_func_info_type xc_func_info_lda_c_ml1 = {
   1e-24,
   0, NULL, NULL,
   lda_c_ml1_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_ml2 = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_ml2 = {
   XC_LDA_C_ML2,
   XC_CORRELATION,
   "Modified LSD (version 2) of Proynov and Salahub",
@@ -66,5 +75,10 @@ const xc_func_info_type xc_func_info_lda_c_ml2 = {
   1e-24,
   0, NULL, NULL,
   lda_c_ml1_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

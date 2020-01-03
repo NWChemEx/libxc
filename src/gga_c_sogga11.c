@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_SOGGA11       152 /* Second-order generalized gradient approximation 2011 */
 #define XC_GGA_C_SOGGA11_X     159 /* To be used with HYB_GGA_X_SOGGA11_X  */
@@ -31,8 +33,9 @@ gga_c_sogga11_init(xc_func_type *p)
 {
   gga_c_sogga11_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_c_sogga11_params));
+  assert(sizeof(gga_c_sogga11_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p!=NULL && p->params == NULL);
+  //p->params = malloc(sizeof(gga_c_sogga11_params));
   params = (gga_c_sogga11_params *) (p->params);
 
   switch(p->info->number){
@@ -50,8 +53,9 @@ gga_c_sogga11_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_c_sogga11.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_sogga11 = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_sogga11 = {
   XC_GGA_C_SOGGA11,
   XC_CORRELATION,
   "Second-order generalized gradient approximation 2011",
@@ -61,10 +65,15 @@ const xc_func_info_type xc_func_info_gga_c_sogga11 = {
   1e-23,
   0, NULL, NULL,
   gga_c_sogga11_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_sogga11_x = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_sogga11_x = {
   XC_GGA_C_SOGGA11_X,
   XC_CORRELATION,
   "To be used with HYB_GGA_X_SOGGA11_X",
@@ -74,5 +83,10 @@ const xc_func_info_type xc_func_info_gga_c_sogga11_x = {
   1e-23,
   0, NULL, NULL,
   gga_c_sogga11_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_X         1   /* Exchange                            */
 #define XC_LDA_C_XALPHA  6   /* Slater Xalpha                       */
@@ -37,8 +39,7 @@ lda_x_init(xc_func_type *p)
 {
   lda_x_params *params;
 
-  assert(p != NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_x_params));
+  assert(p != NULL);
   params = (lda_x_params *) (p->params);
 
   params->alpha = 1.0;
@@ -46,8 +47,9 @@ lda_x_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_x.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_x = {
+EXTERN const xc_func_info_type xc_func_info_lda_x = {
   XC_LDA_X,
   XC_EXCHANGE,
   "Slater exchange",
@@ -57,7 +59,12 @@ const xc_func_info_type xc_func_info_lda_x = {
   1e-24,
   0, NULL, NULL,
   lda_x_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
 static const func_params_type ext_params[] = {
@@ -69,13 +76,13 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_x_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(p != NULL);
   params = (lda_x_params *)(p->params);
 
   params->alpha = 1.5*get_ext_param(p->info->ext_params, ext_params, 0) - 1.0;
 }
 
-const xc_func_info_type xc_func_info_lda_c_xalpha = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_xalpha = {
   XC_LDA_C_XALPHA,
   XC_CORRELATION,
   "Slater's Xalpha",
@@ -85,7 +92,12 @@ const xc_func_info_type xc_func_info_lda_c_xalpha = {
   1e-24,
   1, ext_params, set_ext_params,
   lda_x_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
 static const func_params_type N_ext_params[] = {
@@ -98,7 +110,7 @@ N_set_ext_params(xc_func_type *p, const double *ext_params)
   lda_x_params *params;
   double ff, N, dx, dx2;
 
-  assert(p != NULL && p->params != NULL);
+  assert(p != NULL);
   params = (lda_x_params *)(p->params);
 
   ff = (ext_params == NULL) ? p->info->ext_params[0].value : ext_params[0];
@@ -109,7 +121,7 @@ N_set_ext_params(xc_func_type *p, const double *ext_params)
   params->alpha = 1.0 - 8.0/3.0*dx + 2.0*dx2 - dx2*dx2/3.0;
 }
 
-const xc_func_info_type xc_func_info_lda_x_rae = {
+EXTERN const xc_func_info_type xc_func_info_lda_x_rae = {
   XC_LDA_X_RAE,
   XC_EXCHANGE,
   "Rae self-energy corrected exchange",
@@ -119,5 +131,10 @@ const xc_func_info_type xc_func_info_lda_x_rae = {
   1e-24,
   1, N_ext_params, N_set_ext_params,
   lda_x_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

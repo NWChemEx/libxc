@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_MGGA_XC_MPW1KCIS    566 /* Modified Perdew-Wang + KCIS hybrid */
 #define XC_HYB_MGGA_XC_MPWKCIS1K   567 /* Modified Perdew-Wang + KCIS hybrid with more exact exchange */
@@ -57,7 +59,7 @@ hyb_mgga_xc_kcis_init(xc_func_type *p)
   p->cam_alpha = exx;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_mpw1kcis = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_mpw1kcis = {
   XC_HYB_MGGA_XC_MPW1KCIS,
   XC_EXCHANGE_CORRELATION,
   "MPW1KCIS for barrier heights",
@@ -67,10 +69,11 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpw1kcis = {
   1e-32,
   0, NULL, NULL,
   hyb_mgga_xc_kcis_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwkcis1k = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwkcis1k = {
   XC_HYB_MGGA_XC_MPWKCIS1K,
   XC_EXCHANGE_CORRELATION,
   "MPWKCIS1K for barrier heights",
@@ -80,10 +83,11 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwkcis1k = {
   1e-32,
   0, NULL, NULL,
   hyb_mgga_xc_kcis_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_pbe1kcis = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_pbe1kcis = {
   XC_HYB_MGGA_XC_PBE1KCIS,
   XC_EXCHANGE_CORRELATION,
   "PBE1KCIS for binding energies",
@@ -93,10 +97,11 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pbe1kcis = {
   1e-32,
   0, NULL, NULL,
   hyb_mgga_xc_kcis_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_tpss1kcis = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_tpss1kcis = {
   XC_HYB_MGGA_XC_TPSS1KCIS,
   XC_EXCHANGE_CORRELATION,
   "TPSS1KCIS for thermochemistry and kinetics",
@@ -106,6 +111,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_tpss1kcis = {
   1e-32,
   0, NULL, NULL,
   hyb_mgga_xc_kcis_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 

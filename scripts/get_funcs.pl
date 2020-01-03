@@ -58,13 +58,17 @@ foreach $func (@funcs){
     $s2 .= "  &xc_func_info_$t,\n";
   }
 
+  @func_array = split(/\n/, $s2);
+  $numfuncs = @func_array;
+  $numfuncs++;
+
   open(OUT, ">$builddir/funcs_$func.c") or die("Could not open '$builddir/funcs_$func.c'.\n");
   print OUT <<EOF
 #include "util.h"
 
 $s1
 
-const xc_func_info_type *xc_${func}_known_funct[] = {
+const xc_func_info_type *xc_${func}_known_funct[${numfuncs}] = {
 $s2  NULL
 };
 EOF
@@ -74,14 +78,47 @@ EOF
 
 close DOCS;
 
+@func_array = split(/\n/, $s4);
+$numfuncs = @func_array;
+$numfuncs++;
+
 open(OUT, ">$builddir/funcs_key.c") or die("Could not open '$builddir/funcs_key.c'.\n");
 print OUT <<EOF
 #include "util.h"
 
-xc_functional_key_t xc_functional_keys[] = {
+xc_functional_key_t xc_functional_keys[${numfuncs}] = {
 $s4,
 {"", -1}
 };
+EOF
+;
+
+open(OUT, ">$builddir/xc_func_data_include.cu") or die("Could not open '$builddir/xc_func_data_include.cu'.\n");
+print OUT <<EOF
+#define _FUNCTIONALS_CUH
+#define _FUNCTIONALS_DEVICE_CUH
+#include "util.h"
+
+/* xc_func_type can hold more data than we need. However, we need to use this data type
+ * so we can use the same code on the device as on the host.
+ */
+
+__device__ xc_func_type xc_func_data[${numfuncs}];
+EOF
+;
+
+open(OUT, ">$builddir/xc_func_data.cuh") or die("Could not open '$builddir/xc_func_data.cuh'.\n");
+print OUT <<EOF
+#ifndef _XC_FUNC_DATA_H
+#define _XC_FUNC_DATA_H
+#define _FUNCTIONALS_CUH
+#define _FUNCTIONALS_DEVICE_CUH
+
+#include "util.h"
+
+extern __device__ xc_func_type xc_func_data[${numfuncs}];
+
+#endif
 EOF
 ;
 

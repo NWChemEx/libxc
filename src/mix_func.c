@@ -17,12 +17,13 @@ xc_mix_init(xc_func_type *p, int n_funcs, const int *funcs_id, const double *mix
   int ii;
 
   assert(p != NULL);
-  assert(p->func_aux == NULL && p->mix_coef == NULL);
+  assert(n_funcs <= XC_MAX_FUNC_TERMS);
+  //assert(p->func_aux == NULL && p->mix_coef == NULL);
 
   /* allocate structures needed for */
   p->n_func_aux = n_funcs;
-  p->mix_coef   = (double *) malloc(n_funcs*sizeof(double));
-  p->func_aux   = (xc_func_type **) malloc(n_funcs*sizeof(xc_func_type *));
+  //p->mix_coef   = (double *) malloc(n_funcs*sizeof(double));
+  //p->func_aux   = (xc_func_type **) malloc(n_funcs*sizeof(xc_func_type *));
 
   for(ii=0; ii<n_funcs; ii++){
     p->mix_coef[ii] = mix_coef[ii];
@@ -263,8 +264,9 @@ xc_mix_func(const xc_func_type *func, int np,
       if(is_mgga(aux->info->family)) {
         for(ip = 0; ip < np*dim->v3rho2tau; ip++)
           v3rho2tau[ip] += func->mix_coef[ii] * v3rho2tau_[ip];
-        for(ip = 0; ip < np*dim->v3sigmatau2; ip++)
-          v3sigmatau2[ip] += func->mix_coef[ii] * v3sigmatau2_[ip];
+        //Duplicated:
+        //for(ip = 0; ip < np*dim->v3sigmatau2; ip++)
+        //  v3sigmatau2[ip] += func->mix_coef[ii] * v3sigmatau2_[ip];
         for(ip = 0; ip < np*dim->v3rhotau2; ip++)
           v3rhotau2[ip] += func->mix_coef[ii] * v3rhotau2_[ip];
         for(ip = 0; ip < np*dim->v3sigma2tau; ip++)
@@ -277,8 +279,9 @@ xc_mix_func(const xc_func_type *func, int np,
         if(aux->info->flags & XC_FLAGS_NEEDS_LAPLACIAN) {
           for(ip = 0; ip < np*dim->v3rho2lapl; ip++)
             v3rho2lapl[ip] += func->mix_coef[ii] * v3rho2lapl_[ip];
-          for(ip = 0; ip < np*dim->v3sigmalapl2; ip++)
-            v3sigmalapl2[ip] += func->mix_coef[ii] * v3sigmalapl2_[ip];
+          //Duplicated:
+          //for(ip = 0; ip < np*dim->v3sigmalapl2; ip++)
+          //  v3sigmalapl2[ip] += func->mix_coef[ii] * v3sigmalapl2_[ip];
           for(ip = 0; ip < np*dim->v3rholapl2; ip++)
             v3rholapl2[ip] += func->mix_coef[ii] * v3rholapl2_[ip];
           for(ip = 0; ip < np*dim->v3rholapltau; ip++)

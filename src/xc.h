@@ -64,7 +64,9 @@ extern "C" {
 #define XC_TAU_EXPLICIT         0
 #define XC_TAU_EXPANSION        1
 
-#define XC_MAX_REFERENCES       5
+#define XC_MAX_REFERENCES       5    /* the maximum number of references that can be associated with a functional */
+#define XC_MAX_FUNC_TERMS       8    /* the maximum number of functional terms in a functional */
+#define XC_MAX_FUNC_PARAMS      128  /* the maximum number of parameters in terms of doubles */
 
 void xc_version(int *major, int *minor, int *micro);
 const char *xc_version_string();
@@ -114,23 +116,61 @@ typedef struct{
 	       double *v2rho2, double *v2rhosigma, double *v2sigma2,
 	       double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3);
   void (*mgga)(const struct xc_func_type *p, int np,
-         const double *rho, const double *sigma, const double *lapl_rho, const double *tau,
-         double *zk,
-         double *vrho, double *vsigma, double *vlapl, double *vtau,
-         double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, 
-         double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
-         double *v2lapl2, double *v2lapltau,
-         double *v2tau2,
-         double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, 
-         double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
-         double *v3rholapl2, double *v3rholapltau,
-         double *v3rhotau2,
-         double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
-         double *v3sigmalapl2, double *v3sigmalapltau,
-         double *v3sigmatau2,
-         double *v3lapl3, double *v3lapl2tau,
-         double *v3lapltau2,
-         double *v3tau3);
+               const double *rho, const double *sigma, const double *lapl_rho, const double *tau,
+               double *zk,
+               double *vrho, double *vsigma, double *vlapl, double *vtau,
+               double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, 
+               double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
+               double *v2lapl2, double *v2lapltau,
+               double *v2tau2,
+               double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, 
+               double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
+               double *v3rholapl2, double *v3rholapltau,
+               double *v3rhotau2,
+               double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
+               double *v3sigmalapl2, double *v3sigmalapltau,
+               double *v3sigmatau2,
+               double *v3lapl3, double *v3lapl2tau,
+               double *v3lapltau2,
+               double *v3tau3);
+  void (*lda_offload) (const struct xc_func_type *p, int np,
+         	       const double *rho,
+	               double *zk, double *vrho, double *v2rho2, double *v3rho3
+#ifdef __CUDACC__
+                     , cudaStream_t stream
+#endif
+                       );
+  void (*gga_offload) (const struct xc_func_type *p, int np,
+        	       const double *rho, const double *sigma,
+        	       double *zk, double *vrho, double *vsigma,
+        	       double *v2rho2, double *v2rhosigma, double *v2sigma2,
+        	       double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3
+#ifdef __CUDACC__
+                     , cudaStream_t stream
+#endif
+                       );
+  void (*mgga_offload)(const struct xc_func_type *p, int np,
+                       const double *rho, const double *sigma, const double *lapl_rho, const double *tau,
+                       double *zk,
+                       double *vrho, double *vsigma, double *vlapl, double *vtau,
+                       double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, 
+                       double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
+                       double *v2lapl2, double *v2lapltau,
+                       double *v2tau2,
+                       double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, 
+                       double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
+                       double *v3rholapl2, double *v3rholapltau,
+                       double *v3rhotau2,
+                       double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
+                       double *v3sigmalapl2, double *v3sigmalapltau,
+                       double *v3sigmatau2,
+                       double *v3lapl3, double *v3lapl2tau,
+                       double *v3lapltau2,
+                       double *v3tau3
+#ifdef __CUDACC__
+                     , cudaStream_t stream
+#endif
+                       );
 } xc_func_info_type;
 
 /* for API compability with older versions of libxc */
@@ -175,12 +215,14 @@ struct xc_dimensions{
 typedef struct xc_dimensions xc_dimensions;
   
 struct xc_func_type{
-  const xc_func_info_type *info;       /* all the information concerning this functional */
-  int nspin;                           /* XC_UNPOLARIZED or XC_POLARIZED  */
+  const xc_func_info_type *info;                    /* all the information concerning this functional */
+  int nspin;                                        /* XC_UNPOLARIZED or XC_POLARIZED  */
 
-  int n_func_aux;                      /* how many auxiliary functions we need */
-  struct xc_func_type **func_aux;      /* most GGAs are based on a LDA or other GGAs  */
-  double *mix_coef;                    /* coefficients for the mixing */
+  int n_func_aux;                                   /* how many auxiliary functions we need */
+  struct xc_func_type *func_aux[XC_MAX_FUNC_TERMS]; /* most GGAs are based on a LDA or other GGAs  */
+  double mix_coef[XC_MAX_FUNC_TERMS];               /* coefficients for the mixing */
+
+  int func_rank;                                    /* The rank of this functional in xc_functional_keys */
 
   /**
      Parameters for range-separated hybrids
@@ -197,12 +239,12 @@ struct xc_func_type{
   */
   double cam_omega, cam_alpha, cam_beta;
 
-  double nlc_b;                /* Non-local correlation, b parameter */
-  double nlc_C;                /* Non-local correlation, C parameter */
+  double nlc_b;                      /* Non-local correlation, b parameter */
+  double nlc_C;                      /* Non-local correlation, C parameter */
 
-  xc_dimensions dim;           /* the dimensions of all input and output arrays */
+  xc_dimensions dim;                 /* the dimensions of all input and output arrays */
 
-  void *params;                /* this allows us to fix parameters in the functional */
+  double params[XC_MAX_FUNC_PARAMS]; /* this allows us to fix parameters in the functional */
   double dens_threshold;
 };
 
@@ -211,6 +253,7 @@ typedef struct xc_func_type xc_func_type;
 /* functionals */
 int   xc_functional_get_number(const char *name);
 char *xc_functional_get_name(int number);
+int   xc_functional_get_rank(int number);
 int   xc_family_from_id(int id, int *family, int *number);
 int   xc_number_of_functionals();
 int   xc_maximum_name_length();
@@ -235,6 +278,15 @@ void xc_lda_vxc    (const xc_func_type *p, int np, const double *rho, double *vr
 void xc_lda_fxc    (const xc_func_type *p, int np, const double *rho, double *v2rho2);
 void xc_lda_kxc    (const xc_func_type *p, int np, const double *rho, double *v3rho3);
 
+#ifdef __CUDACC__
+void xc_lda_offload        (const xc_func_type *p, int np, const double *rho, double *zk, double *vrho, double *v2rho2, double *v3rho3, cudaStream_t stream);
+void xc_lda_exc_offload    (const xc_func_type *p, int np, const double *rho, double *zk, cudaStream_t stream);
+void xc_lda_exc_vxc_offload(const xc_func_type *p, int np, const double *rho, double *zk, double *vrho, cudaStream_t stream);
+void xc_lda_vxc_offload    (const xc_func_type *p, int np, const double *rho, double *vrho, cudaStream_t stream);
+void xc_lda_fxc_offload    (const xc_func_type *p, int np, const double *rho, double *v2rho2, cudaStream_t stream);
+void xc_lda_kxc_offload    (const xc_func_type *p, int np, const double *rho, double *v3rho3, cudaStream_t stream);
+#endif
+
 void xc_gga     (const xc_func_type *p, int np, const double *rho, const double *sigma,
 		 double *zk, double *vrho, double *vsigma,
 		 double *v2rho2, double *v2rhosigma, double *v2sigma2,
@@ -242,7 +294,7 @@ void xc_gga     (const xc_func_type *p, int np, const double *rho, const double 
 void xc_gga_exc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 		 double *zk);
 void xc_gga_exc_vxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
-		 double *zk, double *vrho, double *vsigma);
+		    double *zk, double *vrho, double *vsigma);
 void xc_gga_vxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 		 double *vrho, double *vsigma);
 void xc_gga_fxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
@@ -250,8 +302,27 @@ void xc_gga_fxc(const xc_func_type *p, int np, const double *rho, const double *
 void xc_gga_kxc(const xc_func_type *p, int np, const double *rho, const double *sigma,
 		 double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3);
 
+#ifdef __CUDACC__
+void xc_gga_offload    (const xc_func_type *p, int np, const double *rho, const double *sigma,
+                        double *zk, double *vrho, double *vsigma,
+                        double *v2rho2, double *v2rhosigma, double *v2sigma2,
+      	                double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3, cudaStream_t stream);
+void xc_gga_exc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+                        double *zk, cudaStream_t stream);
+void xc_gga_exc_vxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+                            double *zk, double *vrho, double *vsigma, cudaStream_t stream);
+void xc_gga_vxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+                        double *vrho, double *vsigma, cudaStream_t stream);
+void xc_gga_fxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+                        double *v2rho2, double *v2rhosigma, double *v2sigma2, cudaStream_t stream);
+void xc_gga_kxc_offload(const xc_func_type *p, int np, const double *rho, const double *sigma,
+                        double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3, cudaStream_t stream);
+#endif
+
+/* This function should not be here
 void xc_gga_lb_modified  (const xc_func_type *p, int np, const double *rho, const double *sigma,
      double r, double *vrho);
+*/
 
 double xc_gga_ak13_get_asymptotic (double homo);
 
@@ -305,9 +376,62 @@ void xc_mgga_kxc    (const xc_func_type *p, int np,
 		      double *v3lapl3, double *v3lapl2tau,
 		      double *v3lapltau2,
 		      double *v3tau3);
+#ifdef __CUDACC__
+void xc_mgga_offload(const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl_rho, const double *tau,
+		      double *zk,
+		      double *vrho, double *vsigma, double *vlapl, double *vtau,
+		      double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, 
+		      double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
+		      double *v2lapl2, double *v2lapltau,
+		      double *v2tau2,
+					double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau,
+		      double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
+		      double *v3rholapl2, double *v3rholapltau,
+		      double *v3rhotau2,
+		      double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
+		      double *v3sigmalapl2, double *v3sigmalapltau,
+		      double *v3sigmatau2,
+		      double *v3lapl3, double *v3lapl2tau,
+		      double *v3lapltau2,
+		      double *v3tau3, cudaStream_t stream);
+void xc_mgga_exc_offload    (const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+		      double *zk, cudaStream_t stream);
+void xc_mgga_exc_vxc_offload(const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+		      double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau, cudaStream_t stream);
+void xc_mgga_vxc_offload    (const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+		      double *vrho, double *vsigma, double *vlapl, double *vtau, cudaStream_t stream);
+void xc_mgga_fxc_offload    (const xc_func_type *p, int np,
+		      const double *rho, const double *sigma, const double *lapl, const double *tau,
+   	      double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, 
+ 		      double *v2sigma2, double *v2sigmalapl, double *v2sigmatau,
+		      double *v2lapl2, double *v2lapltau,
+		      double *v2tau2, cudaStream_t stream);
+void xc_mgga_kxc_offload    (const xc_func_type *p, int np,
+          const double *rho, const double *sigma, const double *lapl, const double *tau,
+          double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, 
+		      double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
+		      double *v3rholapl2, double *v3rholapltau,
+		      double *v3rhotau2,
+		      double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
+		      double *v3sigmalapl2, double *v3sigmalapltau,
+		      double *v3sigmatau2,
+		      double *v3lapl3, double *v3lapl2tau,
+		      double *v3lapltau2,
+		      double *v3tau3, cudaStream_t stream);
+#endif
   
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __CUDACC__
+#include <xc_device.h>
+#include <functionals.cuh>
+#include <functionals_device.cuh>
 #endif
 
 #endif

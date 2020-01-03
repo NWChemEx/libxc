@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_K_PC07          543 /* Perdew and Constantin 2007 */
 
 #include "maple2c/mgga_exc/mgga_k_pc07.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_k_pc07 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_k_pc07 = {
   XC_MGGA_K_PC07,
   XC_KINETIC,
   "Perdew and Constantin 2007",
@@ -24,4 +27,9 @@ const xc_func_info_type xc_func_info_mgga_k_pc07 = {
   0, NULL, NULL,
   NULL, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

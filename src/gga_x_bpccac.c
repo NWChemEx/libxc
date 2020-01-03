@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_BPCCAC  98 /* BPCCAC (GRAC for the energy) */
 
 #include "maple2c/gga_exc/gga_x_bpccac.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_bpccac = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_bpccac = {
   XC_GGA_X_BPCCAC,
   XC_EXCHANGE,
   "BPCCAC (GRAC for the energy)",
@@ -23,6 +26,11 @@ const xc_func_info_type xc_func_info_gga_x_bpccac = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 

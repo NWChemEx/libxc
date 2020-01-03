@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_ZPBEINT       61 /* spin-dependent gradient correction to PBEint       */
 #define XC_GGA_C_ZPBESOL       63 /* spin-dependent gradient correction to PBEsol       */
@@ -20,8 +22,9 @@ gga_c_zpbeint_init(xc_func_type *p)
 {
   gga_c_zpbeint_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_c_zpbeint_params));
+  assert(sizeof(gga_c_zpbeint_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p!=NULL && p->params == NULL);
+  //p->params = malloc(sizeof(gga_c_zpbeint_params));
   params = (gga_c_zpbeint_params *) (p->params);
  
   switch(p->info->number){
@@ -41,8 +44,9 @@ gga_c_zpbeint_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_c_zpbeint.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_zpbeint = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_zpbeint = {
   XC_GGA_C_ZPBEINT,
   XC_CORRELATION,
   "spin-dependent gradient correction to PBEint",
@@ -52,10 +56,15 @@ const xc_func_info_type xc_func_info_gga_c_zpbeint = {
   1e-12,
   0, NULL, NULL,
   gga_c_zpbeint_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_zpbesol = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_zpbesol = {
   XC_GGA_C_ZPBESOL,
   XC_CORRELATION,
   "spin-dependent gradient correction to PBEsol",
@@ -65,5 +74,10 @@ const xc_func_info_type xc_func_info_gga_c_zpbesol = {
   1e-12,
   0, NULL, NULL,
   gga_c_zpbeint_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

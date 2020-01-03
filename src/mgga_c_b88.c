@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_B88          571 /* Meta-GGA correlation by Becke */
 
 #include "maple2c/mgga_exc/mgga_c_b88.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_c_b88 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_b88 = {
   XC_MGGA_C_B88,
   XC_CORRELATION,
   "Meta-GGA correlation by Becke",
@@ -25,4 +28,9 @@ const xc_func_info_type xc_func_info_mgga_c_b88 = {
   0, NULL, NULL,
   NULL, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

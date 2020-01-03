@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_SCAN          263 /* SCAN exchange of Sun, Ruzsinszky, and Perdew  */
 #define XC_HYB_MGGA_X_SCAN0     264 /* SCAN hybrid exchange */
@@ -26,8 +28,9 @@ mgga_x_scan_init(xc_func_type *p)
 {
   mgga_x_scan_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_x_scan_params));
+  assert(sizeof(mgga_x_scan_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(mgga_x_scan_params));
   params = (mgga_x_scan_params *)p->params;
 
   switch(p->info->number){
@@ -45,8 +48,9 @@ mgga_x_scan_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_x_scan.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_scan = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_scan = {
   XC_MGGA_X_SCAN,
   XC_EXCHANGE,
   "SCAN exchange of Sun, Ruzsinszky, and Perdew",
@@ -57,9 +61,14 @@ const xc_func_info_type xc_func_info_mgga_x_scan = {
   0, NULL, NULL,
   mgga_x_scan_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_revscan = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_revscan = {
   XC_MGGA_X_REVSCAN,
   XC_EXCHANGE,
   "revised SCAN",
@@ -70,6 +79,11 @@ const xc_func_info_type xc_func_info_mgga_x_revscan = {
   0, NULL, NULL,
   mgga_x_scan_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
 static void
@@ -83,7 +97,7 @@ hyb_mgga_x_scan0_init(xc_func_type *p)
 }
 
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_scan0 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_scan0 = {
   XC_HYB_MGGA_X_SCAN0,
   XC_EXCHANGE,
   "SCAN hybrid exchange (SCAN0)",
@@ -93,7 +107,8 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_scan0 = {
   1e-32,
   0, NULL, NULL,
   hyb_mgga_x_scan0_init, NULL,
-  NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL /* this is taken care of by the generic routine */,
+  NULL, NULL, NULL
 };
 
 
@@ -108,7 +123,7 @@ hyb_mgga_x_revscan0_init(xc_func_type *p)
 }
 
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_revscan0 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_revscan0 = {
   XC_HYB_MGGA_X_REVSCAN0,
   XC_EXCHANGE,
   "revised SCAN hybrid exchange (SCAN0)",
@@ -118,5 +133,6 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_revscan0 = {
   1e-32,
   0, NULL, NULL,
   hyb_mgga_x_revscan0_init, NULL,
-  NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL /* this is taken care of by the generic routine */,
+  NULL, NULL, NULL
 };

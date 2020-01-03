@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_K_THAKKAR      523 /* Thakkar 1992 */
 
 #include "maple2c/gga_exc/gga_k_thakkar.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_thakkar = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_thakkar = {
   XC_GGA_K_THAKKAR,
   XC_KINETIC,
   "Thakkar 1992",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_k_thakkar = {
   5e-26,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

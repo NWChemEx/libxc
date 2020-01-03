@@ -8,6 +8,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_GGA_XC_EDF2        476 /* Empirical functional from Lin, George and Gill */
 
@@ -26,7 +28,7 @@ hyb_gga_xc_edf2_init(xc_func_type *p)
   p->cam_alpha = 0.1695;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_edf2 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_edf2 = {
   XC_HYB_GGA_XC_EDF2,
   XC_EXCHANGE_CORRELATION,
   "EDF2",
@@ -36,5 +38,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_edf2 = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_edf2_init, 
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };

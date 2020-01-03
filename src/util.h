@@ -17,6 +17,7 @@
 #include <string.h>
 #include <assert.h>
 
+#include "xc_device.h"
 #include "xc.h"
 #include "xc_funcs_worker.h"
 
@@ -25,6 +26,10 @@
 
 /* need config to figure out what needs to be defined or not */
 #include "config.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* This takes care of disabling specific derivatives from the info structures */
 #ifdef XC_DONT_COMPILE_VXC
@@ -112,11 +117,11 @@
 
 /* special functions */
 #define Heaviside(x) (((x) >= 0) ? 1.0 : 0.0)
-double LambertW(double z);
-double xc_dilogarithm(const double x);
+DEVICE double LambertW(double z);
+DEVICE double xc_dilogarithm(const double x);
 
 /* we define this function here, so it can be properly inlined by all compilers */
-static inline double
+DEVICE static inline double
 xc_cheb_eval(const double x, const double *cs, const int N)
 {
   int i;
@@ -134,24 +139,24 @@ xc_cheb_eval(const double x, const double *cs, const int N)
   return 0.5*(b0 - b2);
 }
 
-double xc_bessel_I0_scaled(const double x);
-double xc_bessel_I0(const double x);
-double xc_bessel_K0_scaled(const double x);
-double xc_bessel_K0(const double x);
-double xc_bessel_K1_scaled(const double x);
-double xc_bessel_K1(const double x);
+DEVICE double xc_bessel_I0_scaled(const double x);
+DEVICE double xc_bessel_I0(const double x);
+DEVICE double xc_bessel_K0_scaled(const double x);
+DEVICE double xc_bessel_K0(const double x);
+DEVICE double xc_bessel_K1_scaled(const double x);
+DEVICE double xc_bessel_K1(const double x);
 
-double xc_expint_e1_impl(double x, const int scale);
-static inline double expint_e1(const double x)         { return  xc_expint_e1_impl( x, 0); }
-static inline double expint_e1_scaled(const double x)  { return  xc_expint_e1_impl( x, 1); }
-static inline double expint_Ei(const double x)         { return -xc_expint_e1_impl(-x, 0); }
+DEVICE double xc_expint_e1_impl(double x, const int scale);
+DEVICE static inline double expint_e1(const double x)         { return  xc_expint_e1_impl( x, 0); }
+DEVICE static inline double expint_e1_scaled(const double x)  { return  xc_expint_e1_impl( x, 1); }
+DEVICE static inline double expint_Ei(const double x)         { return -xc_expint_e1_impl(-x, 0); }
 #define Ei(x) expint_Ei(x)
-static inline double expint_Ei_scaled(const double x)  { return -xc_expint_e1_impl(-x, 1); }
+DEVICE static inline double expint_Ei_scaled(const double x)  { return -xc_expint_e1_impl(-x, 1); }
 
 /* integration */
 typedef void integr_fn(double *x, int n, void *ex);
-double xc_integrate(integr_fn func, void *ex, double a, double b);
-void xc_rdqagse(integr_fn f, void *ex, double *a, double *b, 
+DEVICE double xc_integrate(integr_fn func, void *ex, double a, double b);
+DEVICE void xc_rdqagse(integr_fn f, void *ex, double *a, double *b, 
 	     double *epsabs, double *epsrel, int *limit, double *result,
 	     double *abserr, int *neval, int *ier, double *alist__,
 	     double *blist, double *rlist, double *elist, int *iord, int *last);
@@ -184,21 +189,21 @@ typedef struct xc_functional_key_t {
 
 
 /* The following inlines confuse the xlc compiler */
-void xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta);
+DEVICE void xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta);
 
 /* Functions to handle the internal counters */
 void internal_counters_set_lda (int nspin, xc_dimensions *dim);
-void internal_counters_lda_next
+DEVICE void internal_counters_lda_next
 (const xc_dimensions *dim, int offset,
  const double **rho, double **zk, double **vrho, double **v2rho2, double **v3rho3
  );
-void internal_counters_lda_prev
+DEVICE void internal_counters_lda_prev
 (const xc_dimensions *dim, int offset,
  const double **rho, double **zk, double **vrho, double **v2rho2, double **v3rho3
  );
 
 void internal_counters_set_gga (int nspin, xc_dimensions *dim);
-void internal_counters_gga_next
+DEVICE void internal_counters_gga_next
 (const xc_dimensions *dim, int offset,
  const double **rho, const double **sigma,
  double **zk,
@@ -207,7 +212,7 @@ void internal_counters_gga_next
  double **v3rho3, double **v3rho2sigma, double **v3rhosigma2, double **v3sigma3
  );
 
-void internal_counters_gga_prev
+DEVICE void internal_counters_gga_prev
 (const xc_dimensions *dim, int offset,
  const double **rho, const double **sigma,
  double **zk,
@@ -236,12 +241,12 @@ void internal_counters_gga_prev
 
 void internal_counters_set_mgga(int nspin, xc_dimensions *dim);
 
-void internal_counters_mgga_next
+DEVICE void internal_counters_mgga_next
 (const xc_dimensions *dim, int offset,
  const double **rho, const double **sigma, const double **lapl, const double **tau,
  double **zk, MGGA_OUT_PARAMS_NO_EXC(double **));
 
-void internal_counters_mgga_prev
+DEVICE void internal_counters_mgga_prev
 (const xc_dimensions *dim, int offset,
  const double **rho, const double **sigma, const double **lapl, const double **tau,
  double **zk, MGGA_OUT_PARAMS_NO_EXC(double **));
@@ -252,10 +257,22 @@ void xc_mix_func
   (const xc_func_type *func, int np,
    const double *rho, const double *sigma, const double *lapl, const double *tau,
    double *zk, MGGA_OUT_PARAMS_NO_EXC(double *));
+#ifdef __CUDACC__
+void xc_mix_func_init_cublas();
+void xc_mix_func_end_cublas();
+void xc_mix_func_offload
+  (const xc_func_type *func, int np,
+   const double *rho, const double *sigma, const double *lapl, const double *tau,
+   double *zk, MGGA_OUT_PARAMS_NO_EXC(double *), cudaStream_t stream);
+#endif
 
 /* Some useful functions */
 const char *get_kind(const xc_func_type *func);
 const char *get_family(const xc_func_type *func);
 double get_ext_param(const func_params_type *params, const double *values, int index);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

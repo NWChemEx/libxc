@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_HJS_PBE     525 /* HJS screened exchange PBE version */
 #define XC_GGA_X_HJS_PBE_SOL 526 /* HJS screened exchange PBE_SOL version */
@@ -16,7 +18,7 @@
 typedef struct{
   double omega;
 
-  const double *a, *b; /* pointers to the a and b parameters */
+  double a[6], b[9]; /* pointers to the a and b parameters */
 } gga_x_hjs_params;
 
 static const double a_PBE[] = 
@@ -48,32 +50,33 @@ static void
 gga_x_hjs_init(xc_func_type *p)
 {
   gga_x_hjs_params *params;
-  
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_x_hjs_params));
+
+  assert(sizeof(gga_x_hjs_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));  
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_x_hjs_params));
   params = (gga_x_hjs_params *) (p->params);
   
   /* omega = 0.11 is set by ext_params */
   switch(p->info->number){
   case XC_GGA_X_HJS_PBE:
-    params->a = a_PBE;
-    params->b = b_PBE;
+    memcpy(params->a, a_PBE, sizeof(a_PBE));
+    memcpy(params->b, b_PBE, sizeof(b_PBE));
     break;
   case XC_GGA_X_HJS_PBE_SOL:
-    params->a = a_PBE_sol;
-    params->b = b_PBE_sol;
+    memcpy(params->a, a_PBE_sol, sizeof(a_PBE_sol));
+    memcpy(params->b, b_PBE_sol, sizeof(b_PBE_sol));
     break;
   case XC_GGA_X_HJS_B88:
-    params->a = a_B88;
-    params->b = b_B88;
+    memcpy(params->a, a_B88, sizeof(a_B88));
+    memcpy(params->b, b_B88, sizeof(b_B88));
     break;
   case XC_GGA_X_HJS_B97X:
-    params->a = a_B97x;
-    params->b = b_B97x;
+    memcpy(params->a, a_B97x, sizeof(a_B97x));
+    memcpy(params->b, b_B97x, sizeof(b_B97x));
     break;
   case XC_GGA_X_HJS_B88_V2:
-    params->a = a_B88_V2;
-    params->b = b_B88_V2;
+    memcpy(params->a, a_B88_V2, sizeof(a_B88_V2));
+    memcpy(params->b, b_B88_V2, sizeof(b_B88_V2));
     break;
   default:
     fprintf(stderr, "Internal error in gga_x_hjs_init\n");
@@ -90,7 +93,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_hjs_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_x_hjs_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (gga_x_hjs_params *) (p->params);
 
   params->omega = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -99,8 +103,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_hjs.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_hjs_pbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_hjs_pbe = {
   XC_GGA_X_HJS_PBE,
   XC_EXCHANGE,
   "HJS screened exchange PBE version",
@@ -110,10 +115,15 @@ const xc_func_info_type xc_func_info_gga_x_hjs_pbe = {
   5e-12,
   1, ext_params, set_ext_params,
   gga_x_hjs_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_hjs_pbe_sol = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_hjs_pbe_sol = {
   XC_GGA_X_HJS_PBE_SOL,
   XC_EXCHANGE,
   "HJS screened exchange PBE_SOL version",
@@ -123,10 +133,15 @@ const xc_func_info_type xc_func_info_gga_x_hjs_pbe_sol = {
   5e-12,
   1, ext_params, set_ext_params,
   gga_x_hjs_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_hjs_b88 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_hjs_b88 = {
   XC_GGA_X_HJS_B88,
   XC_EXCHANGE,
   "HJS screened exchange B88 version",
@@ -136,10 +151,15 @@ const xc_func_info_type xc_func_info_gga_x_hjs_b88 = {
   1e-7, /* densities smaller than 1e-7 yield NaNs */
   1, ext_params, set_ext_params,
   gga_x_hjs_init, NULL, 
-  NULL,  work_gga, NULL
+  NULL,  work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_hjs_b97x = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_hjs_b97x = {
   XC_GGA_X_HJS_B97X,
   XC_EXCHANGE,
   "HJS screened exchange B97x version",
@@ -149,5 +169,10 @@ const xc_func_info_type xc_func_info_gga_x_hjs_b97x = {
   1e-10,
   1, ext_params, set_ext_params,
   gga_x_hjs_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

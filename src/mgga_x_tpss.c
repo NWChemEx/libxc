@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /************************************************************************
  Implements Tao, Perdew, Staroverov & Scuseria 
@@ -35,8 +37,9 @@ mgga_x_tpss_init(xc_func_type *p)
 {
   mgga_x_tpss_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_x_tpss_params));
+  assert(sizeof(mgga_x_tpss_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(mgga_x_tpss_params));
   params = (mgga_x_tpss_params *)p->params;
 
   switch(p->info->number){
@@ -73,7 +76,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_x_tpss_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(mgga_x_tpss_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (mgga_x_tpss_params *) (p->params);
 
   params->b      = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -87,8 +91,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_x_tpss.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_tpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_tpss = {
   XC_MGGA_X_TPSS,
   XC_EXCHANGE,
   "Tao, Perdew, Staroverov & Scuseria",
@@ -99,9 +104,14 @@ const xc_func_info_type xc_func_info_mgga_x_tpss = {
   7, ext_params, set_ext_params,
   mgga_x_tpss_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_modtpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_modtpss = {
   XC_MGGA_X_MODTPSS,
   XC_EXCHANGE,
   "Modified Tao, Perdew, Staroverov & Scuseria",
@@ -112,9 +122,14 @@ const xc_func_info_type xc_func_info_mgga_x_modtpss = {
   0, NULL, NULL,
   mgga_x_tpss_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_revtpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_revtpss = {
   XC_MGGA_X_REVTPSS,
   XC_EXCHANGE,
   "revised Tao, Perdew, Staroverov & Scuseria",
@@ -125,9 +140,14 @@ const xc_func_info_type xc_func_info_mgga_x_revtpss = {
   0, NULL, NULL,
   mgga_x_tpss_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_bloc = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_bloc = {
   XC_MGGA_X_BLOC,
   XC_EXCHANGE,
   "functional with balanced localization",
@@ -138,4 +158,9 @@ const xc_func_info_type xc_func_info_mgga_x_bloc = {
   0, NULL, NULL,
   mgga_x_tpss_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

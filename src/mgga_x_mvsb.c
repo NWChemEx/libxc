@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_MVSB          302 /* MVSBeta exchange of Furness and Sun */
 #define XC_MGGA_X_MVSBS         303 /* MVSBeta* exchange of Furness and Sun */
@@ -21,8 +23,9 @@ mgga_x_mvsb_init(xc_func_type *p)
 {
   mgga_x_mvsb_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_x_mvsb_params));
+  assert(sizeof(mgga_x_mvsb_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(mgga_x_mvsb_params));
   params = (mgga_x_mvsb_params *)p->params;
 
   switch(p->info->number){
@@ -53,7 +56,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_x_mvsb_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(mgga_x_mvsb_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (mgga_x_mvsb_params *) (p->params);
 
   params->e1 = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -65,8 +69,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_x_mvsb.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
-const xc_func_info_type xc_func_info_mgga_x_mvsb = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_mvsb = {
   XC_MGGA_X_MVSB,
   XC_EXCHANGE,
   "MVSbeta exchange by Furness and Sun",
@@ -77,9 +82,14 @@ const xc_func_info_type xc_func_info_mgga_x_mvsb = {
   4, ext_params, set_ext_params,
   mgga_x_mvsb_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_mvsbs = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_mvsbs = {
   XC_MGGA_X_MVSBS,
   XC_EXCHANGE,
   "MVSbeta* exchange by Furness and Sun",
@@ -90,4 +100,9 @@ const xc_func_info_type xc_func_info_mgga_x_mvsbs = {
   0, NULL, NULL,
   mgga_x_mvsb_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

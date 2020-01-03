@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_K_DK          516 /* DePristo and Kress                    */
 #define XC_GGA_K_PERDEW      517 /* Perdew                                */
@@ -24,8 +26,9 @@ gga_k_dk_init(xc_func_type *p)
   int i;
   double ff, *aa, *bb;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_k_dk_params));
+  assert(sizeof(gga_k_dk_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p->params == NULL);
+  //p->params = malloc(sizeof(gga_k_dk_params));
 
   /* shortcuts for a and b */
   aa  = ((gga_k_dk_params *) (p->params))->aa;
@@ -108,8 +111,9 @@ gga_k_dk_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_k_dk.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_k_dk = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_dk = {
   XC_GGA_K_DK,
   XC_KINETIC,
   "DePristo and Kress",
@@ -119,10 +123,15 @@ const xc_func_info_type xc_func_info_gga_k_dk = {
   1e-25,
   0, NULL, NULL,
   gga_k_dk_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_perdew = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_perdew = {
   XC_GGA_K_PERDEW,
   XC_KINETIC,
   "Perdew",
@@ -132,10 +141,15 @@ const xc_func_info_type xc_func_info_gga_k_perdew = {
   1e-32,
   0, NULL, NULL,
   gga_k_dk_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_vsk = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_vsk = {
   XC_GGA_K_VSK,
   XC_KINETIC,
   "Vitos, Skriver, and Kollar",
@@ -145,10 +159,15 @@ const xc_func_info_type xc_func_info_gga_k_vsk = {
   1e-25,
   0, NULL, NULL,
   gga_k_dk_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_vjks = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_vjks = {
   XC_GGA_K_VJKS,
   XC_KINETIC,
   "Vitos, Johansson, Kollar, and Skriver",
@@ -158,10 +177,15 @@ const xc_func_info_type xc_func_info_gga_k_vjks = {
   1e-25,
   0, NULL, NULL,
   gga_k_dk_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_k_ernzerhof = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_ernzerhof = {
   XC_GGA_K_ERNZERHOF,
   XC_KINETIC,
   "Ernzerhof",
@@ -171,5 +195,10 @@ const xc_func_info_type xc_func_info_gga_k_ernzerhof = {
   1e-25,
   0, NULL, NULL,
   gga_k_dk_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

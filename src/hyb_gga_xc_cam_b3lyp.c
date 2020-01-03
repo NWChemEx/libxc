@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_GGA_XC_CAM_B3LYP        433 /* CAM version of B3LYP */
 #define XC_HYB_GGA_XC_TUNED_CAM_B3LYP  434 /* CAM version of B3LYP tuned for excitations*/
@@ -59,7 +61,7 @@ xc_hyb_gga_xc_cam_b3lyp_init(xc_func_type *p)
   p->cam_beta  = beta;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_cam_b3lyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_cam_b3lyp = {
   XC_HYB_GGA_XC_CAM_B3LYP,
   XC_EXCHANGE_CORRELATION,
   "CAM version of B3LYP",
@@ -69,10 +71,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cam_b3lyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_cam_b3lyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_tuned_cam_b3lyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_tuned_cam_b3lyp = {
   XC_HYB_GGA_XC_TUNED_CAM_B3LYP,
   XC_EXCHANGE_CORRELATION,
   "CAM version of B3LYP, tuned for excitations and properties",
@@ -82,5 +85,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_tuned_cam_b3lyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_cam_b3lyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };

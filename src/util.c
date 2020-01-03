@@ -6,13 +6,16 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-
+#include "xc_device.h"
 #include "util.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* this function converts the spin-density into total density and
 	 relative magnetization */
-/* inline */ void
+DEVICE /* inline */ void
 xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta)
 {
   if(nspin==XC_UNPOLARIZED){
@@ -196,7 +199,7 @@ internal_counters_set_mgga(int nspin, xc_dimensions *dim)
   }
 }
 
-void
+DEVICE void
 internal_counters_lda_next
   (
    const xc_dimensions *dim, int offset,
@@ -211,7 +214,7 @@ internal_counters_lda_next
   if(*v3rho3 != NULL) *v3rho3 += dim->v3rho3 + offset;
 }
 
-void
+DEVICE void
 internal_counters_lda_prev
   (
    const xc_dimensions *dim, int offset,
@@ -226,7 +229,7 @@ internal_counters_lda_prev
   if(*v3rho3 != NULL) *v3rho3 -= dim->v3rho3 + offset;
 }
 
-void
+DEVICE void
 internal_counters_gga_next
   (
    const xc_dimensions *dim, int offset,
@@ -252,7 +255,7 @@ internal_counters_gga_next
   }
 }
 
-void
+DEVICE void
 internal_counters_gga_prev
   (
    const xc_dimensions *dim, int offset,
@@ -278,7 +281,7 @@ internal_counters_gga_prev
   }
 }
 
-void
+DEVICE void
 internal_counters_mgga_next
   (const xc_dimensions *dim, int offset,
    const double **rho, const double **sigma, const double **lapl, const double **tau,
@@ -330,7 +333,7 @@ internal_counters_mgga_next
   }
 }
 
-void
+DEVICE void
 internal_counters_mgga_prev
   (const xc_dimensions *dim, int offset,
    const double **rho, const double **sigma, const double **lapl, const double **tau,
@@ -377,3 +380,7 @@ internal_counters_mgga_prev
     *v3tau3         -= dim->v3tau3         + offset;
   }
 }
+
+#ifdef __cplusplus
+}
+#endif

@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_N12           80 /* N12 functional from Minnesota            */
 #define XC_GGA_C_N12_SX        79 /* N12-SX functional from Minnesota         */
@@ -54,30 +56,31 @@ static const gga_c_bmk_params par_hyb_tau_hcth = {
 static void 
 gga_c_bmk_init(xc_func_type *p)
 {
-  gga_c_bmk_params *params;
+  //gga_c_bmk_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_c_bmk_params));
-  params = (gga_c_bmk_params *)(p->params);
+  assert(sizeof(gga_c_bmk_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p->params == NULL);
+  //p->params = malloc(sizeof(gga_c_bmk_params));
+  //params = (gga_c_bmk_params *)(p->params);
 
   switch(p->info->number){
   case XC_GGA_C_N12:
-    memcpy(params, &par_n12, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_n12, sizeof(gga_c_bmk_params));
     break;
   case XC_GGA_C_N12_SX:
-    memcpy(params, &par_n12_sx, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_n12_sx, sizeof(gga_c_bmk_params));
     break;
   case XC_GGA_C_GAM:
-    memcpy(params, &par_gam, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_gam, sizeof(gga_c_bmk_params));
     break;
   case XC_GGA_C_BMK:
-    memcpy(params, &par_bmk, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_bmk, sizeof(gga_c_bmk_params));
     break;
   case XC_GGA_C_TAU_HCTH:
-    memcpy(params, &par_tau_hcth, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_tau_hcth, sizeof(gga_c_bmk_params));
     break;
   case XC_GGA_C_HYB_TAU_HCTH:
-    memcpy(params, &par_hyb_tau_hcth, sizeof(gga_c_bmk_params));
+    memcpy(p->params, &par_hyb_tau_hcth, sizeof(gga_c_bmk_params));
     break;
   default:
     fprintf(stderr, "Internal error in gga_c_bmk\n");
@@ -88,8 +91,9 @@ gga_c_bmk_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_c_bmk.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_n12 = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_n12 = {
   XC_GGA_C_N12,
   XC_CORRELATION,
   "Minnesota N12 functional",
@@ -99,10 +103,15 @@ const xc_func_info_type xc_func_info_gga_c_n12 = {
   1e-20,
   0, NULL, NULL,
   gga_c_bmk_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_n12_sx = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_n12_sx = {
   XC_GGA_C_N12_SX,
   XC_CORRELATION,
   "Minnesota N12-SX functional",
@@ -112,10 +121,15 @@ const xc_func_info_type xc_func_info_gga_c_n12_sx = {
   1e-20,
   0, NULL, NULL,
   gga_c_bmk_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_gam = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_gam = {
   XC_GGA_C_GAM,
   XC_CORRELATION,
   "GAM functional from Minnesota",
@@ -125,10 +139,15 @@ const xc_func_info_type xc_func_info_gga_c_gam = {
   1e-23,
   0, NULL, NULL,
   gga_c_bmk_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_bmk = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_bmk = {
   XC_GGA_C_BMK,
   XC_CORRELATION,
   "Boese-Martin for kinetics",
@@ -138,10 +157,15 @@ const xc_func_info_type xc_func_info_gga_c_bmk = {
   1e-20,
   0, NULL, NULL,
   gga_c_bmk_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_tau_hcth = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_tau_hcth = {
   XC_GGA_C_TAU_HCTH,
   XC_CORRELATION,
   "correlation part of tau-hcth",
@@ -151,10 +175,15 @@ const xc_func_info_type xc_func_info_gga_c_tau_hcth = {
   1e-20,
   0, NULL, NULL,
   gga_c_bmk_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_hyb_tau_hcth = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_hyb_tau_hcth = {
   XC_GGA_C_HYB_TAU_HCTH,
   XC_CORRELATION,
   "correlation part of hyb-tau-hcth",
@@ -164,5 +193,10 @@ const xc_func_info_type xc_func_info_gga_c_hyb_tau_hcth = {
   1e-20,
   0, NULL, NULL,
   gga_c_bmk_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

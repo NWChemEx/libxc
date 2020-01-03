@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_XC_OTPSS_D      64  /* oTPSS_D functional of Goerigk and Grimme   */
 
@@ -24,7 +26,7 @@ mgga_xc_otpss_d_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[1], par_c_tpss);
 }
 
-const xc_func_info_type xc_func_info_mgga_xc_otpss_d = {
+EXTERN const xc_func_info_type xc_func_info_mgga_xc_otpss_d = {
   XC_MGGA_XC_OTPSS_D,
   XC_EXCHANGE_CORRELATION,
   "oTPSS-D functional of Goerigk and Grimme",
@@ -34,5 +36,6 @@ const xc_func_info_type xc_func_info_mgga_xc_otpss_d = {
   1e-23,
   0, NULL, NULL,
   mgga_xc_otpss_d_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };

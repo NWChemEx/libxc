@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_HL   4   /* Hedin & Lundqvist            */
 #define XC_LDA_C_GL   5   /* Gunnarson & Lundqvist        */
@@ -33,8 +35,9 @@ lda_c_hl_init(xc_func_type *p)
 {
   lda_c_hl_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_c_hl_params));
+  assert(sizeof(lda_c_hl_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(lda_c_hl_params));
   params = (lda_c_hl_params *) (p->params);
 
   switch(p->info->number){
@@ -55,8 +58,9 @@ lda_c_hl_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_c_hl.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_hl = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_hl = {
   XC_LDA_C_HL,
   XC_CORRELATION,
   "Hedin & Lundqvist",
@@ -66,10 +70,15 @@ const xc_func_info_type xc_func_info_lda_c_hl = {
   1e-16,
   0, NULL, NULL,
   lda_c_hl_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_gl = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_gl = {
   XC_LDA_C_GL,
   XC_CORRELATION,
   "Gunnarson & Lundqvist",
@@ -79,10 +88,15 @@ const xc_func_info_type xc_func_info_lda_c_gl = {
   1e-17,
   0, NULL, NULL,
   lda_c_hl_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_vbh = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_vbh = {
   XC_LDA_C_vBH,
   XC_CORRELATION,
   "von Barth & Hedin",
@@ -92,5 +106,10 @@ const xc_func_info_type xc_func_info_lda_c_vbh = {
   1e-17,
   0, NULL, NULL,
   lda_c_hl_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

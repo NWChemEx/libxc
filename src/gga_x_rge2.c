@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_RGE2         142 /* Regularized PBE                                */
 
 #include "maple2c/gga_exc/gga_x_rge2.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_rge2 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_rge2 = {
   XC_GGA_X_RGE2,
   XC_EXCHANGE,
   "Regularized PBE",
@@ -23,6 +26,11 @@ const xc_func_info_type xc_func_info_gga_x_rge2 = {
   1e-32,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 

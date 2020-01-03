@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_XC_TETER93     20   /* Teter 93 parametrization                */
 
 #include "maple2c/lda_exc/lda_xc_teter93.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_xc_teter93 = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_teter93 = {
   XC_LDA_XC_TETER93,
   XC_EXCHANGE_CORRELATION,
   "Teter 93",
@@ -27,5 +30,10 @@ const xc_func_info_type xc_func_info_lda_xc_teter93 = {
   NULL,     /* end  */
   work_lda, /* lda  */
   NULL,
-  NULL
+  NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

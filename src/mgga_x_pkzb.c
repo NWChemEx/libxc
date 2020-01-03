@@ -8,14 +8,17 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_PKZB          213 /* Perdew, Kurth, Zupan, and Blaha */
 
 #include "maple2c/mgga_exc/mgga_x_pkzb.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cu"
 
 
-const xc_func_info_type xc_func_info_mgga_x_pkzb = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_pkzb = {
   XC_MGGA_X_PKZB,
   XC_EXCHANGE,
   "Perdew, Kurth, Zupan, and Blaha",
@@ -26,4 +29,9 @@ const xc_func_info_type xc_func_info_mgga_x_pkzb = {
   0, NULL, NULL,
   NULL, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

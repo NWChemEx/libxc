@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_K_GDS08_WORKER 100001   /* Combined analytical theory with Monte Carlo sampling */
 
@@ -18,8 +20,8 @@ typedef struct {
 static void 
 lda_k_gds08_init(xc_func_type *p)
 {
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_k_gds08_params));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(lda_k_gds08_params));
 }
 
 static func_params_type ext_params[] = {
@@ -33,7 +35,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_k_gds08_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(lda_k_gds08_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (lda_k_gds08_params *) (p->params);
 
   params->A = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -43,8 +46,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/lda_exc/lda_k_gds08_worker.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_k_gds08_worker = {
+EXTERN const xc_func_info_type xc_func_info_lda_k_gds08_worker = {
   XC_LDA_K_GDS08_WORKER,
   XC_KINETIC,
   "Combined analytical theory with Monte Carlo sampling",
@@ -54,5 +58,10 @@ const xc_func_info_type xc_func_info_lda_k_gds08_worker = {
   1e-24,
   3, ext_params, set_ext_params,
   lda_k_gds08_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

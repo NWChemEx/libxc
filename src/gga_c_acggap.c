@@ -8,13 +8,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_ACGGAP           176 /* Asymptotically corrected GGA +  */
 
 #include "maple2c/gga_exc/gga_c_acggap.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_acggap = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_acggap = {
   XC_GGA_C_ACGGAP,
   XC_CORRELATION,
   "acGGA+, asymptotically corrected GGA correlation+",
@@ -24,5 +27,10 @@ const xc_func_info_type xc_func_info_gga_c_acggap = {
   1e-25,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

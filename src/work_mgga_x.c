@@ -21,7 +21,7 @@
 #  define XC_DIMENSIONS 3
 #endif
 
-static void
+DEVICE static void
 #ifdef XC_KINETIC_FUNCTIONAL
 work_mgga_k
 #else

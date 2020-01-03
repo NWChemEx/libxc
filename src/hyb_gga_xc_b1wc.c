@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_GGA_XC_B1WC      412  /* Becke 1-parameter mixture of WC and PBE          */
 #define XC_HYB_GGA_XC_B1LYP     416  /* Becke 1-parameter mixture of B88 and LYP         */
@@ -29,7 +31,7 @@ xc_hyb_gga_xc_b1wc_init(xc_func_type *p)
   p->cam_alpha = 0.16;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b1wc = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b1wc = {
   XC_HYB_GGA_XC_B1WC,
   XC_EXCHANGE_CORRELATION,
   "B1WC",
@@ -39,7 +41,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b1wc = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_b1wc_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -53,7 +56,7 @@ xc_hyb_gga_xc_b1lyp_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b1lyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b1lyp = {
   XC_HYB_GGA_XC_B1LYP,
   XC_EXCHANGE_CORRELATION,
   "B1LYP",
@@ -63,7 +66,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b1lyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_b1lyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -77,7 +81,7 @@ xc_hyb_gga_xc_b1pw91_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b1pw91 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b1pw91 = {
   XC_HYB_GGA_XC_B1PW91,
   XC_EXCHANGE_CORRELATION,
   "B1PW91",
@@ -87,7 +91,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b1pw91 = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_b1pw91_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -117,7 +122,7 @@ xc_hyb_gga_xc_mpw1pw_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1lyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1lyp = {
   XC_HYB_GGA_XC_MPW1LYP,
   XC_EXCHANGE_CORRELATION,
   "mPW1LYP",
@@ -127,10 +132,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1lyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_mpw1pw_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1pbe = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1pbe = {
   XC_HYB_GGA_XC_MPW1PBE,
   XC_EXCHANGE_CORRELATION,
   "mPW1PBE",
@@ -140,10 +146,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1pbe = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_mpw1pw_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1pw = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1pw = {
   XC_HYB_GGA_XC_MPW1PW,
   XC_EXCHANGE_CORRELATION,
   "mPW1PW",
@@ -153,7 +160,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1pw = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_mpw1pw_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -167,7 +175,7 @@ xc_hyb_gga_xc_mpw1k_init(xc_func_type *p)
   p->cam_alpha = 0.428;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1k = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1k = {
   XC_HYB_GGA_XC_MPW1K,
   XC_EXCHANGE_CORRELATION,
   "mPW1K",
@@ -177,7 +185,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1k = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_mpw1k_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -191,7 +200,7 @@ xc_hyb_gga_xc_bhandh_init(xc_func_type *p)
   p->cam_alpha = 0.5;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_bhandh = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_bhandh = {
   XC_HYB_GGA_XC_BHANDH,
   XC_EXCHANGE_CORRELATION,
   "BHandH",
@@ -201,7 +210,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_bhandh = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_bhandh_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -215,7 +225,7 @@ xc_hyb_gga_xc_bhandhlyp_init(xc_func_type *p)
   p->cam_alpha = 0.5;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_bhandhlyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_bhandhlyp = {
   XC_HYB_GGA_XC_BHANDHLYP,
   XC_EXCHANGE_CORRELATION,
   "BHandHLYP",
@@ -225,7 +235,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_bhandhlyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_bhandhlyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -239,7 +250,7 @@ xc_hyb_gga_xc_mpwlyp1m_init(xc_func_type *p)
   p->cam_alpha = 0.05;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_mpwlyp1m = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_mpwlyp1m = {
   XC_HYB_GGA_XC_MPWLYP1M,
   XC_EXCHANGE_CORRELATION,
   "MPW with 1 par. for metals/LYP",
@@ -249,5 +260,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpwlyp1m = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_mpwlyp1m_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };

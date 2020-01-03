@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_LP96      289   /* Liu-Parr correlation */
 #define XC_LDA_K_LP96      580   /* Liu-Parr kinetic */
@@ -23,8 +25,9 @@ lda_c_lp96_init(xc_func_type *p)
 {
   lda_c_lp96_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_c_lp96_params));
+  assert(sizeof(lda_c_lp96_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(lda_c_lp96_params));
   params = (lda_c_lp96_params *) (p->params);
 
   switch(p->info->number){
@@ -42,8 +45,9 @@ lda_c_lp96_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_c_lp96.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_lp96 = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_lp96 = {
   XC_LDA_C_LP96,
   XC_CORRELATION,
   "Liu-Parr correlation",
@@ -53,10 +57,15 @@ const xc_func_info_type xc_func_info_lda_c_lp96 = {
   1e-16,
   0, NULL, NULL,
   lda_c_lp96_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_k_lp96 = {
+EXTERN const xc_func_info_type xc_func_info_lda_k_lp96 = {
   XC_LDA_K_LP96,
   XC_KINETIC,
   "Liu-Parr kinetic",
@@ -66,5 +75,10 @@ const xc_func_info_type xc_func_info_lda_k_lp96 = {
   1e-16,
   0, NULL, NULL,
   lda_c_lp96_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

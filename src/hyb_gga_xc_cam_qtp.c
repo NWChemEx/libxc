@@ -8,6 +8,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_GGA_XC_CAM_QTP_00       490 /* CAM-QTP-00 */
 #define XC_HYB_GGA_XC_CAM_QTP_01       482 /* CAM-QTP-01 */
@@ -85,7 +87,7 @@ xc_hyb_gga_xc_cam_qtp_init(xc_func_type *p)
   p->cam_beta  = cam_beta;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_00 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_00 = {
   XC_HYB_GGA_XC_CAM_QTP_00,
   XC_EXCHANGE_CORRELATION,
   "CAM-B3LYP retuned using ionization potentials of water",
@@ -95,10 +97,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_00 = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_cam_qtp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_01 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_01 = {
   XC_HYB_GGA_XC_CAM_QTP_01,
   XC_EXCHANGE_CORRELATION,
   "CAM-B3LYP retuned using ionization potentials of water",
@@ -108,10 +111,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_01 = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_cam_qtp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_02 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_02 = {
   XC_HYB_GGA_XC_CAM_QTP_02,
   XC_EXCHANGE_CORRELATION,
   "CAM-B3LYP retuned using ionization potentials of water",
@@ -121,10 +125,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_02 = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_cam_qtp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lc_qtp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_lc_qtp = {
   XC_HYB_GGA_XC_LC_QTP,
   XC_EXCHANGE_CORRELATION,
   "CAM-B3LYP retuned using ionization potentials of water",
@@ -134,5 +139,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lc_qtp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_cam_qtp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };

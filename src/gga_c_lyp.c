@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_LYP    131  /* Lee, Yang & Parr */
 #define XC_GGA_C_TM_LYP 559  /* Takkar and McCarthy reparametrization */
@@ -19,9 +21,10 @@ typedef struct{
 void xc_gga_c_lyp_init(xc_func_type *p)
 {
   gga_c_lyp_params *params;
+  assert(sizeof(gga_c_lyp_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_c_lyp_params));
+  //assert(p!=NULL && p->params == NULL);
+  //p->params = malloc(sizeof(gga_c_lyp_params));
   params = (gga_c_lyp_params *) (p->params);      
 
   /* values of constants in standard LYP functional */
@@ -53,7 +56,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_c_lyp_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_c_lyp_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  //assert(p != NULL && p->params != NULL);
   params = (gga_c_lyp_params *) (p->params);
 
   params->A = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -64,8 +68,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_c_lyp.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_c_lyp = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_lyp = {
   XC_GGA_C_LYP,
   XC_CORRELATION,
   "Lee, Yang & Parr",
@@ -75,10 +80,15 @@ const xc_func_info_type xc_func_info_gga_c_lyp = {
   1e-32,
   4, ext_params, set_ext_params,
   xc_gga_c_lyp_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_c_tm_lyp = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_tm_lyp = {
   XC_GGA_C_TM_LYP,
   XC_CORRELATION,
   "Takkar and McCarthy reparametrization",
@@ -88,5 +98,10 @@ const xc_func_info_type xc_func_info_gga_c_tm_lyp = {
   1e-32,
   0, NULL, NULL,
   xc_gga_c_lyp_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_VWN_RPA  8   /* Vosko, Wilk, & Nusair (RPA) */
 
 #include "maple2c/lda_exc/lda_c_vwn_rpa.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cu"
 
-const xc_func_info_type xc_func_info_lda_c_vwn_rpa = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_vwn_rpa = {
   XC_LDA_C_VWN_RPA,
   XC_CORRELATION,
   "Vosko, Wilk & Nusair (VWN5_RPA)",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_lda_c_vwn_rpa = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

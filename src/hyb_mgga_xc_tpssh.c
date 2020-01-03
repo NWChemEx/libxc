@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_MGGA_XC_TPSSH       457 /*    TPSS hybrid */
 #define XC_HYB_MGGA_XC_REVTPSSH    458 /* revTPSS hybrid */
@@ -22,7 +24,7 @@ hyb_mgga_xc_tpssh_init(xc_func_type *p)
 }
 
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_tpssh = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_tpssh = {
   XC_HYB_MGGA_XC_TPSSH,
   XC_EXCHANGE_CORRELATION,
   "TPSSh",
@@ -32,7 +34,8 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_tpssh = {
   1e-32,
   0, NULL, NULL,
   hyb_mgga_xc_tpssh_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */,
+  NULL, NULL, NULL
 };
 
 
@@ -47,7 +50,7 @@ hyb_mgga_xc_revtpssh_init(xc_func_type *p)
 }
 
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_revtpssh = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_revtpssh = {
   XC_HYB_MGGA_XC_REVTPSSH,
   XC_EXCHANGE_CORRELATION,
   "revTPSSh",
@@ -57,5 +60,6 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_revtpssh = {
   1e-32,
   0, NULL, NULL,
   hyb_mgga_xc_revtpssh_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */,
+  NULL, NULL, NULL
 };

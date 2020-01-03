@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_MPBE         122 /* Adamo & Barone modification to PBE             */
 
@@ -21,8 +23,9 @@ gga_x_mpbe_init(xc_func_type *p)
 {
   gga_x_mpbe_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_mpbe_params));
+  assert(sizeof(gga_x_mpbe_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_x_mpbe_params));
   params = (gga_x_mpbe_params *) (p->params);
  
   switch(p->info->number){
@@ -41,8 +44,9 @@ gga_x_mpbe_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_x_mpbe.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cu"
 
-const xc_func_info_type xc_func_info_gga_x_mpbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_mpbe = {
   XC_GGA_X_MPBE,
   XC_EXCHANGE,
   "Adamo & Barone modification to PBE",
@@ -52,5 +56,10 @@ const xc_func_info_type xc_func_info_gga_x_mpbe = {
   1e-21,
   0, NULL, NULL,
   gga_x_mpbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

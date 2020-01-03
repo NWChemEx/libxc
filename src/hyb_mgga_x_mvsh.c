@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_MGGA_X_MVSH     474 /* MVSh hybrid */
 
@@ -21,7 +23,7 @@ hyb_mgga_x_mvsh_init(xc_func_type *p)
 }
 
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_mvsh = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_mvsh = {
   XC_HYB_MGGA_X_MVSH,
   XC_EXCHANGE,
   "MVSh hybrid exchange functional",
@@ -31,5 +33,6 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_mvsh = {
   1e-32,
   0, NULL, NULL,
   hyb_mgga_x_mvsh_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
