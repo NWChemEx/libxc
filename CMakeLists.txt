@@ -609,6 +609,7 @@ if(CUDA_FOUND)
     target_link_libraries(xc_device INTERFACE ${STANDARD_MATH_LIBRARY} ${CUDA_cublas_LIBRARY})
     set_target_properties(xc_device PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
                                                SOVERSION ${${PROJECT_NAME}_SOMAJOR})
+    target_compile_options(xc_device PRIVATE -Xptxas --disable-optimizer-constants )
     #target_compile_options(xc_device PUBLIC CMAKE_CUDA_FLAGS "-rdc true")
     if(${BUILD_SHARED_LIBS})
         target_link_libraries(xc_device PRIVATE ${LIBC_INTERJECT})
@@ -710,6 +711,9 @@ endif()
 
 # by default, headers NOT namespace protected
 install(FILES ${PROJECT_BINARY_DIR}/${src_prefix}/xc.h
+              ${PROJECT_SOURCE_DIR}/${src_prefix}/xc_device.h
+              ${PROJECT_SOURCE_DIR}/${src_prefix}/functionals.cuh
+              ${PROJECT_SOURCE_DIR}/${src_prefix}/functionals_device.cuh
               ${gen_dir}/xc_funcs.h
               ${gen_dir}/xc_funcs_worker.h
               ${PROJECT_BINARY_DIR}/xc_version.h
