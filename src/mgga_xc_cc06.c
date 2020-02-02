@@ -8,14 +8,17 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_XC_CC06          229 /* Cancio and Chou 2006 */
 
 #include "maple2c/mgga_exc/mgga_xc_cc06.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
 
-const xc_func_info_type xc_func_info_mgga_xc_cc06 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_xc_cc06 = {
   XC_MGGA_XC_CC06,
   XC_EXCHANGE_CORRELATION,
   "Cancio and Chou 2006",
@@ -26,5 +29,10 @@ const xc_func_info_type xc_func_info_mgga_xc_cc06 = {
   0, NULL, NULL,
   NULL, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 

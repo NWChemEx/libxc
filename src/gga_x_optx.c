@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_OPTX         110 /* Handy & Cohen OPTX 01                          */
 
@@ -18,8 +20,9 @@ typedef struct{
 static void 
 gga_x_optx_init(xc_func_type *p)
 {
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_optx_params));
+  assert(sizeof(gga_x_optx_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(gga_x_optx_params));
 }
 
 static const func_params_type ext_params[] = {
@@ -33,7 +36,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_optx_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_x_optx_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (gga_x_optx_params *) (p->params);
 
   params->a     = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -43,8 +47,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_optx.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_x_optx = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_optx = {
   XC_GGA_X_OPTX,
   XC_EXCHANGE,
   "Handy & Cohen OPTX 01",
@@ -54,5 +59,10 @@ const xc_func_info_type xc_func_info_gga_x_optx = {
   1e-22,
   3, ext_params, set_ext_params,
   gga_x_optx_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

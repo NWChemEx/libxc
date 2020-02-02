@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_VMT_PBE          71 /* Vela, Medel, and Trickey with mu = mu_PBE */
 #define XC_GGA_X_VMT_GE           70 /* Vela, Medel, and Trickey with mu = mu_GE  */
@@ -22,8 +24,9 @@ gga_x_vmt_init(xc_func_type *p)
 {
   gga_x_vmt_params *params;
 
-  assert(p != NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_vmt_params));
+  assert(sizeof(gga_x_vmt_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_x_vmt_params));
   params = (gga_x_vmt_params *) (p->params);
 
   switch(p->info->number){
@@ -43,9 +46,10 @@ gga_x_vmt_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_x_vmt.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
 
-const xc_func_info_type xc_func_info_gga_x_vmt_pbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_vmt_pbe = {
   XC_GGA_X_VMT_PBE,
   XC_EXCHANGE,
   "Vela, Medel, and Trickey with mu = mu_PBE",
@@ -55,10 +59,15 @@ const xc_func_info_type xc_func_info_gga_x_vmt_pbe = {
   1e-32,
   0, NULL, NULL,
   gga_x_vmt_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_vmt_ge = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_vmt_ge = {
   XC_GGA_X_VMT_GE,
   XC_EXCHANGE,
   "Vela, Medel, and Trickey with mu = mu_GE",
@@ -68,5 +77,10 @@ const xc_func_info_type xc_func_info_gga_x_vmt_ge = {
   1e-32,
   0, NULL, NULL,
   gga_x_vmt_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

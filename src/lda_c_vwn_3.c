@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_VWN_3   30   /* Vosko, Wilk, & Nusair (3)   */
 
 #include "maple2c/lda_exc/lda_c_vwn_3.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_c_vwn_3 = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_vwn_3 = {
   XC_LDA_C_VWN_3,
   XC_CORRELATION,
   "Vosko, Wilk & Nusair (VWN3)",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_lda_c_vwn_3 = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL, work_lda,
-  NULL, NULL
+  NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

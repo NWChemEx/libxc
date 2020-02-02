@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_M06_L         203 /* M06-L exchange functional from Minnesota          */
 #define XC_HYB_MGGA_X_M06_HF    444 /* M06-HF hybrid exchange functional from Minnesota  */
@@ -39,7 +41,7 @@ static const double a_revm06l[12] = {
 static const double d_revm06l[6] = {-0.423227252, 0.0, 0.003724234, 0.0, 0.0, 0.0};
 
 typedef struct{
-  const double *a, *d;
+  double a[12], d[6];
 } mgga_x_m06l_params;
 
 
@@ -48,28 +50,29 @@ mgga_x_m06l_init(xc_func_type *p)
 {
   mgga_x_m06l_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_x_m06l_params));
+  assert(sizeof(mgga_x_m06l_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(mgga_x_m06l_params));
   params = (mgga_x_m06l_params *)p->params;
 
   switch(p->info->number){
   case XC_MGGA_X_M06_L:
-    params->a = a_m06l;
-    params->d = d_m06l;
+    memcpy(params->a, a_m06l, sizeof(a_m06l));
+    memcpy(params->d, d_m06l, sizeof(d_m06l));
     break;
   case XC_HYB_MGGA_X_M06_HF:
-    params->a = a_m06hf;
-    params->d = d_m06hf;
+    memcpy(params->a, a_m06hf, sizeof(a_m06hf));
+    memcpy(params->d, d_m06hf, sizeof(d_m06hf));
     p->cam_alpha = 1.0;
     break;
   case XC_HYB_MGGA_X_M06:
-    params->a = a_m06;
-    params->d = d_m06;
+    memcpy(params->a, a_m06, sizeof(a_m06));
+    memcpy(params->d, d_m06, sizeof(d_m06));
     p->cam_alpha = 0.27;
     break;
   case XC_MGGA_X_REVM06_L:
-    params->a = a_revm06l;
-    params->d = d_revm06l;
+    memcpy(params->a, a_revm06l, sizeof(a_revm06l));
+    memcpy(params->d, d_revm06l, sizeof(d_revm06l));
     break;
   default:
     fprintf(stderr, "Internal error in mgga_x_m06l\n");
@@ -79,8 +82,9 @@ mgga_x_m06l_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_x_m06l.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_x_m06_l = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_m06_l = {
   XC_MGGA_X_M06_L,
   XC_EXCHANGE,
   "Minnesota M06-L exchange functional",
@@ -91,9 +95,14 @@ const xc_func_info_type xc_func_info_mgga_x_m06_l = {
   0, NULL, NULL,
   mgga_x_m06l_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_m06_hf = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_m06_hf = {
   XC_HYB_MGGA_X_M06_HF,
   XC_EXCHANGE,
   "Minnesota M06-HF hybrid exchange functional",
@@ -104,9 +113,14 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m06_hf = {
   0, NULL, NULL,
   mgga_x_m06l_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_m06 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_m06 = {
   XC_HYB_MGGA_X_M06,
   XC_EXCHANGE,
   "Minnesota M06 hybrid exchange functional",
@@ -117,9 +131,14 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m06 = {
   0, NULL, NULL,
   mgga_x_m06l_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_revm06_l = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_revm06_l = {
   XC_MGGA_X_REVM06_L,
   XC_EXCHANGE,
   "Minnesota revM06-L exchange functional",
@@ -130,4 +149,9 @@ const xc_func_info_type xc_func_info_mgga_x_revm06_l = {
   0, NULL, NULL,
   mgga_x_m06l_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

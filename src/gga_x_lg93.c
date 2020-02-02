@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_LG93  113 /* Lacks & Gordon 93 */
 
 #include "maple2c/gga_exc/gga_x_lg93.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_x_lg93 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_lg93 = {
   XC_GGA_X_LG93,
   XC_EXCHANGE,
   "Lacks & Gordon 93",
@@ -23,6 +26,11 @@ const xc_func_info_type xc_func_info_gga_x_lg93 = {
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 

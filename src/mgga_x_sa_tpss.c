@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_SA_TPSS          542 /* TPSS with correct surface asymptotics */
 
 #include "maple2c/mgga_exc/mgga_x_sa_tpss.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_x_sa_tpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_sa_tpss = {
   XC_MGGA_X_SA_TPSS,
   XC_EXCHANGE,
   "TPSS with correct surface asymptotics",
@@ -25,4 +28,9 @@ const xc_func_info_type xc_func_info_mgga_x_sa_tpss = {
   0, NULL, NULL,
   NULL, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

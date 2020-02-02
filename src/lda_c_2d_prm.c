@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /************************************************************************
 Correlation functional by Pittalis, Rasanen & Marques for the 2D electron gas
@@ -26,13 +28,14 @@ typedef struct{
 static void
 lda_c_2d_prm_init(xc_func_type *p)
 {
-  assert(p != NULL && p->params == NULL);
+  assert(p != NULL);
 
-  p->params = malloc(sizeof(lda_c_2d_prm_params));
+  //p->params = malloc(sizeof(lda_c_2d_prm_params));
 }
 
 #include "maple2c/lda_exc/lda_c_2d_prm.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
 static const func_params_type ext_params[] = {
   {"N", 2.0, "Number of electrons"},
@@ -45,7 +48,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   lda_c_2d_prm_params *params;
   double ff;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(lda_c_2d_prm_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (lda_c_2d_prm_params *) (p->params);
 
   params->N = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -58,7 +62,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   params->c = M_PI/(2.0*(params->N - 1.0)*prm_q*prm_q); /* Eq. (13) */
 }
 
-const xc_func_info_type xc_func_info_lda_c_2d_prm = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_2d_prm = {
   XC_LDA_C_2D_PRM,
   XC_CORRELATION,
   "PRM (for 2D systems)",
@@ -68,5 +72,10 @@ const xc_func_info_type xc_func_info_lda_c_2d_prm = {
   1e-32,
   1, ext_params, set_ext_params,
   lda_c_2d_prm_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_PMGB06   590   /* Long-range LDA correlation functional */
 
@@ -24,8 +26,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/lda_exc/lda_c_pmgb06.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_c_pmgb06 = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_pmgb06 = {
   XC_LDA_C_PMGB06,
   XC_EXCHANGE,
   "Long-range LDA correlation functional",
@@ -35,5 +38,10 @@ const xc_func_info_type xc_func_info_lda_c_pmgb06 = {
   1e-13,
   1, ext_params, set_ext_params,
   NULL, NULL, 
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

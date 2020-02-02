@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_OPTC       200 /* Optimized correlation functional of Cohen and Handy */
 
 #include "maple2c/gga_exc/gga_c_optc.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_c_optc = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_optc = {
   XC_GGA_C_OPTC,
   XC_CORRELATION,
   "Optimized correlation functional of Cohen and Handy",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_c_optc = {
   1e-12,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

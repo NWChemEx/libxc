@@ -7,14 +7,17 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_KCIS         562 /* Krieger, Chen, Iafrate, and Savin */
 #define XC_HYB_MGGA_XC_B0KCIS  563 /* Hybrid based on KCIS */
 
 #include "maple2c/mgga_exc/mgga_c_kcis.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_c_kcis = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_kcis = {
   XC_MGGA_C_KCIS,
   XC_CORRELATION,
   "Krieger, Chen, Iafrate, and Savin",
@@ -24,7 +27,12 @@ const xc_func_info_type xc_func_info_mgga_c_kcis = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, NULL, work_mgga
+  NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
 /*************************************************************/
@@ -38,7 +46,7 @@ xc_hyb_mgga_xc_b0kcis_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_b0kcis = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_b0kcis = {
   XC_HYB_MGGA_XC_B0KCIS,
   XC_EXCHANGE_CORRELATION,
   "Hybrid based on KCIS",
@@ -48,5 +56,10 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b0kcis = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_mgga_xc_b0kcis_init, NULL, 
-  NULL, NULL, work_mgga
+  NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_RC04          27 /* Ragot-Cortona */
 
 #include "maple2c/lda_exc/lda_c_rc04.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_c_rc04 = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_rc04 = {
   XC_LDA_C_RC04,
   XC_CORRELATION,
   "Ragot-Cortona",
@@ -24,6 +27,11 @@ const xc_func_info_type xc_func_info_lda_c_rc04 = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 

@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_X_ERF   546   /* Attenuated exchange LDA (erf) */
 
@@ -25,8 +27,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/lda_exc/lda_x_erf.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_x_erf = {
+EXTERN const xc_func_info_type xc_func_info_lda_x_erf = {
   XC_LDA_X_ERF,
   XC_EXCHANGE,
   "Attenuated exchange LDA (erf)",
@@ -36,5 +39,10 @@ const xc_func_info_type xc_func_info_lda_x_erf = {
   1e-13,
   1, ext_params, set_ext_params,
   NULL, NULL, 
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

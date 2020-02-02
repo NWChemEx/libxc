@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_GGA_XC_HSE03       427 /* the 2003 version of the screened hybrid HSE */
 #define XC_HYB_GGA_XC_HSE06       428 /* the 2006 version of the screened hybrid HSE */
@@ -98,7 +100,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   xc_func_set_ext_params(p->func_aux[1], &omega_PBE);
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hse03 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hse03 = {
   XC_HYB_GGA_XC_HSE03,
   XC_EXCHANGE_CORRELATION,
   "HSE03",
@@ -108,10 +110,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hse03 = {
   1e-32,
   3, ext_params_hse03, set_ext_params,
   hyb_gga_xc_hse_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hse06 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hse06 = {
   XC_HYB_GGA_XC_HSE06,
   XC_EXCHANGE_CORRELATION,
   "HSE06",
@@ -121,10 +124,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hse06 = {
   1e-32,
   3, ext_params_hse06, set_ext_params,
   hyb_gga_xc_hse_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hse12 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hse12 = {
   XC_HYB_GGA_XC_HSE12,
   XC_EXCHANGE_CORRELATION,
   "HSE12",
@@ -134,10 +138,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hse12 = {
   1e-32,
   3, ext_params_hse12, set_ext_params,
   hyb_gga_xc_hse_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hse12s = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hse12s = {
   XC_HYB_GGA_XC_HSE12S,
   XC_EXCHANGE_CORRELATION,
   "HSE12 (short-range version)",
@@ -147,7 +152,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hse12s = {
   1e-32,
   3, ext_params_hse12s, set_ext_params,
   hyb_gga_xc_hse_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 static void
@@ -166,7 +172,7 @@ hyb_gga_xc_hse_sol_init(xc_func_type *p)
 }
 
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hse_sol = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hse_sol = {
   XC_HYB_GGA_XC_HSE_SOL,
   XC_EXCHANGE_CORRELATION,
   "HSEsol",
@@ -176,7 +182,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hse_sol = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_hse_sol_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 static void
@@ -193,7 +200,7 @@ hyb_gga_xc_lc_wpbe_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[0], &(p->cam_omega));
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbe = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbe = {
   XC_HYB_GGA_XC_LC_WPBE,
   XC_EXCHANGE_CORRELATION,
   "Long-range corrected PBE (LC-wPBE) by Vydrov and Scuseria",
@@ -203,6 +210,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbe = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_lc_wpbe_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
@@ -235,7 +243,7 @@ hyb_gga_xc_lrc_wpbe_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[0], &(p->cam_omega));
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lrc_wpbeh = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_lrc_wpbeh = {
   XC_HYB_GGA_XC_LRC_WPBEH,
   XC_EXCHANGE_CORRELATION,
   "Long-range corrected short-range hybrid PBE (LRC-wPBEh) by Rohrdanz, Martins and Herbert",
@@ -245,10 +253,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lrc_wpbeh = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_lrc_wpbeh_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lrc_wpbe = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_lrc_wpbe = {
   XC_HYB_GGA_XC_LRC_WPBE,
   XC_EXCHANGE_CORRELATION,
   "Long-range corrected PBE (LRC-wPBE) by Rohrdanz, Martins and Herbert",
@@ -258,6 +267,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lrc_wpbe = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_lrc_wpbe_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
@@ -317,7 +327,7 @@ hyb_gga_xc_lc_wpbeh_whs_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[0], &(p->cam_omega));
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbe_whs = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbe_whs = {
   XC_HYB_GGA_XC_LC_WPBE_WHS,
   XC_EXCHANGE_CORRELATION,
   "Long-range corrected PBE (LC-wPBE) by Weintraub, Henderson and Scuseria",
@@ -327,10 +337,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbe_whs = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_lc_wpbe_whs_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbeh_whs = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbeh_whs = {
   XC_HYB_GGA_XC_LC_WPBEH_WHS,
   XC_EXCHANGE_CORRELATION,
   "Long-range corrected short-range hybrid PBE (LC-wPBE) by Weintraub, Henderson and Scuseria",
@@ -340,10 +351,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbeh_whs = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_lc_wpbeh_whs_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbe08_whs = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbe08_whs = {
   XC_HYB_GGA_XC_LC_WPBE08_WHS,
   XC_EXCHANGE_CORRELATION,
   "Long-range corrected PBE (LC-wPBE) by Weintraub, Henderson and Scuseria",
@@ -353,10 +365,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbe08_whs = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_lc_wpbe08_whs_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbesol_whs = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbesol_whs = {
   XC_HYB_GGA_XC_LC_WPBESOL_WHS,
   XC_EXCHANGE_CORRELATION,
   "Long-range corrected PBE (LC-wPBE) by Weintraub, Henderson and Scuseria",
@@ -366,6 +379,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lc_wpbesol_whs = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_lc_wpbesol_whs_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
@@ -403,7 +417,7 @@ hyb_gga_xc_hjs_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[1], &omega);
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_pbe = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_pbe = {
   XC_HYB_GGA_XC_HJS_PBE,
   XC_EXCHANGE_CORRELATION,
   "HJS hybrid screened exchange PBE version",
@@ -413,10 +427,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_pbe = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_hjs_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_pbe_sol = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_pbe_sol = {
   XC_HYB_GGA_XC_HJS_PBE_SOL,
   XC_EXCHANGE_CORRELATION,
   "HJS hybrid screened exchange PBE_SOL version",
@@ -426,10 +441,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_pbe_sol = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_hjs_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_b88 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_b88 = {
   XC_HYB_GGA_XC_HJS_B88,
   XC_EXCHANGE_CORRELATION,
   "HJS hybrid screened exchange B88 version",
@@ -439,10 +455,11 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_b88 = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_hjs_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_b97x = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_b97x = {
   XC_HYB_GGA_XC_HJS_B97X,
   XC_EXCHANGE_CORRELATION,
   "HJS hybrid screened exchange B97x version",
@@ -452,5 +469,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hjs_b97x = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_hjs_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };

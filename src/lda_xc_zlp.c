@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_XC_ZLP     43   /* Zhao, Levy & Parr, Eq. (20)  */
 
 #include "maple2c/lda_exc/lda_xc_zlp.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_xc_zlp = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_zlp = {
   XC_LDA_XC_ZLP,
   XC_EXCHANGE_CORRELATION,
   "Zhao, Levy & Parr, Eq. (20)",
@@ -24,5 +27,10 @@ const xc_func_info_type xc_func_info_lda_xc_zlp = {
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

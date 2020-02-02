@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /* Local tau approximation */
 
@@ -15,8 +17,9 @@
 
 #include "maple2c/mgga_exc/mgga_x_mk00.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_x_mk00 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_mk00 = {
   XC_MGGA_X_MK00,
   XC_EXCHANGE,
   "Exchange for accurate virtual orbital energies",
@@ -27,6 +30,11 @@ const xc_func_info_type xc_func_info_mgga_x_mk00 = {
   0, NULL, NULL,
   NULL, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
 
@@ -43,7 +51,7 @@ mgga_x_mk00b_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[1], par_x_b88);
 }
 
-const xc_func_info_type xc_func_info_mgga_x_mk00b = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_mk00b = {
   XC_MGGA_X_MK00B,
   XC_EXCHANGE,
   "Exchange for accurate virtual orbital energies (v. B)",
@@ -54,4 +62,9 @@ const xc_func_info_type xc_func_info_mgga_x_mk00b = {
   0, NULL, NULL,
   mgga_x_mk00b_init, NULL,
   NULL, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

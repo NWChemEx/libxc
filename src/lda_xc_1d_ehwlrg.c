@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /* these functionals is for the soft-Coulomb interaction with alpha=1 */
 
@@ -24,8 +26,9 @@ lda_xc_1d_ehwlrg_init(xc_func_type *p)
 {
   lda_xc_1d_ehwlrg_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_xc_1d_ehwlrg_params));
+  assert(sizeof(lda_xc_1d_ehwlrg_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(lda_xc_1d_ehwlrg_params));
   params = (lda_xc_1d_ehwlrg_params *) (p->params);
 
   switch(p->info->number){
@@ -52,8 +55,9 @@ lda_xc_1d_ehwlrg_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_xc_1d_ehwlrg.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_1 = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_1 = {
   XC_LDA_XC_1D_EHWLRG_1,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 1 electron",
@@ -63,10 +67,15 @@ const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_1 = {
   1e-32,
   0, NULL, NULL,
   lda_xc_1d_ehwlrg_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_2 = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_2 = {
   XC_LDA_XC_1D_EHWLRG_2,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 2 electrons",
@@ -76,11 +85,16 @@ const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_2 = {
   1e-32,
   0, NULL, NULL,
   lda_xc_1d_ehwlrg_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
 
-const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_3 = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_3 = {
   XC_LDA_XC_1D_EHWLRG_3,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 3 electrons",
@@ -90,5 +104,10 @@ const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_3 = {
   1e-32,
   0, NULL, NULL,
   lda_xc_1d_ehwlrg_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

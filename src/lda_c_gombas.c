@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /************************************************************************
  Wigner's parametrization from the low density limit
@@ -16,8 +18,9 @@
 
 #include "maple2c/lda_exc/lda_c_gombas.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_c_gombas = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_gombas = {
   XC_LDA_C_GOMBAS,
   XC_CORRELATION,
   "Gombas",
@@ -27,5 +30,10 @@ const xc_func_info_type xc_func_info_lda_c_gombas = {
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

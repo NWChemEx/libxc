@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_BC95          240 /* Becke correlation 95 */
 
@@ -19,8 +21,8 @@ typedef struct{
 static void 
 mgga_c_bc95_init(xc_func_type *p)
 {
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_c_bc95_params));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(mgga_c_bc95_params));
 }
 
 static const func_params_type ext_params[] = {
@@ -33,7 +35,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_c_bc95_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(mgga_c_bc95_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (mgga_c_bc95_params *) (p->params);
 
   params->css  = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -42,8 +45,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_c_bc95.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_c_bc95 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_bc95 = {
   XC_MGGA_C_BC95,
   XC_CORRELATION,
   "Becke correlation 95",
@@ -54,5 +58,10 @@ const xc_func_info_type xc_func_info_mgga_c_bc95 = {
   2, ext_params, set_ext_params,
   mgga_c_bc95_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 

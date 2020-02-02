@@ -8,7 +8,7 @@ set(Libxc_EMAIL        "libxc@tddft.org")
 set(Libxc_URL          "http://www.tddft.org/programs/Libxc")
 set(Libxc_LICENSE      "Mozilla Public License, version 2.0 (MPL-2.0)")
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.14)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 ################################### Options ####################################
@@ -16,7 +16,7 @@ include(psi4OptionsTools)
 option_with_default(CMAKE_BUILD_TYPE "Build type" Release)
 option_with_print(BUILD_SHARED_LIBS "Build final library as shared, not static" OFF)
 option_with_print(BUILD_TESTING "Compile the testing infrastructure" ON)
-option_with_default(BUILD_FPIC "Libraries will be compiled with position independent code" ON)
+option_with_default(BUILD_FPIC "Libraries will be compiled with position independent code" OFF)
 if((${BUILD_SHARED_LIBS}) AND NOT ${BUILD_FPIC})
     message(FATAL_ERROR "BUILD_SHARED_LIBS ON and BUILD_FPIC OFF are incompatible, as shared library requires position independent code")
 endif()
@@ -38,6 +38,28 @@ include(custom_static_library)
 ################################# Main Project #################################
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+
+find_package(HIP)
+if (HIP_FOUND)
+    find_package(HIPBLAS REQUIRED)
+    enable_language(CXX)
+endif()
+find_package(ROCM)
+if (ROCM_FOUND)
+    include(ROCMSetupVersion)
+    include(ROCMCreatePackage)
+    include(ROCMInstallTargets)
+    include(ROCMPackageConfigHelpers)
+    include(ROCMInstallSymlinks)
+    find_package(HIP REQUIRED)
+    find_package(HIPBLAS REQUIRED)
+    enable_language(CXX)
+endif()
+# Check for CUDA support
+find_package(CUDA)
+if (CUDA_FOUND)
+    enable_language(CUDA)
+endif()
 
 set(PN ${PROJECT_NAME})
 
@@ -92,246 +114,741 @@ set(${PROJECT_NAME}_SOVERSION ${XC_CURRENT}:${XC_REVISION}:${XC_AGE})
 math(EXPR ${PROJECT_NAME}_SOMAJOR "${XC_CURRENT} - ${XC_AGE}")
 message(STATUS "Libxc SO Full ${${PROJECT_NAME}_SOVERSION} Major ${${PROJECT_NAME}_SOMAJOR}")
 
-set(raw_sources_list
-bessel.c
-expint_e1.c
-func_info.c
-functionals.c
-gga.c
-gga_c_acgga.c
-gga_c_acggap.c
-gga_c_am05.c
-gga_c_bmk.c
-gga_c_cs1.c
-gga_c_ft97.c
-gga_c_gapc.c
-gga_c_gaploc.c
-gga_c_hcth_a.c
-gga_c_lm.c
-gga_c_lyp.c
-gga_c_op_b88.c
-gga_c_op_g96.c
-gga_c_op_pbe.c
-gga_c_op_pw91.c
-gga_c_op_xalpha.c
-gga_c_optc.c
-gga_c_p86.c
-gga_c_pbe.c
-gga_c_pbeloc.c
-gga_c_pw91.c
-gga_c_q2d.c
-gga_c_regtpss.c
-gga_c_revtca.c
-gga_c_scan_e0.c
-gga_c_sg4.c
-gga_c_sogga11.c
-gga_c_tca.c
-gga_c_w94.c
-gga_c_wi.c
-gga_c_wl.c
-gga_c_zpbeint.c
-gga_c_zvpbeint.c
-gga_c_zvpbeloc.c
-gga_k_dk.c
-gga_k_meyer.c
-gga_k_ol1.c
-gga_k_ol2.c
-gga_x_ol2.c
-gga_k_pearson.c
-gga_k_tflw.c
-gga_k_thakkar.c
-gga_k_gds08.c
-gga_k_exp4.c
-gga_x_2d_b86.c
-gga_x_2d_b86_mgc.c
-gga_x_2d_b88.c
-gga_x_2d_pbe.c
-gga_x_airy.c
-gga_x_ak13.c
-gga_x_am05.c
-gga_x_b86.c
-gga_x_b88.c
-gga_k_llp.c
-gga_k_pw86.c
-gga_k_mpbe.c
-gga_k_apbe.c
-gga_k_apbeint.c
-gga_k_lc94.c
-gga_x_bayesian.c
-gga_x_beefvdw.c
-gga_x_bpccac.c
-gga_x_c09x.c
-gga_x_cap.c
-gga_x_chachiyo.c
-gga_x_dk87.c
-gga_x_ev93.c
-gga_x_ft97.c
-gga_x_g96.c
-gga_x_gg99.c
-gga_x_hcth_a.c
-gga_x_herman.c
-gga_x_hjs.c
-gga_x_hjs_b88_v2.c
-gga_x_htbs.c
-gga_x_ityh.c
-gga_x_kt.c
-gga_x_lag.c
-gga_x_lb.c
-gga_x_lg93.c
-gga_x_lspbe.c
-gga_x_lsrpbe.c
-gga_x_lv_rpw86.c
-gga_x_mpbe.c
-gga_x_n12.c
-gga_x_optx.c
-gga_x_pbe.c
-gga_x_pbea.c
-gga_x_pbeint.c
-gga_x_pbepow.c
-gga_x_pbetrans.c
-gga_x_pw86.c
-gga_x_pw91.c
-gga_x_q2d.c
-gga_x_rge2.c
-gga_x_rpbe.c
-gga_x_sfat.c
-gga_x_sfat_pbe.c
-gga_x_sg4.c
-gga_x_sogga11.c
-gga_x_ssb_sw.c
-gga_x_vmt.c
-gga_x_vmt84.c
-gga_x_wc.c
-gga_x_wpbeh.c
-gga_x_fd_lb94.c
-gga_xc_1w.c
-gga_xc_b97.c
-gga_xc_edf1.c
-gga_xc_oblyp_d.c
-gga_xc_th1.c
-gga_xc_th2.c
-gga_xc_th3.c
-gga_xc_vv10.c
-hyb_gga_xc_b1wc.c
-hyb_gga_xc_b3lyp.c
-hyb_gga_xc_cam_b3lyp.c
-hyb_gga_xc_cam_qtp.c
-hyb_gga_xc_camy_b3lyp.c
-hyb_gga_xc_camy_blyp.c
-hyb_gga_xc_edf2.c
-hyb_gga_xc_hse.c
-hyb_gga_xc_lcy_blyp.c
-hyb_gga_xc_lcy_pbe.c
-hyb_gga_xc_o3lyp.c
-hyb_gga_xc_pbeh.c
-hyb_gga_xc_wb97.c
-hyb_mgga_x_dldf.c
-hyb_mgga_x_m05.c
-hyb_mgga_x_mvsh.c
-hyb_mgga_xc_b88b95.c
-hyb_mgga_xc_kcis.c
-hyb_mgga_xc_tpssh.c
-hyb_mgga_xc_wb97mv.c
-integrate.c
-lda.c
-lda_c_1d_csc.c
-lda_c_1d_loos.c
-lda_c_2d_amgb.c
-lda_c_2d_prm.c
-lda_c_chachiyo.c
-lda_c_gombas.c
-lda_c_hl.c
-lda_c_lp96.c
-lda_c_ml1.c
-lda_c_pk09.c
-lda_c_pw.c
-lda_c_pz.c
-lda_c_rc04.c
-lda_c_rpa.c
-lda_c_vwn.c
-lda_c_vwn_1.c
-lda_c_vwn_2.c
-lda_c_vwn_3.c
-lda_c_vwn_4.c
-lda_c_vwn_rpa.c
-lda_c_wigner.c
-lda_c_gk72.c
-lda_k_tf.c
-lda_k_zlp.c
-lda_k_gds08_worker.c
-lda_x.c
-lda_x_1d_soft.c
-lda_x_1d_exponential.c
-lda_x_2d.c
-lda_x_erf.c
-lda_x_rel.c
-lda_xc_1d_ehwlrg.c
-lda_xc_ksdt.c
-lda_xc_teter93.c
-lda_xc_zlp.c
-lda_xc_bn05.c
-lda_c_pmgb06.c
-lda_xc_tih.c
-mgga.c
-mgga_c_b88.c
-mgga_c_bc95.c
-mgga_c_cs.c
-mgga_c_kcis.c
-mgga_xc_lp90.c
-mgga_c_m05.c
-mgga_c_m06l.c
-mgga_c_m08.c
-mgga_c_pkzb.c
-mgga_c_revscan.c
-mgga_c_revtpss.c
-mgga_c_scan.c
-mgga_c_tpss.c
-mgga_c_tpssloc.c
-mgga_c_vsxc.c
-mgga_k_pc07.c
-mgga_x_2d_prhg07.c
-mgga_x_br89.c
-mgga_x_br89_explicit.c
-mgga_x_gvt4.c
-mgga_x_gx.c
-mgga_x_lta.c
-mgga_x_m06l.c
-mgga_x_m08.c
-mgga_x_m11.c
-mgga_x_m11_l.c
-mgga_x_mbeef.c
-mgga_x_mbeefvdw.c
-mgga_x_mk00.c
-mgga_x_mn12.c
-mgga_x_ms.c
-mgga_x_msb.c
-mgga_x_mvs.c
-mgga_x_mvsb.c
-mgga_x_pbe_gx.c
-mgga_x_pkzb.c
-mgga_x_sa_tpss.c
-mgga_x_scan.c
-mgga_x_tau_hcth.c
-mgga_x_tm.c
-mgga_x_tpss.c
-mgga_x_regtpss.c
-mgga_x_vt84.c
-mgga_x_rtpss.c
-mgga_xc_b97mv.c
-mgga_xc_cc06.c
-mgga_xc_hle17.c
-mgga_xc_otpss_d.c
-mgga_xc_zlp.c
-mgga_xc_b98.c
-mix_func.c
-references.c
-special_functions.c
-util.c
-version.c
-)
+if (HIP_FOUND)
+    set(raw_sources_list
+    func_info.c
+    gga.c
+    lda.c
+    lda_c_pk09.c          # this one kills the nvcc compiler
+    mgga.c
+    mix_func.c
+    references.c
+    version.c
+    )
+    set(raw_sources_list_device
+    bessel.cpp
+    expint_e1.cpp
+    functionals.cpp
+    functionals_device.cpp
+    gga.cpp
+    gga_c_acgga.cpp
+    gga_c_acggap.cpp
+    gga_c_am05.cpp
+    gga_c_bmk.cpp
+    gga_c_cs1.cpp
+    gga_c_pbe.cpp
+    gga_c_ft97.cpp
+    gga_c_gapc.cpp
+    gga_c_gaploc.cpp
+    gga_c_hcth_a.cpp
+    gga_c_lm.cpp
+    gga_c_lyp.cpp
+    gga_c_op_b88.cpp
+    gga_c_op_g96.cpp
+    gga_c_op_pbe.cpp
+    gga_c_op_pw91.cpp
+    gga_c_op_xalpha.cpp
+    gga_c_optc.cpp
+    gga_c_p86.cpp
+    gga_c_pbeloc.cpp
+    gga_c_pw91.cpp
+    gga_c_q2d.cpp
+    gga_c_regtpss.cpp
+    gga_c_revtca.cpp
+    gga_c_scan_e0.cpp
+    gga_c_sg4.cpp
+    gga_c_sogga11.cpp
+    gga_c_tca.cpp
+    gga_c_w94.cpp
+    gga_c_wi.cpp
+    gga_c_wl.cpp
+    gga_c_zpbeint.cpp
+    gga_c_zvpbeint.cpp
+    gga_c_zvpbeloc.cpp
+    gga_k_dk.cpp
+    gga_k_meyer.cpp
+    gga_k_ol1.cpp
+    gga_k_ol2.cpp
+    gga_k_pearson.cpp
+    gga_k_tflw.cpp
+    gga_k_thakkar.cpp
+    gga_k_gds08.cpp
+    gga_k_exp4.cpp
+    gga_k_llp.cpp
+    gga_k_pw86.cpp
+    gga_k_mpbe.cpp
+    gga_k_apbe.cpp
+    gga_k_apbeint.cpp
+    gga_k_lc94.cpp
+    gga_x_2d_b86.cpp
+    gga_x_2d_b86_mgc.cpp
+    gga_x_2d_b88.cpp
+    gga_x_2d_pbe.cpp
+    gga_x_airy.cpp
+    gga_x_ak13.cpp
+    gga_x_am05.cpp
+    gga_x_b86.cpp
+    gga_x_b88.cpp
+    gga_x_bayesian.cpp
+    gga_x_beefvdw.cpp
+    gga_x_bpccac.cpp
+    gga_x_c09x.cpp
+    gga_x_cap.cpp
+    gga_x_chachiyo.cpp
+    gga_x_dk87.cpp
+    gga_x_ev93.cpp
+    gga_x_ft97.cpp
+    gga_x_g96.cpp
+    gga_x_gg99.cpp
+    gga_x_hcth_a.cpp
+    gga_x_herman.cpp
+    gga_x_hjs.cpp
+    gga_x_hjs_b88_v2.cpp
+    gga_x_htbs.cpp
+    gga_x_ityh.cpp
+    gga_x_kt.cpp
+    gga_x_lag.cpp
+    gga_x_lb.cpp
+    gga_x_lg93.cpp
+    gga_x_lspbe.cpp
+    gga_x_lsrpbe.cpp
+    gga_x_lv_rpw86.cpp
+    gga_x_mpbe.cpp
+    gga_x_n12.cpp
+    gga_x_ol2.cpp
+    gga_x_optx.cpp
+    gga_x_pbea.cpp
+    gga_x_pbeint.cpp
+    gga_x_pbepow.cpp
+    gga_x_pbetrans.cpp
+    gga_x_pw86.cpp
+    gga_x_pw91.cpp
+    gga_x_q2d.cpp
+    gga_x_rge2.cpp
+    gga_x_rpbe.cpp
+    gga_x_sfat.cpp
+    gga_x_sfat_pbe.cpp
+    gga_x_sg4.cpp
+    gga_x_sogga11.cpp
+    gga_x_ssb_sw.cpp
+    gga_x_vmt.cpp
+    gga_x_vmt84.cpp
+    gga_x_wc.cpp
+    gga_x_wpbeh.cpp
+    gga_x_fd_lb94.cpp
+    gga_x_pbe.cpp
+    gga_xc_1w.cpp
+    gga_xc_b97.cpp
+    gga_xc_edf1.cpp
+    gga_xc_oblyp_d.cpp
+    gga_xc_th1.cpp
+    gga_xc_th2.cpp
+    gga_xc_th3.cpp
+    gga_xc_vv10.cpp
+    hyb_gga_xc_b1wc.cpp
+    hyb_gga_xc_b3lyp.cpp
+    hyb_gga_xc_cam_b3lyp.cpp
+    hyb_gga_xc_cam_qtp.cpp
+    hyb_gga_xc_camy_b3lyp.cpp
+    hyb_gga_xc_camy_blyp.cpp
+    hyb_gga_xc_edf2.cpp
+    hyb_gga_xc_hse.cpp
+    hyb_gga_xc_lcy_blyp.cpp
+    hyb_gga_xc_lcy_pbe.cpp
+    hyb_gga_xc_o3lyp.cpp
+    hyb_gga_xc_pbeh.cpp
+    hyb_gga_xc_wb97.cpp
+    hyb_mgga_x_dldf.cpp
+    hyb_mgga_x_m05.cpp
+    hyb_mgga_x_mvsh.cpp
+    hyb_mgga_xc_b88b95.cpp
+    hyb_mgga_xc_kcis.cpp
+    hyb_mgga_xc_tpssh.cpp
+    hyb_mgga_xc_wb97mv.cpp
+    integrate.cpp
+    lda.cpp
+    lda_c_1d_csc.cpp
+    lda_c_1d_loos.cpp
+    lda_c_2d_amgb.cpp
+    lda_c_2d_prm.cpp
+    lda_c_chachiyo.cpp
+    lda_c_gk72.cpp
+    lda_c_gombas.cpp
+    lda_c_hl.cpp
+    lda_c_lp96.cpp
+    lda_c_ml1.cpp
+    lda_c_pmgb06.cpp
+    lda_c_pw.cpp
+    lda_c_pz.cpp
+    lda_c_rc04.cpp
+    lda_c_rpa.cpp
+    lda_c_vwn.cpp
+    lda_c_vwn_1.cpp
+    lda_c_vwn_2.cpp
+    lda_c_vwn_3.cpp
+    lda_c_vwn_4.cpp
+    lda_c_vwn_rpa.cpp
+    lda_c_wigner.cpp
+    lda_k_gds08_worker.cpp
+    lda_k_tf.cpp
+    lda_k_zlp.cpp
+    lda_x.cpp
+    lda_x_1d_exponential.cpp
+    lda_x_1d_soft.cpp
+    lda_x_2d.cpp
+    lda_x_erf.cpp
+    lda_x_rel.cpp
+    lda_xc_1d_ehwlrg.cpp
+    lda_xc_ksdt.cpp
+    lda_xc_teter93.cpp
+    lda_xc_zlp.cpp
+    lda_xc_bn05.cpp
+    lda_xc_tih.cpp
+    mgga.cpp
+    mgga_c_b88.cpp
+    mgga_c_bc95.cpp
+    mgga_c_cs.cpp
+    mgga_c_kcis.cpp
+    mgga_xc_lp90.cpp
+    mgga_c_m05.cpp
+    mgga_c_m06l.cpp
+    mgga_c_m08.cpp
+    mgga_c_pkzb.cpp
+    mgga_c_revscan.cpp
+    mgga_c_revtpss.cpp
+    mgga_c_scan.cpp
+    mgga_c_tpss.cpp
+    mgga_c_tpssloc.cpp
+    mgga_c_vsxc.cpp
+    mgga_k_pc07.cpp
+    mgga_x_2d_prhg07.cpp
+    mgga_x_br89.cpp
+    mgga_x_br89_explicit.cpp
+    mgga_x_gvt4.cpp
+    mgga_x_gx.cpp
+    mgga_x_lta.cpp
+    mgga_x_m06l.cpp
+    mgga_x_m08.cpp
+    mgga_x_m11.cpp
+    mgga_x_m11_l.cpp
+    mgga_x_mbeef.cpp
+    mgga_x_mbeefvdw.cpp
+    mgga_x_mk00.cpp
+    mgga_x_mn12.cpp
+    mgga_x_ms.cpp
+    mgga_x_msb.cpp
+    mgga_x_mvs.cpp
+    mgga_x_mvsb.cpp
+    mgga_x_pbe_gx.cpp
+    mgga_x_pkzb.cpp
+    mgga_x_sa_tpss.cpp
+    mgga_x_scan.cpp
+    mgga_x_tau_hcth.cpp
+    mgga_x_tm.cpp
+    mgga_x_tpss.cpp
+    mgga_x_regtpss.cpp
+    mgga_x_vt84.cpp
+    mgga_x_rtpss.cpp
+    mgga_xc_b97mv.cpp
+    mgga_xc_cc06.cpp
+    mgga_xc_hle17.cpp
+    mgga_xc_otpss_d.cpp
+    mgga_xc_zlp.cpp
+    mgga_xc_b98.cpp
+    mix_func.cpp
+    special_functions.cpp
+    util.cpp
+    xc_func_data.cpp
+    )
+elseif (CUDA_FOUND)
+    set(raw_sources_list
+    func_info.c
+    gga.c
+    lda.c
+    lda_c_pk09.c          # this one kills the nvcc compiler
+    mgga.c
+    mix_func.c
+    references.c
+    version.c
+    )
+    set(raw_sources_list_device
+    bessel.cu
+    expint_e1.cu
+    functionals.cu
+    functionals_device.cu
+    gga.cu
+    gga_c_acgga.cu
+    gga_c_acggap.cu
+    gga_c_am05.cu
+    gga_c_bmk.cu
+    gga_c_cs1.cu
+    gga_c_pbe.cu
+    gga_c_ft97.cu
+    gga_c_gapc.cu
+    gga_c_gaploc.cu
+    gga_c_hcth_a.cu
+    gga_c_lm.cu
+    gga_c_lyp.cu
+    gga_c_op_b88.cu
+    gga_c_op_g96.cu
+    gga_c_op_pbe.cu
+    gga_c_op_pw91.cu
+    gga_c_op_xalpha.cu
+    gga_c_optc.cu
+    gga_c_p86.cu
+    gga_c_pbeloc.cu
+    gga_c_pw91.cu
+    gga_c_q2d.cu
+    gga_c_regtpss.cu
+    gga_c_revtca.cu
+    gga_c_scan_e0.cu
+    gga_c_sg4.cu
+    gga_c_sogga11.cu
+    gga_c_tca.cu
+    gga_c_w94.cu
+    gga_c_wi.cu
+    gga_c_wl.cu
+    gga_c_zpbeint.cu
+    gga_c_zvpbeint.cu
+    gga_c_zvpbeloc.cu
+    gga_k_dk.cu
+    gga_k_meyer.cu
+    gga_k_ol1.cu
+    gga_k_ol2.cu
+    gga_k_pearson.cu
+    gga_k_tflw.cu
+    gga_k_thakkar.cu
+    gga_k_gds08.cu
+    gga_k_exp4.cu
+    gga_k_llp.cu
+    gga_k_pw86.cu
+    gga_k_mpbe.cu
+    gga_k_apbe.cu
+    gga_k_apbeint.cu
+    gga_k_lc94.cu
+    gga_x_2d_b86.cu
+    gga_x_2d_b86_mgc.cu
+    gga_x_2d_b88.cu
+    gga_x_2d_pbe.cu
+    gga_x_airy.cu
+    gga_x_ak13.cu
+    gga_x_am05.cu
+    gga_x_b86.cu
+    gga_x_b88.cu
+    gga_x_bayesian.cu
+    gga_x_beefvdw.cu
+    gga_x_bpccac.cu
+    gga_x_c09x.cu
+    gga_x_cap.cu
+    gga_x_chachiyo.cu
+    gga_x_dk87.cu
+    gga_x_ev93.cu
+    gga_x_ft97.cu
+    gga_x_g96.cu
+    gga_x_gg99.cu
+    gga_x_hcth_a.cu
+    gga_x_herman.cu
+    gga_x_hjs.cu
+    gga_x_hjs_b88_v2.cu
+    gga_x_htbs.cu
+    gga_x_ityh.cu
+    gga_x_kt.cu
+    gga_x_lag.cu
+    gga_x_lb.cu
+    gga_x_lg93.cu
+    gga_x_lspbe.cu
+    gga_x_lsrpbe.cu
+    gga_x_lv_rpw86.cu
+    gga_x_mpbe.cu
+    gga_x_n12.cu
+    gga_x_ol2.cu
+    gga_x_optx.cu
+    gga_x_pbea.cu
+    gga_x_pbeint.cu
+    gga_x_pbepow.cu
+    gga_x_pbetrans.cu
+    gga_x_pw86.cu
+    gga_x_pw91.cu
+    gga_x_q2d.cu
+    gga_x_rge2.cu
+    gga_x_rpbe.cu
+    gga_x_sfat.cu
+    gga_x_sfat_pbe.cu
+    gga_x_sg4.cu
+    gga_x_sogga11.cu
+    gga_x_ssb_sw.cu
+    gga_x_vmt.cu
+    gga_x_vmt84.cu
+    gga_x_wc.cu
+    gga_x_wpbeh.cu
+    gga_x_fd_lb94.cu
+    gga_x_pbe.cu
+    gga_xc_1w.cu
+    gga_xc_b97.cu
+    gga_xc_edf1.cu
+    gga_xc_oblyp_d.cu
+    gga_xc_th1.cu
+    gga_xc_th2.cu
+    gga_xc_th3.cu
+    gga_xc_vv10.cu
+    hyb_gga_xc_b1wc.cu
+    hyb_gga_xc_b3lyp.cu
+    hyb_gga_xc_cam_b3lyp.cu
+    hyb_gga_xc_cam_qtp.cu
+    hyb_gga_xc_camy_b3lyp.cu
+    hyb_gga_xc_camy_blyp.cu
+    hyb_gga_xc_edf2.cu
+    hyb_gga_xc_hse.cu
+    hyb_gga_xc_lcy_blyp.cu
+    hyb_gga_xc_lcy_pbe.cu
+    hyb_gga_xc_o3lyp.cu
+    hyb_gga_xc_pbeh.cu
+    hyb_gga_xc_wb97.cu
+    hyb_mgga_x_dldf.cu
+    hyb_mgga_x_m05.cu
+    hyb_mgga_x_mvsh.cu
+    hyb_mgga_xc_b88b95.cu
+    hyb_mgga_xc_kcis.cu
+    hyb_mgga_xc_tpssh.cu
+    hyb_mgga_xc_wb97mv.cu
+    integrate.cu
+    lda.cu
+    lda_c_1d_csc.cu
+    lda_c_1d_loos.cu
+    lda_c_2d_amgb.cu
+    lda_c_2d_prm.cu
+    lda_c_chachiyo.cu
+    lda_c_gk72.cu
+    lda_c_gombas.cu
+    lda_c_hl.cu
+    lda_c_lp96.cu
+    lda_c_ml1.cu
+    lda_c_pmgb06.cu
+    lda_c_pw.cu
+    lda_c_pz.cu
+    lda_c_rc04.cu
+    lda_c_rpa.cu
+    lda_c_vwn.cu
+    lda_c_vwn_1.cu
+    lda_c_vwn_2.cu
+    lda_c_vwn_3.cu
+    lda_c_vwn_4.cu
+    lda_c_vwn_rpa.cu
+    lda_c_wigner.cu
+    lda_k_gds08_worker.cu
+    lda_k_tf.cu
+    lda_k_zlp.cu
+    lda_x.cu
+    lda_x_1d_exponential.cu
+    lda_x_1d_soft.cu
+    lda_x_2d.cu
+    lda_x_erf.cu
+    lda_x_rel.cu
+    lda_xc_1d_ehwlrg.cu
+    lda_xc_ksdt.cu
+    lda_xc_teter93.cu
+    lda_xc_zlp.cu
+    lda_xc_bn05.cu
+    lda_xc_tih.cu
+    mgga.cu
+    mgga_c_b88.cu
+    mgga_c_bc95.cu
+    mgga_c_cs.cu
+    mgga_c_kcis.cu
+    mgga_xc_lp90.cu
+    mgga_c_m05.cu
+    mgga_c_m06l.cu
+    mgga_c_m08.cu
+    mgga_c_pkzb.cu
+    mgga_c_revscan.cu
+    mgga_c_revtpss.cu
+    mgga_c_scan.cu
+    mgga_c_tpss.cu
+    mgga_c_tpssloc.cu
+    mgga_c_vsxc.cu
+    mgga_k_pc07.cu
+    mgga_x_2d_prhg07.cu
+    mgga_x_br89.cu
+    mgga_x_br89_explicit.cu
+    mgga_x_gvt4.cu
+    mgga_x_gx.cu
+    mgga_x_lta.cu
+    mgga_x_m06l.cu
+    mgga_x_m08.cu
+    mgga_x_m11.cu
+    mgga_x_m11_l.cu
+    mgga_x_mbeef.cu
+    mgga_x_mbeefvdw.cu
+    mgga_x_mk00.cu
+    mgga_x_mn12.cu
+    mgga_x_ms.cu
+    mgga_x_msb.cu
+    mgga_x_mvs.cu
+    mgga_x_mvsb.cu
+    mgga_x_pbe_gx.cu
+    mgga_x_pkzb.cu
+    mgga_x_sa_tpss.cu
+    mgga_x_scan.cu
+    mgga_x_tau_hcth.cu
+    mgga_x_tm.cu
+    mgga_x_tpss.cu
+    mgga_x_regtpss.cu
+    mgga_x_vt84.cu
+    mgga_x_rtpss.cu
+    mgga_xc_b97mv.cu
+    mgga_xc_cc06.cu
+    mgga_xc_hle17.cu
+    mgga_xc_otpss_d.cu
+    mgga_xc_zlp.cu
+    mgga_xc_b98.cu
+    mix_func.cu
+    special_functions.cu
+    util.cu
+    xc_func_data.cu
+    )
+else()
+    set(raw_sources_list
+    bessel.c
+    expint_e1.c
+    func_info.c
+    functionals.c
+    gga.c
+    gga_c_acgga.c
+    gga_c_acggap.c
+    gga_c_am05.c
+    gga_c_bmk.c
+    gga_c_cs1.c
+    gga_c_ft97.c
+    gga_c_gapc.c
+    gga_c_gaploc.c
+    gga_c_hcth_a.c
+    gga_c_lm.c
+    gga_c_lyp.c
+    gga_c_op_b88.c
+    gga_c_op_g96.c
+    gga_c_op_pbe.c
+    gga_c_op_pw91.c
+    gga_c_op_xalpha.c
+    gga_c_optc.c
+    gga_c_p86.c
+    gga_c_pbe.c
+    gga_c_pbeloc.c
+    gga_c_pw91.c
+    gga_c_q2d.c
+    gga_c_regtpss.c
+    gga_c_revtca.c
+    gga_c_scan_e0.c
+    gga_c_sg4.c
+    gga_c_sogga11.c
+    gga_c_tca.c
+    gga_c_w94.c
+    gga_c_wi.c
+    gga_c_wl.c
+    gga_c_zpbeint.c
+    gga_c_zvpbeint.c
+    gga_c_zvpbeloc.c
+    gga_k_dk.c
+    gga_k_meyer.c
+    gga_k_ol1.c
+    gga_k_ol2.c
+    gga_x_ol2.c
+    gga_k_pearson.c
+    gga_k_tflw.c
+    gga_k_thakkar.c
+    gga_k_gds08.c
+    gga_k_exp4.c
+    gga_x_2d_b86.c
+    gga_x_2d_b86_mgc.c
+    gga_x_2d_b88.c
+    gga_x_2d_pbe.c
+    gga_x_airy.c
+    gga_x_ak13.c
+    gga_x_am05.c
+    gga_x_b86.c
+    gga_x_b88.c
+    gga_k_llp.c
+    gga_k_pw86.c
+    gga_k_mpbe.c
+    gga_k_apbe.c
+    gga_k_apbeint.c
+    gga_k_lc94.c
+    gga_x_bayesian.c
+    gga_x_beefvdw.c
+    gga_x_bpccac.c
+    gga_x_c09x.c
+    gga_x_cap.c
+    gga_x_chachiyo.c
+    gga_x_dk87.c
+    gga_x_ev93.c
+    gga_x_ft97.c
+    gga_x_g96.c
+    gga_x_gg99.c
+    gga_x_hcth_a.c
+    gga_x_herman.c
+    gga_x_hjs.c
+    gga_x_hjs_b88_v2.c
+    gga_x_htbs.c
+    gga_x_ityh.c
+    gga_x_kt.c
+    gga_x_lag.c
+    gga_x_lb.c
+    gga_x_lg93.c
+    gga_x_lspbe.c
+    gga_x_lsrpbe.c
+    gga_x_lv_rpw86.c
+    gga_x_mpbe.c
+    gga_x_n12.c
+    gga_x_optx.c
+    gga_x_pbe.c
+    gga_x_pbea.c
+    gga_x_pbeint.c
+    gga_x_pbepow.c
+    gga_x_pbetrans.c
+    gga_x_pw86.c
+    gga_x_pw91.c
+    gga_x_q2d.c
+    gga_x_rge2.c
+    gga_x_rpbe.c
+    gga_x_sfat.c
+    gga_x_sfat_pbe.c
+    gga_x_sg4.c
+    gga_x_sogga11.c
+    gga_x_ssb_sw.c
+    gga_x_vmt.c
+    gga_x_vmt84.c
+    gga_x_wc.c
+    gga_x_wpbeh.c
+    gga_x_fd_lb94.c
+    gga_xc_1w.c
+    gga_xc_b97.c
+    gga_xc_edf1.c
+    gga_xc_oblyp_d.c
+    gga_xc_th1.c
+    gga_xc_th2.c
+    gga_xc_th3.c
+    gga_xc_vv10.c
+    hyb_gga_xc_b1wc.c
+    hyb_gga_xc_b3lyp.c
+    hyb_gga_xc_cam_b3lyp.c
+    hyb_gga_xc_cam_qtp.c
+    hyb_gga_xc_camy_b3lyp.c
+    hyb_gga_xc_camy_blyp.c
+    hyb_gga_xc_edf2.c
+    hyb_gga_xc_hse.c
+    hyb_gga_xc_lcy_blyp.c
+    hyb_gga_xc_lcy_pbe.c
+    hyb_gga_xc_o3lyp.c
+    hyb_gga_xc_pbeh.c
+    hyb_gga_xc_wb97.c
+    hyb_mgga_x_dldf.c
+    hyb_mgga_x_m05.c
+    hyb_mgga_x_mvsh.c
+    hyb_mgga_xc_b88b95.c
+    hyb_mgga_xc_kcis.c
+    hyb_mgga_xc_tpssh.c
+    hyb_mgga_xc_wb97mv.c
+    integrate.c
+    lda.c
+    lda_c_1d_csc.c
+    lda_c_1d_loos.c
+    lda_c_2d_amgb.c
+    lda_c_2d_prm.c
+    lda_c_chachiyo.c
+    lda_c_gombas.c
+    lda_c_hl.c
+    lda_c_lp96.c
+    lda_c_ml1.c
+    lda_c_pk09.c
+    lda_c_pw.c
+    lda_c_pz.c
+    lda_c_rc04.c
+    lda_c_rpa.c
+    lda_c_vwn.c
+    lda_c_vwn_1.c
+    lda_c_vwn_2.c
+    lda_c_vwn_3.c
+    lda_c_vwn_4.c
+    lda_c_vwn_rpa.c
+    lda_c_wigner.c
+    lda_c_gk72.c
+    lda_k_tf.c
+    lda_k_zlp.c
+    lda_k_gds08_worker.c
+    lda_x.c
+    lda_x_1d_soft.c
+    lda_x_1d_exponential.c
+    lda_x_2d.c
+    lda_x_erf.c
+    lda_x_rel.c
+    lda_xc_1d_ehwlrg.c
+    lda_xc_ksdt.c
+    lda_xc_teter93.c
+    lda_xc_zlp.c
+    lda_xc_bn05.c
+    lda_c_pmgb06.c
+    lda_xc_tih.c
+    mgga.c
+    mgga_c_b88.c
+    mgga_c_bc95.c
+    mgga_c_cs.c
+    mgga_c_kcis.c
+    mgga_xc_lp90.c
+    mgga_c_m05.c
+    mgga_c_m06l.c
+    mgga_c_m08.c
+    mgga_c_pkzb.c
+    mgga_c_revscan.c
+    mgga_c_revtpss.c
+    mgga_c_scan.c
+    mgga_c_tpss.c
+    mgga_c_tpssloc.c
+    mgga_c_vsxc.c
+    mgga_k_pc07.c
+    mgga_x_2d_prhg07.c
+    mgga_x_br89.c
+    mgga_x_br89_explicit.c
+    mgga_x_gvt4.c
+    mgga_x_gx.c
+    mgga_x_lta.c
+    mgga_x_m06l.c
+    mgga_x_m08.c
+    mgga_x_m11.c
+    mgga_x_m11_l.c
+    mgga_x_mbeef.c
+    mgga_x_mbeefvdw.c
+    mgga_x_mk00.c
+    mgga_x_mn12.c
+    mgga_x_ms.c
+    mgga_x_msb.c
+    mgga_x_mvs.c
+    mgga_x_mvsb.c
+    mgga_x_pbe_gx.c
+    mgga_x_pkzb.c
+    mgga_x_sa_tpss.c
+    mgga_x_scan.c
+    mgga_x_tau_hcth.c
+    mgga_x_tm.c
+    mgga_x_tpss.c
+    mgga_x_regtpss.c
+    mgga_x_vt84.c
+    mgga_x_rtpss.c
+    mgga_xc_b97mv.c
+    mgga_xc_cc06.c
+    mgga_xc_hle17.c
+    mgga_xc_otpss_d.c
+    mgga_xc_zlp.c
+    mgga_xc_b98.c
+    mix_func.c
+    references.c
+    special_functions.c
+    util.c
+    version.c
+    )
+endif()
 
 set(src_prefix "src/")
-string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list "${raw_sources_list}")
+string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list        "${raw_sources_list}")
+string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list_device "${raw_sources_list_device}")
 
 set(raw_sources_list_f90
     src/xc_f.c
@@ -349,10 +866,48 @@ string(REPLACE "<xc_version.h>" "\"xc_version.h\"" _quoted_src "${_src_contents}
 file(WRITE ${PROJECT_BINARY_DIR}/${src_prefix}xc.h "${_quoted_src}")
 
 # STATIC/SHARED on below governed by BUILD_SHARED_LIBS
+if(HIP_FOUND)
+    add_library(xc_device ${sources_list_device})
+    if(CUDA_FOUND)
+        target_link_libraries(xc_device INTERFACE ${STANDARD_MATH_LIBRARY} ${HIP_hipblas_LIBRARY} ${CUDA_cublas_LIBRARY})
+    else()
+        target_link_libraries(xc_device INTERFACE ${STANDARD_MATH_LIBRARY} ${HIP_hipblas_LIBRARY})
+    endif()
+    set_target_properties(xc_device PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
+                                               SOVERSION ${${PROJECT_NAME}_SOMAJOR})
+    #target_compile_options(xc_device PUBLIC CMAKE_CUDA_FLAGS "-rdc true")
+    if(${BUILD_SHARED_LIBS})
+        target_link_libraries(xc_device PRIVATE ${LIBC_INTERJECT})
+        if(APPLE)
+            set_target_properties(xc_device PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+        endif()
+    endif()
+    #set_property(TARGET xc_device PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+elseif(CUDA_FOUND)
+    add_library(xc_device ${sources_list_device})
+    target_link_libraries(xc_device INTERFACE ${STANDARD_MATH_LIBRARY} ${CUDA_cublas_LIBRARY})
+    set_target_properties(xc_device PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
+                                               SOVERSION ${${PROJECT_NAME}_SOMAJOR})
+    #target_compile_options(xc_device PUBLIC CMAKE_CUDA_FLAGS "-rdc true")
+    if(${BUILD_SHARED_LIBS})
+        target_link_libraries(xc_device PRIVATE ${LIBC_INTERJECT})
+        if(APPLE)
+            set_target_properties(xc_device PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+        endif()
+    endif()
+    set_property(TARGET xc_device PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+endif()
+
+set(CMAKE_C_FLAGS    "${CMAKE_C_FLAGS} -std=c99")
 add_library(xc ${sources_list})
-target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY})
+if(HIP_FOUND)
+    target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY} ${HIP_hipblas_LIBRARY})
+elseif(CUDA_FOUND)
+    target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY} ${CUDA_cublas_LIBRARY})
+else()
+    target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY})
+endif()
 set_target_properties(xc PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
-                                    COMPILE_FLAGS "-std=c99"
                                     SOVERSION ${${PROJECT_NAME}_SOMAJOR})
 if(${BUILD_SHARED_LIBS})
     target_link_libraries(xc PRIVATE ${LIBC_INTERJECT})
@@ -401,10 +956,22 @@ execute_process(
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 add_executable(xc-info "${src_prefix}/xc-info.c")
-target_link_libraries(xc-info xc)
+if(HIP_FOUND)
+    target_link_libraries(xc-info xc_device xc ${HIP_hipblas_LIBRARY})
+elseif(CUDA_FOUND)
+    target_link_libraries(xc-info xc_device xc ${CUDA_cublas_LIBRARY})
+else()
+    target_link_libraries(xc-info xc)
+endif()
 
 add_executable(xc-threshold "${src_prefix}/xc-threshold.c")
-target_link_libraries(xc-threshold xc)
+if(HIP_FOUND)
+    target_link_libraries(xc-threshold xc_device xc ${HIP_hipblas_LIBRARY})
+elseif(CUDA_FOUND)
+    target_link_libraries(xc-threshold xc_device xc ${CUDA_cublas_LIBRARY})
+else()
+    target_link_libraries(xc-threshold xc)
+endif()
 
 
 include_directories(${PROJECT_SOURCE_DIR}/${src_prefix}  # for util.h
@@ -438,6 +1005,19 @@ install(TARGETS xc xc-info xc-threshold
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if(HIP_FOUND)
+    install(TARGETS xc_device
+            EXPORT "${PN}Targets"
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+elseif(CUDA_FOUND)
+    install(TARGETS xc_device
+            EXPORT "${PN}Targets"
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif()
 if(ENABLE_FORTRAN OR ENABLE_FORTRAN03)
     install(TARGETS xcf90
             EXPORT "${PN}Targets"

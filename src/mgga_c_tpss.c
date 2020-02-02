@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_TPSS          231 /* Tao, Perdew, Staroverov & Scuseria correlation */
 #define XC_MGGA_C_TM            251 /* Tao and Mo 2016 correlation */
@@ -24,8 +26,9 @@ mgga_c_tpss_init(xc_func_type *p)
 {
   mgga_c_tpss_params *params;
 
-  assert(p != NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_c_tpss_params));
+  assert(sizeof(mgga_c_tpss_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(mgga_c_tpss_params));
   params = (mgga_c_tpss_params *)p->params;
 
   switch(p->info->number){
@@ -55,7 +58,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_c_tpss_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(mgga_c_tpss_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (mgga_c_tpss_params *) (p->params);
 
   params->beta    = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -68,9 +72,10 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_c_tpss.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
 
-const xc_func_info_type xc_func_info_mgga_c_tpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_tpss = {
   XC_MGGA_C_TPSS,
   XC_CORRELATION,
   "Tao, Perdew, Staroverov & Scuseria",
@@ -81,9 +86,14 @@ const xc_func_info_type xc_func_info_mgga_c_tpss = {
   6, ext_params, set_ext_params,
   mgga_c_tpss_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_c_tm = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_tm = {
   XC_MGGA_C_TM,
   XC_CORRELATION,
   "Tao and Mo 2016 correlation",
@@ -94,4 +104,9 @@ const xc_func_info_type xc_func_info_mgga_c_tm = {
   0, NULL, NULL,
   mgga_c_tpss_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_K_TF      50   /* Thomas-Fermi kinetic energy functional */
 #define XC_LDA_K_LP      51   /* Lee and Parr Gaussian ansatz           */
@@ -21,8 +23,9 @@ lda_k_tf_init(xc_func_type *p)
 {
   lda_k_tf_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_k_tf_params));
+  assert(sizeof(lda_k_tf_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(lda_k_tf_params));
   params = (lda_k_tf_params *) (p->params);
 
   switch(p->info->number){
@@ -42,8 +45,9 @@ lda_k_tf_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_k_tf.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_k_tf = {
+EXTERN const xc_func_info_type xc_func_info_lda_k_tf = {
   XC_LDA_K_TF,
   XC_KINETIC,
   "Thomas-Fermi kinetic energy",
@@ -53,10 +57,15 @@ const xc_func_info_type xc_func_info_lda_k_tf = {
   1e-24,
   0, NULL, NULL,
   lda_k_tf_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_k_lp = {
+EXTERN const xc_func_info_type xc_func_info_lda_k_lp = {
   XC_LDA_K_LP,
   XC_KINETIC,
   "Lee and Parr Gaussian ansatz for the kinetic energy",
@@ -66,6 +75,11 @@ const xc_func_info_type xc_func_info_lda_k_lp = {
   1e-24,
   0, NULL, NULL,
   lda_k_tf_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 

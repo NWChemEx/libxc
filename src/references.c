@@ -11,6 +11,7 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+#include <stdlib.h>
 #include <xc.h>
 
 func_reference_type xc_ref_Dirac1930_376 = {

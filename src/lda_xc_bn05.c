@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_XC_BN05   588   /* Baer and Neuhauser, gamma=1 */
 
 #include "maple2c/lda_exc/lda_xc_bn05.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_xc_bn05 = {
+EXTERN const xc_func_info_type xc_func_info_lda_xc_bn05 = {
   XC_LDA_XC_BN05,
   XC_EXCHANGE_CORRELATION,
   "Baer and Neuhauser, gamma=1",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_lda_xc_bn05 = {
   5e-24,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

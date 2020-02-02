@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_MN12_L        227 /* MN12-L exchange functional from Minnesota          */
 #define XC_HYB_MGGA_X_MN12_SX   248 /* MN12-SX hybrid exchange functional from Minnesota  */
@@ -87,8 +89,9 @@ mgga_x_mn12_init(xc_func_type *p)
 {
   mgga_x_mn12_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(mgga_x_mn12_params));
+  assert(sizeof(mgga_x_mn12_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(mgga_x_mn12_params));
   params = (mgga_x_mn12_params *) (p->params);
 
   switch(p->info->number){
@@ -118,9 +121,10 @@ mgga_x_mn12_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_x_mn12.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
 
-const xc_func_info_type xc_func_info_mgga_x_mn12_l = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_mn12_l = {
   XC_MGGA_X_MN12_L,
   XC_EXCHANGE,
   "Minnesota MN12-L exchange functional",
@@ -131,9 +135,14 @@ const xc_func_info_type xc_func_info_mgga_x_mn12_l = {
   0, NULL, NULL,
   mgga_x_mn12_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_mn12_sx = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_mn12_sx = {
   XC_HYB_MGGA_X_MN12_SX,
   XC_EXCHANGE,
   "Minnesota MN12-SX hybrid exchange functional",
@@ -143,10 +152,15 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_mn12_sx = {
   1e-32,
   0, NULL, NULL,
   mgga_x_mn12_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_mn15_l = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_mn15_l = {
   XC_MGGA_X_MN15_L,
   XC_EXCHANGE,
   "Minnesota MN15-L exchange functional",
@@ -157,9 +171,14 @@ const xc_func_info_type xc_func_info_mgga_x_mn15_l = {
   0, NULL, NULL,
   mgga_x_mn12_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_mn15 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_mn15 = {
   XC_HYB_MGGA_X_MN15,
   XC_EXCHANGE,
   "Minnesota MN15 hybrid exchange functional",
@@ -170,4 +189,9 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_mn15 = {
   0, NULL, NULL,
   mgga_x_mn12_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

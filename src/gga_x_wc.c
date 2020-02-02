@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_WC         118 /* Wu & Cohen */
 
 #include "maple2c/gga_exc/gga_x_wc.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_x_wc = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_wc = {
   XC_GGA_X_WC,
   XC_EXCHANGE,
   "Wu & Cohen",
@@ -23,6 +26,11 @@ const xc_func_info_type xc_func_info_gga_x_wc = {
   1e-32,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 

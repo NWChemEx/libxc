@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_AM05          135 /* Armiento & Mattsson 05 correlation             */
 
 #include "maple2c/gga_exc/gga_c_am05.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_c_am05 = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_am05 = {
   XC_GGA_C_AM05,
   XC_CORRELATION,
   "Armiento & Mattsson 05",
@@ -24,5 +27,10 @@ const xc_func_info_type xc_func_info_gga_c_am05 = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

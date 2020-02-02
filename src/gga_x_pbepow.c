@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_PBEpow         539 /* PBE power */
 
 #include "maple2c/gga_exc/gga_x_pbepow.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_x_pbepow = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pbepow = {
   XC_GGA_X_PBEpow,
   XC_EXCHANGE,
   "PBE power",
@@ -23,6 +26,11 @@ const xc_func_info_type xc_func_info_gga_x_pbepow = {
   5e-3, /* Gives NaN for densities as small as 1e-3 */
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 

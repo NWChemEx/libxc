@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_HCTH_A          34 /* HCTH-A */
 
 #include "maple2c/gga_exc/gga_x_hcth_a.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_x_hcth_a = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_hcth_a = {
   XC_GGA_X_HCTH_A,
   XC_EXCHANGE,
   "HCTH-A",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_x_hcth_a = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

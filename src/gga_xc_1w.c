@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_XC_XLYP       166  /* XLYP functional */
 #define XC_GGA_XC_PBE1W      173  /* Functionals fitted for water */
@@ -22,7 +24,7 @@ gga_xc_xlyp_init(xc_func_type *p)
   xc_mix_init(p, 4, funcs_id, funcs_coef);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_xlyp = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_xlyp = {
   XC_GGA_XC_XLYP,
   XC_EXCHANGE_CORRELATION,
   "XLYP",
@@ -32,7 +34,8 @@ const xc_func_info_type xc_func_info_gga_xc_xlyp = {
   1e-24,
   0, NULL, NULL,
   gga_xc_xlyp_init, 
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -45,7 +48,7 @@ gga_xc_pbe1w_init(xc_func_type *p)
   xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_pbe1w = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_pbe1w = {
   XC_GGA_XC_PBE1W,
   XC_EXCHANGE_CORRELATION,
   "PBE1W",
@@ -55,7 +58,8 @@ const xc_func_info_type xc_func_info_gga_xc_pbe1w = {
   1e-24,
   0, NULL, NULL,
   gga_xc_pbe1w_init, 
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -68,7 +72,7 @@ gga_xc_mpwlyp1w_init(xc_func_type *p)
   xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_mpwlyp1w = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_mpwlyp1w = {
   XC_GGA_XC_MPWLYP1W,
   XC_EXCHANGE_CORRELATION,
   "mPWLYP1w",
@@ -78,7 +82,8 @@ const xc_func_info_type xc_func_info_gga_xc_mpwlyp1w = {
   1e-24,
   0, NULL, NULL,
   gga_xc_mpwlyp1w_init, 
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -91,7 +96,7 @@ gga_xc_pbelyp1w_init(xc_func_type *p)
   xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_pbelyp1w = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_pbelyp1w = {
   XC_GGA_XC_PBELYP1W,
   XC_EXCHANGE_CORRELATION,
   "PBELYP1W",
@@ -101,6 +106,7 @@ const xc_func_info_type xc_func_info_gga_xc_pbelyp1w = {
   1e-32,
   0, NULL, NULL,
   gga_xc_pbelyp1w_init, 
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 

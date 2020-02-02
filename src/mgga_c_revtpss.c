@@ -8,14 +8,17 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_REVTPSS       241 /* revised TPSS correlation */
 
 #include "maple2c/mgga_exc/mgga_c_revtpss.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
 
-const xc_func_info_type xc_func_info_mgga_c_revtpss = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_revtpss = {
   XC_MGGA_C_REVTPSS,
   XC_CORRELATION,
   "revised TPSS correlation",
@@ -25,5 +28,10 @@ const xc_func_info_type xc_func_info_mgga_c_revtpss = {
   1e-13, /* densities smaller than 1e-26 give NaNs */
   0, NULL, NULL,
   NULL, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

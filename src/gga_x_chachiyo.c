@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_CHACHIYO     298 /* Chachiyo exchange */
 
 #include "maple2c/gga_exc/gga_x_chachiyo.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_x_chachiyo = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_chachiyo = {
   XC_GGA_X_CHACHIYO,
   XC_EXCHANGE,
   "Chachiyo exchange",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_x_chachiyo = {
   1e-25,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

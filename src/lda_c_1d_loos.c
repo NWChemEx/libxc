@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_LDA_C_1D_LOOS          26 /* P-F Loos correlation LDA     */
 
 #include "maple2c/lda_exc/lda_c_1d_loos.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_c_1d_loos = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_1d_loos = {
   XC_LDA_C_1D_LOOS,
   XC_CORRELATION,
   "P-F Loos correlation LDA",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_lda_c_1d_loos = {
   5e-28,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

@@ -8,15 +8,18 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_BEEFVDW          285 /* BEEF-vdW exchange */
 #define XC_GGA_XC_BEEFVDW         286 /* BEEF-vdW exchange-correlation */
 
 #include "maple2c/gga_exc/gga_x_beefvdw.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
 
-const xc_func_info_type xc_func_info_gga_x_beefvdw = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_beefvdw = {
   XC_GGA_X_BEEFVDW,
   XC_EXCHANGE,
   "BEEF-vdW exchange",
@@ -27,6 +30,11 @@ const xc_func_info_type xc_func_info_gga_x_beefvdw = {
   0, NULL, NULL,
   NULL, NULL, 
   NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
 
@@ -39,7 +47,7 @@ gga_xc_beefvdw_init(xc_func_type *p)
   xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_beefvdw = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_beefvdw = {
   XC_GGA_XC_BEEFVDW,
   XC_EXCHANGE_CORRELATION,
   "BEEF-vdW exchange-correlation",
@@ -50,4 +58,9 @@ const xc_func_info_type xc_func_info_gga_xc_beefvdw = {
   0, NULL, NULL,
   gga_xc_beefvdw_init, NULL, 
   NULL, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, NULL
+#endif
 };

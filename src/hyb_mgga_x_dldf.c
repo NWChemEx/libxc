@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_MGGA_X_DLDF      36 /* Dispersionless Density Functional */
 
@@ -19,8 +21,9 @@ mgga_x_dldf_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/hyb_mgga_x_dldf.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_hyb_mgga_x_dldf = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_x_dldf = {
   XC_HYB_MGGA_X_DLDF,
   XC_EXCHANGE,
   "Dispersionless Density Functional",
@@ -31,4 +34,9 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_dldf = {
   0, NULL, NULL,
   mgga_x_dldf_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

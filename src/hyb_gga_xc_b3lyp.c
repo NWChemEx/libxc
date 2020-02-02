@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_GGA_XC_B3PW91        401 /* The original (ACM) hybrid of Becke    */
 #define XC_HYB_GGA_XC_B3LYP         402 /* The (in)famous B3LYP                  */
@@ -32,7 +34,7 @@ xc_hyb_gga_xc_b3pw91_init(xc_func_type *p)
   p->cam_alpha = 0.20;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b3pw91 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b3pw91 = {
   XC_HYB_GGA_XC_B3PW91,
   XC_EXCHANGE_CORRELATION,
   "The original (ACM, B3PW91) hybrid of Becke",
@@ -42,7 +44,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3pw91 = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_b3pw91_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -57,7 +60,7 @@ xc_hyb_gga_xc_b3lyp_init(xc_func_type *p)
   p->cam_alpha = 0.20;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp = {
   XC_HYB_GGA_XC_B3LYP,
   XC_EXCHANGE_CORRELATION,
   "B3LYP",
@@ -67,7 +70,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_b3lyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 /*************************************************************/
@@ -81,7 +85,7 @@ xc_hyb_gga_xc_b3lyp5_init(xc_func_type *p)
   p->cam_alpha = 0.20;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp5 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp5 = {
   XC_HYB_GGA_XC_B3LYP5,
   XC_EXCHANGE_CORRELATION,
   "B3LYP with VWN functional 5 instead of RPA",
@@ -91,7 +95,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp5 = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_b3lyp5_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -106,7 +111,7 @@ xc_hyb_gga_xc_b3p86_init(xc_func_type *p)
   p->cam_alpha = 0.20;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b3p86 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b3p86 = {
   XC_HYB_GGA_XC_B3P86,
   XC_EXCHANGE_CORRELATION,
   "B3P86",
@@ -116,7 +121,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3p86 = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_b3p86_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -131,7 +137,7 @@ xc_hyb_gga_xc_mpw3pw_init(xc_func_type *p)
   p->cam_alpha = 0.20;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_mpw3pw = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_mpw3pw = {
   XC_HYB_GGA_XC_MPW3PW,
   XC_EXCHANGE_CORRELATION,
   "MPW3PW of Adamo & Barone",
@@ -141,7 +147,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw3pw = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_mpw3pw_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -156,7 +163,7 @@ xc_hyb_gga_xc_mpw3lyp_init(xc_func_type *p)
   p->cam_alpha = 0.218;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_mpw3lyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_mpw3lyp = {
   XC_HYB_GGA_XC_MPW3LYP,
   XC_EXCHANGE_CORRELATION,
   "MPW3LYP",
@@ -166,7 +173,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw3lyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_mpw3lyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -181,7 +189,7 @@ xc_hyb_gga_xc_mb3lyp_rc04_init(xc_func_type *p)
   p->cam_alpha = 0.20;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_mb3lyp_rc04 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_mb3lyp_rc04 = {
   XC_HYB_GGA_XC_MB3LYP_RC04,
   XC_EXCHANGE_CORRELATION,
   "B3LYP with RC04 LDA",
@@ -191,7 +199,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mb3lyp_rc04 = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_mb3lyp_rc04_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 /*************************************************************/
@@ -205,7 +214,7 @@ xc_hyb_gga_xc_revb3lyp_init(xc_func_type *p)
   p->cam_alpha = 0.20;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_revb3lyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_revb3lyp = {
   XC_HYB_GGA_XC_REVB3LYP,
   XC_EXCHANGE_CORRELATION,
   "Revised B3LYP",
@@ -215,7 +224,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_revb3lyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_revb3lyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -230,7 +240,7 @@ xc_hyb_gga_xc_b3lyps_init(xc_func_type *p)
   p->cam_alpha = 0.15;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyps = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyps = {
   XC_HYB_GGA_XC_B3LYPs,
   XC_EXCHANGE_CORRELATION,
   "B3LYP*",
@@ -240,7 +250,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyps = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_b3lyps_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -255,7 +266,7 @@ xc_hyb_gga_xc_b5050lyp_init(xc_func_type *p)
   p->cam_alpha = 0.50;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b5050lyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b5050lyp = {
   XC_HYB_GGA_XC_B5050LYP,
   XC_EXCHANGE_CORRELATION,
   "B5050LYP",
@@ -265,7 +276,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b5050lyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_b5050lyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -280,7 +292,7 @@ xc_hyb_gga_xc_kmlyp_init(xc_func_type *p)
   p->cam_alpha = 0.557;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_kmlyp = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_kmlyp = {
   XC_HYB_GGA_XC_KMLYP,
   XC_EXCHANGE_CORRELATION,
   "Kang-Musgrave hybrid",
@@ -290,7 +302,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_kmlyp = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_kmlyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -322,7 +335,7 @@ xc_hyb_gga_xc_apf_init(xc_func_type *p)
   p->cam_alpha = fb3pw91*xb3pw91 + fpbe0*xpbe0;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_apf = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_apf = {
   XC_HYB_GGA_XC_APF,
   XC_EXCHANGE_CORRELATION,
   "APF hybrid functional",
@@ -332,5 +345,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_apf = {
   1e-32,
   0, NULL, NULL,
   xc_hyb_gga_xc_apf_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };

@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_GGA_XC_PBEH      406 /* aka PBE0 or PBE1PBE */
 #define XC_HYB_GGA_XC_PBE0_13   456 /* PBE0-1/3            */
@@ -28,7 +30,7 @@ hyb_gga_xc_pbeh_init(xc_func_type *p)
 }
 
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_pbeh = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_pbeh = {
   XC_HYB_GGA_XC_PBEH,
   XC_EXCHANGE_CORRELATION,
   "PBEH (PBE0)",
@@ -38,7 +40,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbeh = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_pbeh_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 
 static void
@@ -51,7 +54,7 @@ hyb_gga_xc_pbe0_13_init(xc_func_type *p)
   p->cam_alpha = 1.0/3.0;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_pbe0_13 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_pbe0_13 = {
   XC_HYB_GGA_XC_PBE0_13,
   XC_EXCHANGE_CORRELATION,
   "PBE0-1/3",
@@ -61,7 +64,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbe0_13 = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_pbe0_13_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 
 
@@ -75,7 +79,7 @@ hyb_gga_xc_hpbeint_init(xc_func_type *p)
   p->cam_alpha = 1.0/6.0;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hpbeint = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hpbeint = {
   XC_HYB_GGA_XC_HPBEINT,
   XC_EXCHANGE_CORRELATION,
   "hPBEint",
@@ -85,7 +89,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hpbeint = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_hpbeint_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 
 
@@ -99,7 +104,7 @@ hyb_gga_xc_pbemol0_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_mol0 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_mol0 = {
   XC_HYB_GGA_XC_PBE_MOL0,
   XC_EXCHANGE_CORRELATION,
   "PBEmol0",
@@ -109,7 +114,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_mol0 = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_pbemol0_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 
 
@@ -123,7 +129,7 @@ hyb_gga_xc_pbesol0_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_sol0 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_sol0 = {
   XC_HYB_GGA_XC_PBE_SOL0,
   XC_EXCHANGE_CORRELATION,
   "PBEsol0",
@@ -133,7 +139,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_sol0 = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_pbesol0_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 
 
@@ -151,7 +158,7 @@ hyb_gga_xc_pbeb0_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_pbeb0 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_pbeb0 = {
   XC_HYB_GGA_XC_PBEB0,
   XC_EXCHANGE_CORRELATION,
   "PBEbeta0",
@@ -161,7 +168,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbeb0 = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_pbeb0_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 
 
@@ -179,7 +187,7 @@ hyb_gga_xc_pbemolb0_init(xc_func_type *p)
   p->cam_alpha = 0.25;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_molb0 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_molb0 = {
   XC_HYB_GGA_XC_PBE_MOLB0,
   XC_EXCHANGE_CORRELATION,
   "PBEmolbeta0",
@@ -189,7 +197,8 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_molb0 = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_pbemolb0_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };
 
 
@@ -203,7 +212,7 @@ hyb_gga_xc_pbe50_init(xc_func_type *p)
   p->cam_alpha = 0.5;
 }
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_pbe50 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_pbe50 = {
   XC_HYB_GGA_XC_PBE50,
   XC_EXCHANGE_CORRELATION,
   "PBE50",
@@ -213,5 +222,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbe50 = {
   1e-32,
   0, NULL, NULL,
   hyb_gga_xc_pbe50_init,
-  NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
+  NULL, NULL, NULL, NULL, /* this is taken care of by the generic routine */
+  NULL, NULL, NULL
 };

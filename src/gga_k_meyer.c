@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_K_MEYER        57 /* Meyer,  Wang, and Young */
 
 #include "maple2c/gga_exc/gga_k_meyer.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_k_meyer = {
+EXTERN const xc_func_info_type xc_func_info_gga_k_meyer = {
   XC_GGA_K_MEYER,
   XC_KINETIC,
   "Meyer,  Wang, and Young",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_k_meyer = {
   5e-14,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

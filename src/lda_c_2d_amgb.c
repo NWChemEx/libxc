@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /************************************************************************
  Correlation energy per particle and potentials for a homogeneous electron
@@ -18,8 +20,9 @@
 
 #include "maple2c/lda_exc/lda_c_2d_amgb.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_c_2d_amgb = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_2d_amgb = {
   XC_LDA_C_2D_AMGB,
   XC_CORRELATION,
   "AMGB (for 2D systems)",
@@ -29,5 +32,10 @@ const xc_func_info_type xc_func_info_lda_c_2d_amgb = {
   1e-9,
   0, NULL, NULL,
   NULL, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

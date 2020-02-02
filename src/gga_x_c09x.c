@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_C09X         158 /* C09x to be used with the VdW of Rutgers-Chalmers     */
 
 #include "maple2c/gga_exc/gga_x_c09x.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_x_c09x = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_c09x = {
   XC_GGA_X_C09X,
   XC_EXCHANGE,
   "C09x to be used with the VdW of Rutgers-Chalmers",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_x_c09x = {
   1e-32,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

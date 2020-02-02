@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_HERMAN          104 /* Herman et al original GGA                  */
 
 #include "maple2c/gga_exc/gga_x_herman.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_x_herman = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_herman = {
   XC_GGA_X_HERMAN,
   XC_EXCHANGE,
   "Herman Xalphabeta GGA",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_x_herman = {
   1e-24,
   0, NULL, NULL,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

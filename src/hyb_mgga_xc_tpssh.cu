@@ -1,0 +1,1 @@
+./hyb_mgga_xc_tpssh.c

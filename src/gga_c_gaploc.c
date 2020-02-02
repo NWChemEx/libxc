@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_GAPLOC  556 /* Gaploc */
 
 #include "maple2c/gga_exc/gga_c_gaploc.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_c_gaploc = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_gaploc = {
   XC_GGA_C_GAPLOC,
   XC_CORRELATION,
   "Gaploc",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_c_gaploc = {
   1e-18,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

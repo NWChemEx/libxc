@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_SFAT_PBE 601 /* short-range recipe for PBE functional */
 /* see
@@ -27,8 +29,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_sfat_pbe.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_x_sfat_pbe = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_sfat_pbe = {
   XC_GGA_X_SFAT_PBE,
   XC_EXCHANGE,
   "Short-range recipe for PBE functional - Yukawa",
@@ -38,6 +41,11 @@ const xc_func_info_type xc_func_info_gga_x_sfat_pbe = {
   1e-19,
   1, ext_params, set_ext_params,
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 

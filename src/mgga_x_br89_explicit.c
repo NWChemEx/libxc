@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_BR89_EXPLICIT    586 /* Becke-Roussel 89 with an explicit inversion of x(y), gamma = 0.8 */
 #define XC_MGGA_X_BR89_EXPLICIT_1  602 /* Becke-Roussel 89 with an explicit inversion of x(y), gamma = 1.0 */
@@ -23,8 +25,9 @@ mgga_x_br89_init(xc_func_type *p)
 {
   mgga_x_br89_params *params;
 
-  assert(p != NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_x_br89_params));
+  assert(sizeof(mgga_x_br89_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(mgga_x_br89_params));
   params = (mgga_x_br89_params *)p->params;
 
   switch(p->info->number){
@@ -49,7 +52,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_x_br89_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(mgga_x_br89_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
   params = (mgga_x_br89_params *) (p->params);
 
   params->gamma = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -57,8 +61,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_x_br89_explicit.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_x_br89_explicit = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_br89_explicit = {
   XC_MGGA_X_BR89_EXPLICIT,
   XC_EXCHANGE,
   "Becke-Roussel 89 with an explicit inversion of x(y), gamma = 0.8",
@@ -68,10 +73,15 @@ const xc_func_info_type xc_func_info_mgga_x_br89_explicit = {
   1.0e-12,
   1, ext_params, set_ext_params,
   mgga_x_br89_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_x_br89_explicit_1 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_br89_explicit_1 = {
   XC_MGGA_X_BR89_EXPLICIT_1,
   XC_EXCHANGE,
   "Becke-Roussel 89 with an explicit inversion of x(y), gamma = 1.0",
@@ -81,5 +91,10 @@ const xc_func_info_type xc_func_info_mgga_x_br89_explicit_1 = {
   1.0e-12,
   0, NULL, NULL,
   mgga_x_br89_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

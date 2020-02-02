@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_HYB_MGGA_XC_B98         598 /* Becke 98 */
 
@@ -19,8 +21,9 @@ hyb_mgga_xc_b98_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_xc_b98.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_hyb_mgga_xc_b98 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_mgga_xc_b98 = {
   XC_HYB_MGGA_XC_B98,
   XC_EXCHANGE_CORRELATION,
   "Becke 98",
@@ -31,5 +34,10 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b98 = {
   0, NULL, NULL,
   hyb_mgga_xc_b98_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 

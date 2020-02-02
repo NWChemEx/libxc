@@ -1,0 +1,12 @@
+#ifndef _FUNCTIONALS_DEVICE_HIPH
+#define _FUNCTIONALS_DEVICE_HIPH
+
+#ifdef __HIPCC__
+
+extern xc_func_type *xc_func_data_device;
+
+__host__ void xc_func_init_device(xc_func_type *p);
+__host__ void xc_func_end_device();
+
+#endif
+#endif

@@ -83,26 +83,26 @@ int main(int argc, char **argv) {
   /* Open files */
   in=fopen(argv[1],"r");
   if(!in) {
-    fprintf(stderr,"Error opening input file.\n");
+    fprintf(stderr,"%s: Error opening input file.\n",argv[0]);
     exit(1);
   }
 
   ref=fopen(argv[2],"r");
   if(!ref) {
-    fprintf(stderr,"Error opening reference file.\n");
+    fprintf(stderr,"%s: Error opening reference file.\n",argv[0]);
     exit(1);
   }
 
   /* Read first line: functional id and file length */
   in_line();
   if(sscanf(buf,"%i %i",&fidin,&nin)!=2) {
-    fprintf(stderr,"Error reading func_id and file size from input file.\n");
+    fprintf(stderr,"%s: Error reading func_id and file size from input file.\n",argv[0]);
     error_exit();
   }
 
   ref_line();
   if(sscanf(buf,"%i %i",&fidref,&nref)!=2) {
-    fprintf(stderr,"Error reading func_id and file size from input file.\n");
+    fprintf(stderr,"%s: Error reading func_id and file size from input file.\n",argv[0]);
     error_exit();
   }
   

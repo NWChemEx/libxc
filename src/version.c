@@ -7,9 +7,9 @@
 */
 
 
+#include <stdio.h>
 #include "xc.h"
 #include "config.h"
-#include <stdio.h>
 
 static const char * libxc_version = PACKAGE_VERSION;
 

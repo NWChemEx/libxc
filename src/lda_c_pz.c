@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 /************************************************************************
  Correlation energy per particle and potential of a HEG as parametrized 
@@ -63,8 +65,9 @@ lda_c_pz_init(xc_func_type *p)
 {
   lda_c_pz_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_c_pz_params));
+  assert(sizeof(lda_c_pz_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(lda_c_pz_params));
   params = (lda_c_pz_params *) (p->params);
 
   switch(p->info->number){
@@ -85,8 +88,9 @@ lda_c_pz_init(xc_func_type *p)
 
 #include "maple2c/lda_exc/lda_c_pz.c"
 #include "work_lda_new.c"
+#include "work_lda_new.cpp"
 
-const xc_func_info_type xc_func_info_lda_c_pz = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_pz = {
   XC_LDA_C_PZ,
   XC_CORRELATION,
   "Perdew & Zunger",
@@ -96,10 +100,15 @@ const xc_func_info_type xc_func_info_lda_c_pz = {
   1e-24,
   0, NULL, NULL,
   lda_c_pz_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_pz_mod = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_pz_mod = {
   XC_LDA_C_PZ_MOD,
   XC_CORRELATION,
   "Perdew & Zunger (Modified)",
@@ -109,10 +118,15 @@ const xc_func_info_type xc_func_info_lda_c_pz_mod = {
   1e-24,
   0, NULL, NULL,
   lda_c_pz_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_lda_c_ob_pz = {
+EXTERN const xc_func_info_type xc_func_info_lda_c_ob_pz = {
   XC_LDA_C_OB_PZ,
   XC_CORRELATION,
   "Ortiz & Ballone (PZ parametrization)",
@@ -122,5 +136,10 @@ const xc_func_info_type xc_func_info_lda_c_ob_pz = {
   1e-24,
   0, NULL, NULL,
   lda_c_pz_init, NULL,
-  work_lda, NULL, NULL
+  work_lda, NULL, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  work_lda_offload, NULL, NULL
+#endif
 };

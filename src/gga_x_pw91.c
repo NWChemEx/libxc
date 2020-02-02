@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_X_PW91         109 /* Perdew & Wang 91 */
 #define XC_GGA_X_MPW91        119 /* Modified form of PW91 by Adamo & Barone */
@@ -23,8 +25,9 @@ gga_x_pw91_init(xc_func_type *p)
 {
   gga_x_pw91_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_pw91_params));
+  assert(sizeof(gga_x_pw91_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(gga_x_pw91_params));
   params = (gga_x_pw91_params *) (p->params);
 
   switch(p->info->number){
@@ -58,7 +61,8 @@ set_ext_params(xc_func_type *p, const double *ext_params)
   gga_x_pw91_params *params;
   double bt, beta;
   
-  assert(p != NULL && p->params != NULL);
+  assert(sizeof(gga_x_pw91_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
   params = (gga_x_pw91_params *) (p->params);
 
   bt = get_ext_param(p->info->ext_params, ext_params, 0);
@@ -76,8 +80,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/gga_exc/gga_x_pw91.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_x_pw91 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_pw91 = {
   XC_GGA_X_PW91,
   XC_EXCHANGE,
   "Perdew & Wang 91",
@@ -87,10 +92,15 @@ const xc_func_info_type xc_func_info_gga_x_pw91 = {
   1e-24,
   0, NULL, NULL,
   gga_x_pw91_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_x_mpw91 = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_mpw91 = {
   XC_GGA_X_MPW91,
   XC_EXCHANGE,
   "mPW91 of Adamo & Barone",
@@ -100,5 +110,10 @@ const xc_func_info_type xc_func_info_gga_x_mpw91 = {
   1e-31,
   3, ext_params, set_ext_params,
   gga_x_pw91_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_REGTPSS       83 /* Regularized TPSS correlation (ex-VPBE)             */
 
 #include "maple2c/gga_exc/gga_c_regtpss.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_c_regtpss = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_regtpss = {
   XC_GGA_C_REGTPSS,
   XC_CORRELATION,
   "regularized TPSS correlation",
@@ -23,5 +26,10 @@ const xc_func_info_type xc_func_info_gga_c_regtpss = {
   1e-16,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

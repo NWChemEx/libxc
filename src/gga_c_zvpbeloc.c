@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_C_ZVPBELOC       606 /* PBEloc variation with enhanced compatibility with exact exchange */
 #define XC_HYB_GGA_XC_APBE0     607 /* Hybrid based on APBE */
@@ -14,8 +16,9 @@
 
 #include "maple2c/gga_exc/gga_c_zvpbeloc.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_c_zvpbeloc = {
+EXTERN const xc_func_info_type xc_func_info_gga_c_zvpbeloc = {
   XC_GGA_C_ZVPBELOC,
   XC_CORRELATION,
   "PBEloc variation with enhanced compatibility with exact exchange",
@@ -25,7 +28,12 @@ const xc_func_info_type xc_func_info_gga_c_zvpbeloc = {
   1e-10,
   0, NULL, NULL,
   NULL, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
 void
@@ -39,7 +47,7 @@ xc_hyb_gga_xc_apbe0_init(xc_func_type *p)
 }
 
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_apbe0 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_apbe0 = {
   XC_HYB_GGA_XC_APBE0,
   XC_EXCHANGE_CORRELATION,
   "Hybrid based on APBE",
@@ -49,7 +57,12 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_apbe0 = {
   1e-10,
   0, NULL, NULL,
   xc_hyb_gga_xc_apbe0_init, NULL, 
+  NULL, NULL, NULL,
+#ifndef __CUDACC__
   NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
 void
@@ -63,7 +76,7 @@ xc_hyb_gga_xc_hapbe_init(xc_func_type *p)
 }
 
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_hapbe = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_hapbe = {
   XC_HYB_GGA_XC_HAPBE,
   XC_EXCHANGE_CORRELATION,
   "Hybrid based in APBE and zvPBEloc",
@@ -73,5 +86,10 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hapbe = {
   1e-10,
   0, NULL, NULL,
   xc_hyb_gga_xc_hapbe_init, NULL, 
+  NULL, NULL, NULL,
+#ifndef __CUDACC__
   NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

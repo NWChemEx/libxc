@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_XC_TH_FL        196 /* Tozer and Handy v. FL  */
 #define XC_GGA_XC_TH_FC        197 /* Tozer and Handy v. FC  */
@@ -15,7 +17,7 @@
 #define XC_GGA_XC_TH1          154 /* Tozer and Handy v. 1 */
 
 typedef struct{
-  const double *omega;
+  double omega[21];
 } gga_xc_th1_params;
 
 static const double omega_TH_FL[] = 
@@ -54,29 +56,30 @@ gga_xc_th1_init(xc_func_type *p)
 {
   gga_xc_th1_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_xc_th1_params));
+  assert(sizeof(gga_xc_th1_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_xc_th1_params));
   params = (gga_xc_th1_params *)p->params;
 
   switch(p->info->number){
   case XC_GGA_XC_TH_FL:
-    params->omega = omega_TH_FL;
+    memcpy(params->omega, omega_TH_FL, sizeof(omega_TH_FL));
     break;
 
   case XC_GGA_XC_TH_FC:
-    params->omega = omega_TH_FC;
+    memcpy(params->omega, omega_TH_FC, sizeof(omega_TH_FC));
     break;
 
   case XC_GGA_XC_TH_FCFO:
-    params->omega = omega_TH_FCFO;
+    memcpy(params->omega, omega_TH_FCFO, sizeof(omega_TH_FCFO));
     break;
 
   case XC_GGA_XC_TH_FCO:
-    params->omega = omega_TH_FCO; 
+    memcpy(params->omega, omega_TH_FCO, sizeof(omega_TH_FCO));
     break;
 
   case XC_GGA_XC_TH1:
-    params->omega = omega_TH1;
+    memcpy(params->omega, omega_TH1, sizeof(omega_TH1));
     break;
 
   default:
@@ -87,8 +90,9 @@ gga_xc_th1_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_xc_th1.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_gga_xc_th_fl = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th_fl = {
   XC_GGA_XC_TH_FL,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FL",
@@ -98,10 +102,15 @@ const xc_func_info_type xc_func_info_gga_xc_th_fl = {
   1e-32,
   0, NULL, NULL,
   gga_xc_th1_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_th_fc = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th_fc = {
   XC_GGA_XC_TH_FC,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FC",
@@ -111,10 +120,15 @@ const xc_func_info_type xc_func_info_gga_xc_th_fc = {
   1e-32,
   0, NULL, NULL,
   gga_xc_th1_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_th_fcfo = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th_fcfo = {
   XC_GGA_XC_TH_FCFO,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FCFO",
@@ -124,10 +138,15 @@ const xc_func_info_type xc_func_info_gga_xc_th_fcfo = {
   1e-32,
   0, NULL, NULL,
   gga_xc_th1_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_th_fco = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th_fco = {
   XC_GGA_XC_TH_FCO,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FCO",
@@ -137,10 +156,15 @@ const xc_func_info_type xc_func_info_gga_xc_th_fco = {
   1e-32,
   0, NULL, NULL,
   gga_xc_th1_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_th1 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_th1 = {
   XC_GGA_XC_TH1,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. 1",
@@ -150,5 +174,10 @@ const xc_func_info_type xc_func_info_gga_xc_th1 = {
   1e-32,
   0, NULL, NULL,
   gga_xc_th1_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

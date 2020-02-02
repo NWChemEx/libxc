@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_PBE_GX          576 /* PBE-GX functional of Loos */
 
 #include "maple2c/mgga_exc/mgga_x_pbe_gx.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_x_pbe_gx = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_pbe_gx = {
   XC_MGGA_X_PBE_GX,
   XC_EXCHANGE,
   "PBE-GX functional of Loos",
@@ -25,4 +28,9 @@ const xc_func_info_type xc_func_info_mgga_x_pbe_gx = {
   0, NULL, NULL,
   NULL, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

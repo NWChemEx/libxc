@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_M06_L         233 /* M06-L correlation functional from Minnesota          */
 #define XC_MGGA_C_M06_HF        234 /* M06-HF correlation functional from Minnesota         */
@@ -71,16 +73,17 @@ mgga_c_m06l_init(xc_func_type *p)
 {
   mgga_c_m06l_params *params;
 
+  assert(sizeof(mgga_c_m06l_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
   assert(p != NULL);
 
   p->n_func_aux  = 1;
-  p->func_aux    = (xc_func_type **) malloc(1*sizeof(xc_func_type *));
+  //p->func_aux    = (xc_func_type **) malloc(1*sizeof(xc_func_type *));
   p->func_aux[0] = (xc_func_type *)  malloc(  sizeof(xc_func_type));
 
   xc_func_init(p->func_aux[0], XC_LDA_C_PW_MOD, XC_POLARIZED);
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_c_m06l_params));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(mgga_c_m06l_params));
   params = (mgga_c_m06l_params *)p->params;
 
   switch(p->info->number){
@@ -114,7 +117,7 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 {
   mgga_c_m06l_params *params;
 
-  assert(p != NULL && p->params != NULL);
+  assert(p != NULL);
   params = (mgga_c_m06l_params *) (p->params);
 
   params->Fermi_D_cnst = max(get_ext_param(p->info->ext_params, ext_params, 0), 1e-10);
@@ -122,8 +125,9 @@ set_ext_params(xc_func_type *p, const double *ext_params)
 
 #include "maple2c/mgga_exc/mgga_c_m06l.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_c_m06_l = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_m06_l = {
   XC_MGGA_C_M06_L,
   XC_CORRELATION,
   "Minnesota M06-L correlation functional",
@@ -134,9 +138,14 @@ const xc_func_info_type xc_func_info_mgga_c_m06_l = {
   1, ext_params, set_ext_params,
   mgga_c_m06l_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_c_m06_hf = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_m06_hf = {
   XC_MGGA_C_M06_HF,
   XC_CORRELATION,
   "Minnesota M06-HF correlation functional",
@@ -147,9 +156,14 @@ const xc_func_info_type xc_func_info_mgga_c_m06_hf = {
   1, ext_params, set_ext_params,
   mgga_c_m06l_init, NULL, 
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_c_m06 = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_m06 = {
   XC_MGGA_C_M06,
   XC_CORRELATION,
   "Minnesota M06 correlation functional",
@@ -160,9 +174,14 @@ const xc_func_info_type xc_func_info_mgga_c_m06 = {
   1, ext_params, set_ext_params,
   mgga_c_m06l_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_c_m06_2x = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_m06_2x = {
   XC_MGGA_C_M06_2X,
   XC_CORRELATION,
   "Minnesota M06-2X correlation functional",
@@ -173,9 +192,14 @@ const xc_func_info_type xc_func_info_mgga_c_m06_2x = {
   1, ext_params, set_ext_params,
   mgga_c_m06l_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
 
-const xc_func_info_type xc_func_info_mgga_c_revm06_l = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_revm06_l = {
   XC_MGGA_C_REVM06_L,
   XC_CORRELATION,
   "Minnesota revM06-L correlation functional",
@@ -186,4 +210,9 @@ const xc_func_info_type xc_func_info_mgga_c_revm06_l = {
   1, ext_params, set_ext_params,
   mgga_c_m06l_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

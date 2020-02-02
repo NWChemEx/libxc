@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_XC_EDF1        165 /* Empirical functionals from Adamson, Gill, and Pople */
 #define XC_GGA_X_OPTPBE_VDW   141 /* PBE reparametrization for vdW */
@@ -30,7 +32,7 @@ gga_xc_edf1_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[3], par_c_lyp);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_edf1 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_edf1 = {
   XC_GGA_XC_EDF1,
   XC_EXCHANGE_CORRELATION,
   "EDF1",
@@ -40,7 +42,8 @@ const xc_func_info_type xc_func_info_gga_xc_edf1 = {
   1e-32,
   0, NULL, NULL,
   gga_xc_edf1_init, 
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -58,7 +61,7 @@ gga_x_optpbe_vdw_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[1], par_pbe);
 }
 
-const xc_func_info_type xc_func_info_gga_x_optpbe_vdw = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_optpbe_vdw = {
   XC_GGA_X_OPTPBE_VDW,
   XC_EXCHANGE,
   "Reparametrized PBE for vdW",
@@ -68,7 +71,8 @@ const xc_func_info_type xc_func_info_gga_x_optpbe_vdw = {
   1e-32,
   0, NULL, NULL,
   gga_x_optpbe_vdw_init, 
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -85,7 +89,7 @@ gga_xc_mohlyp_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[0], par_x_optx);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_mohlyp = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_mohlyp = {
   XC_GGA_XC_MOHLYP,
   XC_EXCHANGE_CORRELATION,
   "Functional for organometallic chemistry",
@@ -95,7 +99,8 @@ const xc_func_info_type xc_func_info_gga_xc_mohlyp = {
   1e-32,
   0, NULL, NULL,
   gga_xc_mohlyp_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 static void
@@ -111,7 +116,7 @@ gga_xc_mohlyp2_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[0], par_x_optx);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_mohlyp2 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_mohlyp2 = {
   XC_GGA_XC_MOHLYP2,
   XC_EXCHANGE_CORRELATION,
   "Functional for barrier heights",
@@ -121,7 +126,8 @@ const xc_func_info_type xc_func_info_gga_xc_mohlyp2 = {
   1e-32,
   0, NULL, NULL,
   gga_xc_mohlyp2_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 static void
@@ -138,7 +144,7 @@ gga_x_sogga_init(xc_func_type *p)
   xc_func_set_ext_params (p->func_aux[1], par_pbe);
 }
 
-const xc_func_info_type xc_func_info_gga_x_sogga = {
+EXTERN const xc_func_info_type xc_func_info_gga_x_sogga = {
   XC_GGA_X_SOGGA,
   XC_EXCHANGE,
   "Second-order generalized gradient approximation",
@@ -148,7 +154,8 @@ const xc_func_info_type xc_func_info_gga_x_sogga = {
   1e-32,
   0, NULL, NULL,
   gga_x_sogga_init,
-  NULL, NULL, NULL, NULL
+  NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL
 };
 
 
@@ -164,7 +171,7 @@ gga_xc_lb07_init(xc_func_type *p)
   xc_func_set_ext_params(p->func_aux[0], par_x_erf);
 }
 
-const xc_func_info_type xc_func_info_gga_xc_lb07 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_lb07 = {
   XC_GGA_XC_LB07,
   XC_EXCHANGE_CORRELATION,
   "Livshits and Baer, empirical functional",
@@ -174,5 +181,6 @@ const xc_func_info_type xc_func_info_gga_xc_lb07 = {
   5e-24,
   0, NULL, NULL,
   gga_xc_lb07_init, NULL,
+  NULL, NULL, NULL,
   NULL, NULL, NULL
 };

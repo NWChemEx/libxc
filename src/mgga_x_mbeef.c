@@ -8,13 +8,16 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_MBEEF          249 /* mBEEF exchange */
 
 #include "maple2c/mgga_exc/mgga_x_mbeef.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_x_mbeef = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_mbeef = {
   XC_MGGA_X_MBEEF,
   XC_EXCHANGE,
   "mBEEF exchange",
@@ -25,4 +28,9 @@ const xc_func_info_type xc_func_info_mgga_x_mbeef = {
   0, NULL, NULL,
   NULL, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

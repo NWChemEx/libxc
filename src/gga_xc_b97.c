@@ -7,6 +7,8 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_GGA_XC_HCTH_93     161 /* HCTH functional fitted to  93 molecules  */
 #define XC_GGA_XC_HCTH_120    162 /* HCTH functional fitted to 120 molecules  */
@@ -173,8 +175,9 @@ gga_xc_b97_init(xc_func_type *p)
 {
   gga_xc_b97_params *params;
 
-  assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_xc_b97_params));
+  assert(sizeof(gga_xc_b97_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p != NULL);
+  //p->params = malloc(sizeof(gga_xc_b97_params));
   params = (gga_xc_b97_params *)(p->params);
 
   switch(p->info->number){
@@ -265,8 +268,9 @@ gga_xc_b97_init(xc_func_type *p)
 
 #include "maple2c/gga_exc/gga_xc_b97.c"
 #include "work_gga_new.c"
+#include "work_gga_new.cpp"
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b97 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b97 = {
   XC_HYB_GGA_XC_B97,
   XC_EXCHANGE_CORRELATION,
   "Becke 97",
@@ -276,10 +280,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b97 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b97_1 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b97_1 = {
   XC_HYB_GGA_XC_B97_1,
   XC_EXCHANGE_CORRELATION,
   "Becke 97-1",
@@ -289,10 +298,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b97_1 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b97_2 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b97_2 = {
   XC_HYB_GGA_XC_B97_2,
   XC_EXCHANGE_CORRELATION,
   "Becke 97-2",
@@ -302,10 +316,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b97_2 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_b97_d = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_b97_d = {
   XC_GGA_XC_B97_D,
   XC_EXCHANGE_CORRELATION,
   "Becke 97-D",
@@ -315,10 +334,15 @@ const xc_func_info_type xc_func_info_gga_xc_b97_d = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b97_k = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b97_k = {
   XC_HYB_GGA_XC_B97_K,
   XC_EXCHANGE_CORRELATION,
   "Boese-Martin for Kinetics",
@@ -328,10 +352,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b97_k = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b97_3 = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b97_3 = {
   XC_HYB_GGA_XC_B97_3,
   XC_EXCHANGE_CORRELATION,
   "Becke 97-3",
@@ -341,10 +370,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b97_3 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_hcth_93 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_hcth_93 = {
   XC_GGA_XC_HCTH_93,
   XC_EXCHANGE_CORRELATION,
   "HCTH/93",
@@ -354,10 +388,15 @@ const xc_func_info_type xc_func_info_gga_xc_hcth_93 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_hcth_120 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_hcth_120 = {
   XC_GGA_XC_HCTH_120,
   XC_EXCHANGE_CORRELATION,
   "HCTH/120",
@@ -367,10 +406,15 @@ const xc_func_info_type xc_func_info_gga_xc_hcth_120 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_hcth_147 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_hcth_147 = {
   XC_GGA_XC_HCTH_147,
   XC_EXCHANGE_CORRELATION,
   "HCTH/147",
@@ -380,10 +424,15 @@ const xc_func_info_type xc_func_info_gga_xc_hcth_147 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_hcth_407 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_hcth_407 = {
   XC_GGA_XC_HCTH_407,
   XC_EXCHANGE_CORRELATION,
   "HCTH/407",
@@ -393,10 +442,15 @@ const xc_func_info_type xc_func_info_gga_xc_hcth_407 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_1a = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_1a = {
   XC_HYB_GGA_XC_SB98_1a,
   XC_EXCHANGE_CORRELATION,
   "SB98 (1a)",
@@ -406,10 +460,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_1a = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_1b = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_1b = {
   XC_HYB_GGA_XC_SB98_1b,
   XC_EXCHANGE_CORRELATION,
   "SB98 (1b)",
@@ -419,10 +478,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_1b = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_1c = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_1c = {
   XC_HYB_GGA_XC_SB98_1c,
   XC_EXCHANGE_CORRELATION,
   "SB98 (1c)",
@@ -432,10 +496,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_1c = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_2a = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_2a = {
   XC_HYB_GGA_XC_SB98_2a,
   XC_EXCHANGE_CORRELATION,
   "SB98 (2a)",
@@ -445,10 +514,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_2a = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_2b = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_2b = {
   XC_HYB_GGA_XC_SB98_2b,
   XC_EXCHANGE_CORRELATION,
   "SB98 (2b)",
@@ -458,10 +532,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_2b = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_2c = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_2c = {
   XC_HYB_GGA_XC_SB98_2c,
   XC_EXCHANGE_CORRELATION,
   "SB98 (2c)",
@@ -471,10 +550,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_sb98_2c = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_b97_gga1 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_b97_gga1 = {
   XC_GGA_XC_B97_GGA1,
   XC_EXCHANGE_CORRELATION,
   "Becke 97 GGA-1",
@@ -484,10 +568,15 @@ const xc_func_info_type xc_func_info_gga_xc_b97_gga1 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL, 
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_hcth_p14 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_hcth_p14 = {
   XC_GGA_XC_HCTH_P14,
   XC_EXCHANGE_CORRELATION,
   "HCTH p=1/4",
@@ -497,10 +586,15 @@ const xc_func_info_type xc_func_info_gga_xc_hcth_p14 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_hcth_p76 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_hcth_p76 = {
   XC_GGA_XC_HCTH_P76,
   XC_EXCHANGE_CORRELATION,
   "HCTH p=7/6",
@@ -510,10 +604,15 @@ const xc_func_info_type xc_func_info_gga_xc_hcth_p76 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_hcth_407p = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_hcth_407p = {
   XC_GGA_XC_HCTH_407P,
   XC_EXCHANGE_CORRELATION,
   "HCTH/407+",
@@ -523,10 +622,15 @@ const xc_func_info_type xc_func_info_gga_xc_hcth_407p = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_hyb_gga_xc_b97_1p = {
+EXTERN const xc_func_info_type xc_func_info_hyb_gga_xc_b97_1p = {
   XC_HYB_GGA_XC_B97_1p,
   XC_EXCHANGE_CORRELATION,
   "version of B97 by Cohen and Handy",
@@ -536,10 +640,15 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b97_1p = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };
 
-const xc_func_info_type xc_func_info_gga_xc_hle16 = {
+EXTERN const xc_func_info_type xc_func_info_gga_xc_hle16 = {
   XC_GGA_XC_HLE16,
   XC_EXCHANGE_CORRELATION,
   "high local exchange 2016",
@@ -549,5 +658,10 @@ const xc_func_info_type xc_func_info_gga_xc_hle16 = {
   1e-21,
   0, NULL, NULL,
   gga_xc_b97_init, NULL,
-  NULL, work_gga, NULL
+  NULL, work_gga, NULL,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, work_gga_offload, NULL
+#endif
 };

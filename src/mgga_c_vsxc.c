@@ -8,6 +8,8 @@
 
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_C_VSXC          232 /* VSxc from Van Voorhis and Scuseria (correlation part) */
 
@@ -27,8 +29,9 @@ mgga_c_vsxc_init(xc_func_type *p)
 {
   mgga_c_vsxc_params *params;
 
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_c_vsxc_params));
+  assert(sizeof(mgga_c_vsxc_params) <= XC_MAX_FUNC_PARAMS*sizeof(double));
+  assert(p!=NULL);
+  //p->params = malloc(sizeof(mgga_c_vsxc_params));
   params = (mgga_c_vsxc_params *)p->params;
 
   switch(p->info->number){
@@ -43,8 +46,9 @@ mgga_c_vsxc_init(xc_func_type *p)
 
 #include "maple2c/mgga_exc/mgga_c_vsxc.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_c_vsxc = {
+EXTERN const xc_func_info_type xc_func_info_mgga_c_vsxc = {
   XC_MGGA_C_VSXC,
   XC_CORRELATION,
   "VSXC (correlation part)",
@@ -55,4 +59,9 @@ const xc_func_info_type xc_func_info_mgga_c_vsxc = {
   0, NULL, NULL,
   mgga_c_vsxc_init, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };

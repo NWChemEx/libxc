@@ -7,13 +7,16 @@
 */
 
 #include "util.h"
+#include "xc_device.h"
+#include "xc_extern.h"
 
 #define XC_MGGA_X_TM          540 /* Tao and Mo 2016 exchange */
 
 #include "maple2c/mgga_exc/mgga_x_tm.c"
 #include "work_mgga_new.c"
+#include "work_mgga_new.cpp"
 
-const xc_func_info_type xc_func_info_mgga_x_tm = {
+EXTERN const xc_func_info_type xc_func_info_mgga_x_tm = {
   XC_MGGA_X_TM,
   XC_EXCHANGE,
   "Tao and Mo 2016 exchange",
@@ -24,4 +27,9 @@ const xc_func_info_type xc_func_info_mgga_x_tm = {
   0, NULL, NULL,
   NULL, NULL,
   NULL, NULL, work_mgga,
+#ifndef __CUDACC__
+  NULL, NULL, NULL
+#else
+  NULL, NULL, work_mgga_offload
+#endif
 };
