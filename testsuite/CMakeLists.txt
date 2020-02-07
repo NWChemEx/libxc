@@ -29,7 +29,7 @@ foreach(_sdir ${_sdirs})
         # get test name
         if(${_bz2} MATCHES ${EXCLUDE_REGEX})
             message(STATUS "skipping: ${_bz2}")
-            break()
+            continue()
         endif()
         get_filename_component(_file ${_bz2} NAME)
         string(REPLACE "." ";" _list ${_file})
