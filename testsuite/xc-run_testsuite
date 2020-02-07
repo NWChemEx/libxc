@@ -48,6 +48,11 @@ for dir in $(ls -d $srcdir/regression/*); do
             continue
         fi
     fi
+    if [ ${#CHECK_DONT} -ne 0 ]; then
+        if [[   " $CHECK_DONT " =~ .*\ $func\ .* ]]; then
+            continue
+        fi
+    fi
     testcase=${refname#*.}
     system=${testcase%%.*}
     order=${testcase##*.}
