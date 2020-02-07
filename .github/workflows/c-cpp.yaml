@@ -27,14 +27,13 @@ jobs:
             wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-Linux-x86_64.sh
             yes | /bin/sh cmake-3.16.3-Linux-x86_64.sh
     - name: cmake
-      run:  cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild -DBUILD_TESTING=TRUE -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_C_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="-fprofile-arcs"
+      run:  cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild -DBUILD_TESTING=TRUE -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_C_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="-fprofile-arcs" -DEXCLUDE_REGEX="mgga_c_.*m06"
     - name: ctest
       run: |
-            #export CHECK_DONT="mgga_c_m06 mgga_c_m06_2x mgga_c_m06_hf mgga_c_m06_l mgga_c_revm06_l"
-            cmake-3.16.3-Linux-x86_64/bin/ctest --progress --build-and-test build build --build-nocmake --exclude-regex "/mgga_c_*m06/" --build-generator "Unix Makefiles" --test-command make test
-            #cd build
-            #make
-            #make test
+            #cmake-3.16.3-Linux-x86_64/bin/ctest --build-and-test build build --build-nocmake --build-generator "Unix Makefiles" --test-command make test
+            cd build
+            make
+            make test
     - name: gcovr
       run: |
            cd ..
