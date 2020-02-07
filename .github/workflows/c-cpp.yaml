@@ -30,10 +30,11 @@ jobs:
       run:  cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild -DBUILD_TESTING=TRUE -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_C_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="-fprofile-arcs"
     - name: ctest
       run: |
-            #cmake-3.16.3-Linux-x86_64/bin/ctest --build-and-test build build --build-nocmake --build-generator "Unix Makefiles" --test-command make test
-            cd build
-            make
-            make test
+            #export CHECK_DONT="mgga_c_m06 mgga_c_m06_2x mgga_c_m06_hf mgga_c_m06_l mgga_c_revm06_l"
+            cmake-3.16.3-Linux-x86_64/bin/ctest --progress --exclude-regex "/c_m06/" --build-and-test build build --build-nocmake --build-generator "Unix Makefiles" --test-command make test
+            #cd build
+            #make
+            #make test
     - name: gcovr
       run: |
            cd ..
