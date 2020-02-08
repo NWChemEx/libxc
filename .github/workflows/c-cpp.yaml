@@ -37,8 +37,8 @@ jobs:
     - name: gcovr
       run: |
            cd ..
-           gcovr --root Utilities --filter Utilities --exclude Utilities/tests --xml Utilities/coverage.xml
-           ls -al Utilities
+           gcovr --root libxc --filter libxc --exclude libxc/testsuite --xml libxc/coverage.xml
+           ls -al libxc
     - uses: codecov/codecov-action@v1
       with:
          token: ${{ secrets.CODECOV_TOKEN }}
