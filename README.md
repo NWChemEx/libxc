@@ -1,3 +1,7 @@
+[![Actions](https://github.com/hjjvandam/libxc/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx-Project/libxc)
+
+[![Codecov](https://codecov.io/github/hjjvandam/libxc/branch/github-actions/graphs/sunburst.svg?token=gdemefzIU7)](https://codecov.io/github/NWChemEx-Project/libxc/branch/master)
+
 # Libxc
 
 Libxc is a library of exchange-correlation functionals for
