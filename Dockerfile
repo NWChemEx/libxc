@@ -39,4 +39,4 @@ RUN git pull https://github.com/hjjvandam/libxc?access_token=$GITHUB_TOKEN githu
 RUN /libxc/cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild -DBUILD_TESTING=TRUE -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_C_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="-fprofile-arcs" -DEXCLUDE_REGEX="mgga_c_.*m06"
 RUN /libxc/cmake-3.16.3-Linux-x86_64/bin/ctest --build-and-test build build --build-nocmake --build-generator "Unix Makefiles" --test-command make test
 WORKDIR /libxc
-RUN gcovr --root libxc --filter libxc --exclude libxc/tests --xml libxc/coverage.xml
+RUN gcovr --root libxc --filter libxc --exclude libxc/testsuite --xml libxc/coverage.xml
