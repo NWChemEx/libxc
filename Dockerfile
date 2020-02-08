@@ -29,13 +29,11 @@ RUN apt-get install -y git curl wget
 RUN pip3 install gcovr
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-Linux-x86_64.sh
 RUN yes | /bin/sh cmake-3.16.3-Linux-x86_64.sh
-#RUN git clone https://github.com/NWChemEx-Project/libxc?access_token=$GITHUB_TOKEN
-RUN git clone https://github.com/hjjvandam/libxc?access_token=$GITHUB_TOKEN
+RUN git clone https://github.com/NWChemEx-Project/libxc?access_token=$GITHUB_TOKEN
 WORKDIR /libxc/libxc
 RUN git branch github-actions
 RUN git checkout github-actions
-#RUN git pull https://github.com/NWChemEx-Project/libxc?access_token=$GITHUB_TOKEN github-actions
-RUN git pull https://github.com/hjjvandam/libxc?access_token=$GITHUB_TOKEN github-actions
+RUN git pull https://github.com/NWChemEx-Project/libxc?access_token=$GITHUB_TOKEN github-actions
 RUN /libxc/cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=DEBUG -DBUILD_TESTING=TRUE -DCMAKE_CXX_FLAGS="-O0 --coverage" -DCMAKE_C_FLAGS="-O0 --coverage" -DCMAKE_EXE_LINKER_FLAGS="-O0 -fprofile-arcs" -DEXCLUDE_REGEX="mgga_c_.*m06"
 RUN /libxc/cmake-3.16.3-Linux-x86_64/bin/ctest --build-and-test build build --build-nocmake --build-generator "Unix Makefiles" --test-command make test
 WORKDIR /libxc
